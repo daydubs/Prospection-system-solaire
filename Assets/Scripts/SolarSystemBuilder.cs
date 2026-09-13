@@ -17,6 +17,14 @@ public class SolarSystemBuilder : MonoBehaviour
         }
 
         GameObject root = new GameObject("SolarSystem_Root");
+        
+        // Ensure GameManager is present
+        if (GameManager.Instance == null)
+        {
+            GameObject gmObj = new GameObject("GameManager");
+            gmObj.AddComponent<GameManager>();
+        }
+
         SolarSystemManager manager = root.AddComponent<SolarSystemManager>();
         SolarSystemUI ui = root.AddComponent<SolarSystemUI>();
 

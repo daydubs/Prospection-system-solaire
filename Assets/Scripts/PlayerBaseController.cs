@@ -43,6 +43,18 @@ public class PlayerBaseController : MonoBehaviour
         Physics.SyncTransforms();
     }
 
+    private void Start()
+    {
+        // Fix CharacterController falling through floor on spawn:
+        // When the game starts, UI is active and the player doesn't move, but
+        // physics are not resolved yet.
+        // The floor is perfectly flat and sometimes the player is initialized exactly at the boundary.
+        // A slight manual bump ensures the CC initiates its collision resolution correctly downwards.
+        // (Note: Unparenting has been intentionally omitted to avoid coordinate system regressions).
+        transform.position += Vector3.up * 1f; // Slight bump up
+        Physics.SyncTransforms();
+    }
+
     private void Update()
     {
         // Don't process player movement when main menu is open or when Hub UI is active

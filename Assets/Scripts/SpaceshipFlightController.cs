@@ -18,9 +18,14 @@ public class SpaceshipFlightController : MonoBehaviour
     public float acceleration = 0.05f;
     public float deceleration = 0.08f;
 
+    [Header("Technology & Upgrades")]
+    [Tooltip("Multiplier increased by unlocking technologies. Starts at 1.")]
+    public float techSpeedMultiplier = 1f;
+    public bool hasWarpTechnology = false;
+
     [Header("Autopilot Parameters")]
-    public float warpMaxSpeed = 160f;
-    public float warpAcceleration = 15f;
+    public float baseAutoMaxSpeed = 10f; // Was warpMaxSpeed (160f)
+    public float baseAutoAcceleration = 2f; // Was warpAcceleration (15f)
     public float arriveDistanceOffset = 2.5f;
     public float arrivalDamping = 5f;
 
@@ -134,10 +139,17 @@ public class SpaceshipFlightController : MonoBehaviour
             EngageAutopilot();
         }
 
-        // J key: Instant Warp
+        // J key: Instant Warp (Requires Tech)
         if (keyboard.jKey.wasPressedThisFrame)
         {
-            WarpToDestination();
+            if (hasWarpTechnology)
+            {
+                WarpToDestination();
+            }
+            else
+            {
+                Debug.Log("[Spaceship] Warp technology not yet researched.");
+            }
         }
 
         // Space / WASD interrupt autopilot
@@ -215,14 +227,16 @@ public class SpaceshipFlightController : MonoBehaviour
         if (keyboard.cKey.isPressed || keyboard.leftCtrlKey.isPressed) moveUp -= 1f;
 
         bool isBoosting = keyboard.leftShiftKey.isPressed;
-        float targetSpeedMagnitude = (isBoosting ? normalSpeed * boostMultiplier : normalSpeed);
+        float currentTechMaxSpeed = normalSpeed * techSpeedMultiplier;
+        float targetSpeedMagnitude = (isBoosting ? currentTechMaxSpeed * boostMultiplier : currentTechMaxSpeed);
+        float currentTechAcceleration = acceleration * techSpeedMultiplier;
         float simDt = GetSimulationDeltaTime();
 
         Vector3 inputDir = (transform.forward * moveForward + transform.right * moveSide + transform.up * moveUp).normalized;
         if (inputDir.sqrMagnitude > 0.01f)
         {
             targetSpeed = targetSpeedMagnitude;
-            velocity = Vector3.MoveTowards(velocity, inputDir * targetSpeed, acceleration * (simDt > 0f ? simDt : Time.deltaTime));
+            velocity = Vector3.MoveTowards(velocity, inputDir * targetSpeed, currentTechAcceleration * (simDt > 0f ? simDt : Time.deltaTime));
         }
         else
         {
@@ -282,9 +296,12 @@ public class SpaceshipFlightController : MonoBehaviour
         Quaternion targetRot = Quaternion.LookRotation(toTarget.normalized);
         transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, 5f * Time.deltaTime);
 
-        // Speed calculation based on distance
-        float desiredSpeed = Mathf.Clamp(dist * 0.8f, 0.5f, warpMaxSpeed);
-        currentSpeed = Mathf.MoveTowards(currentSpeed, desiredSpeed, warpAcceleration * simDt);
+        // Speed calculation based on distance and tech
+        float maxAllowedSpeed = baseAutoMaxSpeed * techSpeedMultiplier;
+        float currentAcceleration = baseAutoAcceleration * techSpeedMultiplier;
+
+        float desiredSpeed = Mathf.Clamp(dist * 0.8f, 0.5f, maxAllowedSpeed);
+        currentSpeed = Mathf.MoveTowards(currentSpeed, desiredSpeed, currentAcceleration * simDt);
 
         transform.position = Vector3.MoveTowards(transform.position, targetPos, currentSpeed * simDt);
     }

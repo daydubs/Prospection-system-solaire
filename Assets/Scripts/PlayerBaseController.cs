@@ -37,6 +37,13 @@ public class PlayerBaseController : MonoBehaviour
         }
     }
 
+    private void OnEnable()
+    {
+        // When enabled, force sync physics transforms so CharacterController recognizes the position
+        Physics.SyncTransforms();
+        verticalVelocity = -2f;
+    }
+
     private void Update()
     {
         // Don't process player movement when main menu is open or when Hub UI is active

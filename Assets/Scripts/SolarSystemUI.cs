@@ -643,7 +643,11 @@ public class SolarSystemUI : MonoBehaviour
         GUILayout.Space(6);
         if (GUILayout.Button("🌍 BASE", buttonStyle, GUILayout.Width(70), GUILayout.Height(26)))
         {
-            if (EarthBaseController.Instance != null)
+            if (SceneTransitionManager.Instance != null)
+            {
+                SceneTransitionManager.Instance.LoadEarthBase();
+            }
+            else if (EarthBaseController.Instance != null)
             {
                 EarthBaseController.Instance.SetLocationState(GameLocationState.EarthBase);
             }

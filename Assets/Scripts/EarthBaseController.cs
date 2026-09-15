@@ -456,10 +456,13 @@ public class EarthBaseController : MonoBehaviour
 
     public void LaunchMissionToSpace()
     {
-        SetLocationState(GameLocationState.SpaceFlight);
-        if (MainMenuController.Instance != null)
+        if (SceneTransitionManager.Instance != null)
         {
-            MainMenuController.Instance.ShowNotification("Décollage réussi ! Entrée en orbite terrestre.");
+            SceneTransitionManager.Instance.LoadSolarSystem();
+        }
+        else
+        {
+            SetLocationState(GameLocationState.SpaceFlight);
         }
     }
 

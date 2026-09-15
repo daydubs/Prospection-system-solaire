@@ -47,31 +47,23 @@ public class PlayerBaseController : MonoBehaviour
 
     private void Start()
     {
-        Debug.Log($"[PlayerBaseController] Start() (AVANT bump) - Position : {transform.position}");
-        // Fix CharacterController falling through floor on spawn:
-        // When the game starts, UI is active and the player doesn't move, but
-        // physics are not resolved yet.
-        // The floor is perfectly flat and sometimes the player is initialized exactly at the boundary.
-        // A slight manual bump ensures the CC initiates its collision resolution correctly downwards.
-        // (Note: Unparenting has been intentionally omitted to avoid coordinate system regressions).
-        transform.position += Vector3.up * 1f; // Slight bump up
+        // Initial sync of physics transforms
         Physics.SyncTransforms();
-        Debug.Log($"[PlayerBaseController] Start() (APRES bump) - Position : {transform.position}");
+        verticalVelocity = 0f;
     }
 
     private void Update()
     {
-        // Log physics state unconditionally to track position even while in menus
-        LogPhysicsState();
-
-        // Don't process player movement when main menu is open or when Hub UI is active
+        // Don't process player movement when main menu or pause is open, or when Hub UI is active
         if (MainMenuController.Instance != null && MainMenuController.Instance.isMenuOpen)
         {
+            verticalVelocity = 0f;
             return;
         }
 
         if (EarthBaseController.Instance != null && EarthBaseController.Instance.isHubUIOpen)
         {
+            verticalVelocity = 0f;
             return;
         }
 
@@ -139,42 +131,6 @@ public class PlayerBaseController : MonoBehaviour
 
         Vector3 finalMovement = (moveDir * currentSpeed) + (Vector3.up * verticalVelocity);
         characterController.Move(finalMovement * dt);
-    }
-
-    private int logFrameSkip = 0;
-    private void LogPhysicsState()
-    {
-        if (characterController == null) return;
-
-        // Skip some frames so we don't spam the console too hard, 
-        // but still capture the fall. Logging every 5th frame.
-        logFrameSkip++;
-        if (logFrameSkip % 5 != 0) return;
-
-        string state = $"[PlayerPhysicsLog] PosY: {transform.position.y:F3}, " +
-                       $"VelocityY: {verticalVelocity:F3}, " +
-                       $"CC.isGrounded: {characterController.isGrounded}";
-
-        RaycastHit hit;
-        float rayDist = 5f;
-        // Raycast from slightly above the center to ensure we hit the floor even if slightly embedded
-        Vector3 rayStart = transform.position + Vector3.up * 0.1f;
-        if (Physics.Raycast(rayStart, Vector3.down, out hit, rayDist))
-        {
-            state += $", HitDist: {hit.distance:F3}, HitObj: {hit.collider.gameObject.name}";
-
-            // Warning if we seem to be falling through
-            if (!characterController.isGrounded && hit.distance < (characterController.height / 2f) + 0.2f && verticalVelocity < -2f)
-            {
-                Debug.LogWarning(">>> [WARNING] PLAYER FALLING THROUGH DETECTED! " + state);
-            }
-        }
-        else
-        {
-            state += $", HitDist: >{rayDist} (No ground found below)";
-        }
-
-        Debug.Log(state);
     }
 
     private void CheckInteraction()

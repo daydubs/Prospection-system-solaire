@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 using TMPro;
 
 public class MainMenuController : MonoBehaviour
@@ -25,6 +26,7 @@ public class MainMenuController : MonoBehaviour
     [Header("Menu State")]
     public bool isMenuOpen = true;
     public bool hasActiveGame = false;
+    public bool isPauseMode = false;
 
     [Header("Main Panels")]
     public GameObject mainCanvasObject;
@@ -114,11 +116,26 @@ public class MainMenuController : MonoBehaviour
 
     private void Start()
     {
+        string currentScene = SceneManager.GetActiveScene().name;
+        bool isMainMenuScene = currentScene == SceneTransitionManager.SCENE_MAIN_MENU;
+
         InitializeDefaultSettings();
         InitializeButtons();
         SelectDifficulty(1); // Default to normal difficulty
         ShowMainMenu();
-        SetMenuVisibility(true);
+
+        if (isMainMenuScene)
+        {
+            isPauseMode = false;
+            SetMenuVisibility(true);
+        }
+        else
+        {
+            // In gameplay scene: menu acts as pause overlay, initially closed
+            isPauseMode = true;
+            hasActiveGame = true;
+            SetMenuVisibility(false);
+        }
     }
 
     private void InitializeButtons()
@@ -186,8 +203,12 @@ public class MainMenuController : MonoBehaviour
             }
             else
             {
-                // Toggle main menu on Escape
-                ToggleMenu();
+                // In main menu scene, Escape does nothing or opens main panel
+                string currentScene = SceneManager.GetActiveScene().name;
+                if (currentScene != SceneTransitionManager.SCENE_MAIN_MENU)
+                {
+                    ToggleMenu();
+                }
             }
         }
     }
@@ -200,24 +221,19 @@ public class MainMenuController : MonoBehaviour
             mainCanvasObject.SetActive(visible);
         }
 
-        // Lock/Unlock cursor
-        if (visible)
+        // Control pause state via SceneTransitionManager
+        string currentScene = SceneManager.GetActiveScene().name;
+        if (currentScene != SceneTransitionManager.SCENE_MAIN_MENU)
         {
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
+            if (SceneTransitionManager.Instance != null)
+            {
+                SceneTransitionManager.Instance.SetPauseState(visible);
+            }
         }
         else
         {
-            if (EarthBaseController.Instance != null && EarthBaseController.Instance.currentLocation == GameLocationState.EarthBase)
-            {
-                Cursor.lockState = CursorLockMode.Locked;
-                Cursor.visible = false;
-            }
-            else
-            {
-                Cursor.lockState = CursorLockMode.None;
-                Cursor.visible = true;
-            }
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
         }
 
         // Pause / Unpause solar system
@@ -330,7 +346,16 @@ public class MainMenuController : MonoBehaviour
         GameManager.Instance.StartNewGame(pilot, corp, selectedDifficulty);
 
         ShowNotification($"Lancement de la mission pour {pilot} ({corp}) !");
-        StartCoroutine(LaunchGameSequence());
+
+        // Transition to EarthBaseScene
+        if (SceneTransitionManager.Instance != null)
+        {
+            SceneTransitionManager.Instance.LoadEarthBase();
+        }
+        else
+        {
+            SceneManager.LoadScene(SceneTransitionManager.SCENE_EARTH_BASE);
+        }
     }
 
     public void OnClickNewGame()
@@ -338,33 +363,30 @@ public class MainMenuController : MonoBehaviour
         OnClickOpenNewGame();
     }
 
-    private IEnumerator LaunchGameSequence()
-    {
-        Debug.Log("[MainMenuController] Lancement de la partie en cours... Attente de 0.4s.");
-        yield return new WaitForSeconds(0.4f);
-        Debug.Log("[MainMenuController] Fermeture du menu principal et activation du contrôle joueur !");
-        SetMenuVisibility(false);
-
-        if (EarthBaseController.Instance != null)
-        {
-            EarthBaseController.Instance.SetLocationState(GameLocationState.EarthBase);
-        }
-        else if (SolarSystemManager.Instance != null)
-        {
-            SolarSystemManager.Instance.isPaused = false;
-        }
-    }
-
     public void OnClickContinue()
     {
-        if (!hasActiveGame)
+        string currentScene = SceneManager.GetActiveScene().name;
+        if (currentScene == SceneTransitionManager.SCENE_MAIN_MENU)
         {
-            OnClickConfirmStartNewGame();
-            return;
+            if (!hasActiveGame)
+            {
+                OnClickConfirmStartNewGame();
+                return;
+            }
+            if (SceneTransitionManager.Instance != null)
+            {
+                SceneTransitionManager.Instance.LoadEarthBase();
+            }
+            else
+            {
+                SceneManager.LoadScene(SceneTransitionManager.SCENE_EARTH_BASE);
+            }
         }
-
-        ShowNotification("▶ Reprise de la mission...");
-        SetMenuVisibility(false);
+        else
+        {
+            // Resume in-game
+            SetMenuVisibility(false);
+        }
     }
 
     public void OnClickOpenLoadGame()
@@ -388,7 +410,6 @@ public class MainMenuController : MonoBehaviour
             }
             else
             {
-                // Create and save initial baseline for this slot
                 GameManager.Instance.SaveGame(slotIndex);
             }
         }
@@ -401,8 +422,16 @@ public class MainMenuController : MonoBehaviour
             _ => $"Sauvegarde #{slotIndex}"
         };
 
-        ShowNotification($"📂 Chargement: {slotName} effectué avec succès !");
-        StartCoroutine(LaunchGameSequence());
+        ShowNotification($"📂 Chargement: {slotName}...");
+
+        if (SceneTransitionManager.Instance != null)
+        {
+            SceneTransitionManager.Instance.LoadEarthBase();
+        }
+        else
+        {
+            SceneManager.LoadScene(SceneTransitionManager.SCENE_EARTH_BASE);
+        }
     }
 
     public void OnClickOpenOptions()
@@ -424,12 +453,29 @@ public class MainMenuController : MonoBehaviour
 
     public void OnClickQuit()
     {
-        ShowNotification("Fermeture du système...");
+        string currentScene = SceneManager.GetActiveScene().name;
+        if (currentScene != SceneTransitionManager.SCENE_MAIN_MENU)
+        {
+            // In game: return to Main Menu scene
+            ShowNotification("Retour au menu principal...");
+            if (SceneTransitionManager.Instance != null)
+            {
+                SceneTransitionManager.Instance.LoadMainMenu();
+            }
+            else
+            {
+                SceneManager.LoadScene(SceneTransitionManager.SCENE_MAIN_MENU);
+            }
+        }
+        else
+        {
+            ShowNotification("Fermeture du système...");
 #if UNITY_EDITOR
-        UnityEditor.EditorApplication.isPlaying = false;
+            UnityEditor.EditorApplication.isPlaying = false;
 #else
-        Application.Quit();
+            Application.Quit();
 #endif
+        }
     }
 
     #endregion
@@ -573,7 +619,7 @@ public class MainMenuController : MonoBehaviour
     public void OnQualityLevelChanged(int level)
     {
         QualitySettings.SetQualityLevel(level, true);
-        ShowNotification($"Qualité graphique définie sur : {QualitySettings.names[level]}");
+        ShowNotification($"Qualité graphique : {QualitySettings.names[level]}");
     }
 
     public void OnFullscreenToggled(bool isFullscreen)
@@ -588,7 +634,7 @@ public class MainMenuController : MonoBehaviour
 
     public void OnBloomToggled(bool enableBloom)
     {
-        ShowNotification(enableBloom ? "Effets de post-traitement & Bloom : Activés" : "Effets de post-traitement & Bloom : Désactivés");
+        ShowNotification(enableBloom ? "Effets Bloom : Activés" : "Effets Bloom : Désactivés");
     }
 
     public void OnSensitivityChanged(float val)
@@ -614,7 +660,7 @@ public class MainMenuController : MonoBehaviour
 
     public void OnFlightAssistToggled(bool assist)
     {
-        ShowNotification(assist ? "Stabilisation inertielle : Active" : "Stabilisation inertielle : Désactivée (Vol Manuel)");
+        ShowNotification(assist ? "Stabilisation : Active" : "Stabilisation : Manuelle");
     }
 
     public void OnApplySettings()
@@ -652,3 +698,4 @@ public class MainMenuController : MonoBehaviour
 
     #endregion
 }
+

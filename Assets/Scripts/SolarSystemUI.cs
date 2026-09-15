@@ -553,7 +553,7 @@ public class SolarSystemUI : MonoBehaviour
         string distFormatted = dist < 50f ? $"{(dist * 15376f):N0} km ({dist:F1} u)" : $"{(dist / 600f):F2} UA ({(dist * 249333f / 1000000f):F1} M km)";
         GUILayout.Label($"• <b>Distance vaisseau :</b> {distFormatted}", bodyStyle);
         GUILayout.Label($"• <b>Rayon orbital :</b> {(dest.orbitRadius / 600f):F2} UA ({dest.orbitRadius:F0} u)", bodyStyle);
-        GUILayout.Label($"• <b>Vitesse orbitale :</b> {dest.orbitSpeed:F2}°/s", bodyStyle);
+        GUILayout.Label($"• <b>Période orbitale :</b> {Mathf.Abs(dest.orbitPeriodDays):F2} jours", bodyStyle);
         
         if (!string.IsNullOrEmpty(dest.description))
         {

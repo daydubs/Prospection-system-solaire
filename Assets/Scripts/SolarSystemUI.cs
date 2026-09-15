@@ -456,14 +456,14 @@ public class SolarSystemUI : MonoBehaviour
 
             // Label
             float dist = Vector3.Distance(playerShip != null ? playerShip.transform.position : mainCam.transform.position, dest.transform.position);
-            string distText = dist > 100f ? $"{(dist / 10f):F1} AU" : $"{dist:F0} km";
+            string distText = dist < 50f ? $"{(dist * 15376f):N0} km" : $"{(dist / 600f):F2} UA";
             string labelText = $"▶ {dest.bodyName.ToUpper()} [{distText}]";
             
             GUIStyle markerStyle = new GUIStyle(bodyStyle);
             markerStyle.fontSize = 13;
             markerStyle.fontStyle = FontStyle.Bold;
             markerStyle.normal.textColor = accentColor;
-            GUI.Label(new Rect(x + size + 4, y - 10, 200, 25), labelText, markerStyle);
+            GUI.Label(new Rect(x + size + 4, y - 10, 240, 25), labelText, markerStyle);
 
             GUI.color = prevCol;
         }
@@ -550,10 +550,10 @@ public class SolarSystemUI : MonoBehaviour
         infoScrollPos = GUILayout.BeginScrollView(infoScrollPos, false, false);
 
         float dist = playerShip != null ? Vector3.Distance(playerShip.transform.position, dest.transform.position) : 0f;
-        GUILayout.Label($"• <b>Distance vaisseau :</b> {dist:F1} unités", bodyStyle);
-        GUILayout.Label($"• <b>Rayon orbital :</b> {dest.orbitRadius:F1} UA", bodyStyle);
-        GUILayout.Label($"• <b>Vitesse orbitale :</b> {dest.orbitSpeed:F1}°/s", bodyStyle);
-        GUILayout.Label($"• <b>Taille / Diamètre :</b> {dest.bodyRadius * 2f:F1} km-eq", bodyStyle);
+        string distFormatted = dist < 50f ? $"{(dist * 15376f):N0} km ({dist:F1} u)" : $"{(dist / 600f):F2} UA ({(dist * 249333f / 1000000f):F1} M km)";
+        GUILayout.Label($"• <b>Distance vaisseau :</b> {distFormatted}", bodyStyle);
+        GUILayout.Label($"• <b>Rayon orbital :</b> {(dest.orbitRadius / 600f):F2} UA ({dest.orbitRadius:F0} u)", bodyStyle);
+        GUILayout.Label($"• <b>Vitesse orbitale :</b> {dest.orbitSpeed:F2}°/s", bodyStyle);
         
         if (!string.IsNullOrEmpty(dest.description))
         {
@@ -592,7 +592,7 @@ public class SolarSystemUI : MonoBehaviour
 
     private void DrawTopSimulationControlBar()
     {
-        float barW = 580f;
+        float barW = 680f;
         float barH = 40f;
         Rect barRect = new Rect((Screen.width - barW) * 0.5f, 10, barW, barH);
 
@@ -608,35 +608,40 @@ public class SolarSystemUI : MonoBehaviour
             systemManager.TogglePause();
         }
 
-        if (GUILayout.Button("1x", systemManager.timeScale == 1f && !systemManager.isPaused ? activeBtnStyle : buttonStyle, GUILayout.Width(40), GUILayout.Height(26)))
+        if (GUILayout.Button("1x", systemManager.timeScale == 1f && !systemManager.isPaused ? activeBtnStyle : buttonStyle, GUILayout.Width(35), GUILayout.Height(26)))
         {
             systemManager.isPaused = false;
             systemManager.SetTimeScale(1f);
         }
-        if (GUILayout.Button("5x", systemManager.timeScale == 5f ? activeBtnStyle : buttonStyle, GUILayout.Width(40), GUILayout.Height(26)))
+        if (GUILayout.Button("5x", systemManager.timeScale == 5f ? activeBtnStyle : buttonStyle, GUILayout.Width(35), GUILayout.Height(26)))
         {
             systemManager.isPaused = false;
             systemManager.SetTimeScale(5f);
         }
-        if (GUILayout.Button("20x", systemManager.timeScale == 20f ? activeBtnStyle : buttonStyle, GUILayout.Width(45), GUILayout.Height(26)))
+        if (GUILayout.Button("20x", systemManager.timeScale == 20f ? activeBtnStyle : buttonStyle, GUILayout.Width(40), GUILayout.Height(26)))
         {
             systemManager.isPaused = false;
             systemManager.SetTimeScale(20f);
         }
-        if (GUILayout.Button("50x", systemManager.timeScale == 50f ? activeBtnStyle : buttonStyle, GUILayout.Width(45), GUILayout.Height(26)))
+        if (GUILayout.Button("50x", systemManager.timeScale == 50f ? activeBtnStyle : buttonStyle, GUILayout.Width(40), GUILayout.Height(26)))
         {
             systemManager.isPaused = false;
             systemManager.SetTimeScale(50f);
         }
+        if (GUILayout.Button("100x", systemManager.timeScale == 100f ? activeBtnStyle : buttonStyle, GUILayout.Width(45), GUILayout.Height(26)))
+        {
+            systemManager.isPaused = false;
+            systemManager.SetTimeScale(100f);
+        }
 
-        GUILayout.Space(10);
+        GUILayout.Space(8);
         if (GUILayout.Button(systemManager.showOrbitLines ? "Orbites: OUI" : "Orbites: NON", buttonStyle, GUILayout.Width(95), GUILayout.Height(26)))
         {
             systemManager.ToggleOrbitLines(!systemManager.showOrbitLines);
         }
 
-        GUILayout.Space(8);
-        if (GUILayout.Button("🌍 BASE", buttonStyle, GUILayout.Width(75), GUILayout.Height(26)))
+        GUILayout.Space(6);
+        if (GUILayout.Button("🌍 BASE", buttonStyle, GUILayout.Width(70), GUILayout.Height(26)))
         {
             if (EarthBaseController.Instance != null)
             {
@@ -645,7 +650,7 @@ public class SolarSystemUI : MonoBehaviour
         }
 
         GUILayout.Space(4);
-        if (GUILayout.Button("☰ MENU [Esc]", buttonStyle, GUILayout.Width(100), GUILayout.Height(26)))
+        if (GUILayout.Button("☰ MENU [Esc]", buttonStyle, GUILayout.Width(90), GUILayout.Height(26)))
         {
             if (MainMenuController.Instance != null)
             {
@@ -661,7 +666,7 @@ public class SolarSystemUI : MonoBehaviour
     {
         if (playerShip == null) return;
 
-        float hudW = 620f;
+        float hudW = 660f;
         float hudH = 55f;
         Rect hudRect = new Rect((Screen.width - hudW) * 0.5f, Screen.height - hudH - 15, hudW, hudH);
 
@@ -677,9 +682,12 @@ public class SolarSystemUI : MonoBehaviour
             _ => "<color=#ffffff>VOL LIBRE</color>"
         };
 
+        // Realistic speed conversion: base cruise speed 0.08 units/s = 1.78 km/s (~6,400 km/h, transit Terre-Lune ~2.5 jours)
+        float speedDisplayKmS = playerShip.currentSpeed * 22.25f;
+
         GUILayout.BeginVertical();
-        GUILayout.Label($"<b>MODE DE VOL :</b> {modeStr}  |  <b>VITESSE :</b> {playerShip.currentSpeed:F1} km/s", bodyStyle);
-        GUILayout.Label("Contrôles: [Z/Q/S/D] ou [W/A/S/D] Déplacer | [Shift] Boost | [P] Console Prospecteur | [Esc] Menu", bodyStyle);
+        GUILayout.Label($"<b>MODE DE VOL :</b> {modeStr}  |  <b>VITESSE DE PROPULSION :</b> {speedDisplayKmS:F1} km/s  (Terre-Lune : ~2.5 jours)", bodyStyle);
+        GUILayout.Label("Contrôles: [Z/Q/S/D] ou [W/A/S/D] Déplacer | [Shift] Boost | [T] Pilote Auto | [J] Warp | [P] Console | [Esc] Menu", bodyStyle);
         GUILayout.EndVertical();
 
         GUILayout.EndHorizontal();

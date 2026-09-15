@@ -31,6 +31,7 @@ public class EarthBaseController : MonoBehaviour
     public Transform hubScreenTransform;
     public PlayerBaseController playerController;
     public Camera baseCamera;
+    public Camera spaceCamera;
     public GameObject baseEnvironmentRoot;
     public GameObject spaceshipHangarModel;
     public GameObject spaceStationHoloModel;
@@ -136,23 +137,64 @@ public class EarthBaseController : MonoBehaviour
     public void SetHubUIVisibility(bool open)
     {
         isHubUIOpen = open;
-        Cursor.lockState = open ? CursorLockMode.None : CursorLockMode.Locked;
-        Cursor.visible = open;
+        if (open)
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
+        else
+        {
+            if (currentLocation == GameLocationState.EarthBase && (MainMenuController.Instance == null || !MainMenuController.Instance.isMenuOpen))
+            {
+                Cursor.lockState = CursorLockMode.Locked;
+                Cursor.visible = false;
+            }
+            else
+            {
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
+            }
+        }
     }
 
     public void SetLocationState(GameLocationState state)
     {
         currentLocation = state;
 
+        if (spaceCamera == null)
+        {
+            GameObject mainCamObj = GameObject.Find("Main Camera");
+            if (mainCamObj != null) spaceCamera = mainCamObj.GetComponent<Camera>();
+        }
+
         if (state == GameLocationState.EarthBase)
         {
             if (baseEnvironmentRoot != null) baseEnvironmentRoot.SetActive(true);
+
             if (playerController != null)
             {
                 playerController.gameObject.SetActive(true);
                 playerController.canMove = true;
             }
-            if (baseCamera != null) baseCamera.enabled = true;
+
+            if (baseCamera != null)
+            {
+                baseCamera.gameObject.SetActive(true);
+                baseCamera.enabled = true;
+                baseCamera.tag = "MainCamera";
+
+                var baseListener = baseCamera.GetComponent<AudioListener>();
+                if (baseListener != null) baseListener.enabled = true;
+            }
+
+            if (spaceCamera != null && spaceCamera != baseCamera)
+            {
+                spaceCamera.tag = "Untagged";
+                spaceCamera.enabled = false;
+
+                var spaceListener = spaceCamera.GetComponent<AudioListener>();
+                if (spaceListener != null) spaceListener.enabled = false;
+            }
 
             // Pause / hide ship in flight
             if (SolarSystemManager.Instance != null && SolarSystemManager.Instance.playerShip != null)
@@ -160,19 +202,42 @@ public class EarthBaseController : MonoBehaviour
                 SolarSystemManager.Instance.playerShip.gameObject.SetActive(false);
             }
 
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
+            if (MainMenuController.Instance == null || !MainMenuController.Instance.isMenuOpen)
+            {
+                Cursor.lockState = CursorLockMode.Locked;
+                Cursor.visible = false;
+            }
         }
         else // Space Flight
         {
             SetHubUIVisibility(false);
+
             if (playerController != null)
             {
                 playerController.canMove = false;
                 playerController.gameObject.SetActive(false);
             }
-            if (baseCamera != null) baseCamera.enabled = false;
+
+            if (baseCamera != null)
+            {
+                baseCamera.tag = "Untagged";
+                baseCamera.enabled = false;
+
+                var baseListener = baseCamera.GetComponent<AudioListener>();
+                if (baseListener != null) baseListener.enabled = false;
+            }
+
             if (baseEnvironmentRoot != null) baseEnvironmentRoot.SetActive(false);
+
+            if (spaceCamera != null)
+            {
+                spaceCamera.tag = "MainCamera";
+                spaceCamera.enabled = true;
+                spaceCamera.gameObject.SetActive(true);
+
+                var spaceListener = spaceCamera.GetComponent<AudioListener>();
+                if (spaceListener != null) spaceListener.enabled = true;
+            }
 
             if (SolarSystemManager.Instance != null && SolarSystemManager.Instance.playerShip != null)
             {
@@ -389,7 +454,7 @@ public class EarthBaseController : MonoBehaviour
         SetLocationState(GameLocationState.SpaceFlight);
         if (MainMenuController.Instance != null)
         {
-            MainMenuController.Instance.ShowNotification("🚀 Décollage réussi ! Entrée en orbite terrestre.");
+            MainMenuController.Instance.ShowNotification("Décollage réussi ! Entrée en orbite terrestre.");
         }
     }
 
@@ -505,9 +570,9 @@ public class EarthBaseController : MonoBehaviour
         GUILayout.BeginHorizontal();
         GUILayout.Space(16);
         string corpName = gm.playerStats != null ? gm.playerStats.corporationName : "Astraea Mining Corp";
-        GUILayout.Label($"🛰️ BASE TERRESTRE • HUB D'OPÉRATIONS ({corpName.ToUpper()})", titleStyle);
+        GUILayout.Label($"BASE TERRESTRE • HUB D'OPÉRATIONS ({corpName.ToUpper()})", titleStyle);
         GUILayout.FlexibleSpace();
-        if (GUILayout.Button("✕ FERMER [E]", buttonStyle, GUILayout.Width(130), GUILayout.Height(28)))
+        if (GUILayout.Button("[X] FERMER [E]", buttonStyle, GUILayout.Width(130), GUILayout.Height(28)))
         {
             SetHubUIVisibility(false);
         }
@@ -518,9 +583,9 @@ public class EarthBaseController : MonoBehaviour
         GUILayout.Space(6);
         GUILayout.BeginHorizontal();
         GUILayout.Space(16);
-        GUILayout.Label($"👤 Commandant: <color=#00e5ff>{gm.playerStats.pilotName}</color>", bodyStyle, GUILayout.Width(220));
-        GUILayout.Label($"💳 Crédits: <color=#ffd700>{gm.Credits:N0} CR</color>", badgeStyle, GUILayout.Width(180));
-        GUILayout.Label($"📊 Statut: <color=#44ff88>{gm.playerStats.difficultyName}</color>", bodyStyle);
+        GUILayout.Label($"Commandant: <color=#00e5ff>{gm.playerStats.pilotName}</color>", bodyStyle, GUILayout.Width(220));
+        GUILayout.Label($"Crédits: <color=#ffd700>{gm.Credits:N0} CR</color>", badgeStyle, GUILayout.Width(180));
+        GUILayout.Label($"Statut: <color=#44ff88>{gm.playerStats.difficultyName}</color>", bodyStyle);
         GUILayout.EndHorizontal();
 
         GUILayout.Space(10);
@@ -528,10 +593,10 @@ public class EarthBaseController : MonoBehaviour
         // Tabs
         GUILayout.BeginHorizontal();
         GUILayout.Space(16);
-        if (GUILayout.Button("🛰️ 1. STATION SPATIALE", hubCurrentTab == 0 ? activeBtnStyle : buttonStyle, GUILayout.Height(32))) hubCurrentTab = 0;
-        if (GUILayout.Button("🚀 2. CHANTIER VAISSEAU", hubCurrentTab == 1 ? activeBtnStyle : buttonStyle, GUILayout.Height(32))) hubCurrentTab = 1;
-        if (GUILayout.Button("🌍 3. DÉCOLLAGE & VOL", hubCurrentTab == 2 ? activeBtnStyle : buttonStyle, GUILayout.Height(32))) hubCurrentTab = 2;
-        if (GUILayout.Button("🏢 4. CORPORATION", hubCurrentTab == 3 ? activeBtnStyle : buttonStyle, GUILayout.Height(32))) hubCurrentTab = 3;
+        if (GUILayout.Button("1. STATION SPATIALE", hubCurrentTab == 0 ? activeBtnStyle : buttonStyle, GUILayout.Height(32))) hubCurrentTab = 0;
+        if (GUILayout.Button("2. CHANTIER VAISSEAU", hubCurrentTab == 1 ? activeBtnStyle : buttonStyle, GUILayout.Height(32))) hubCurrentTab = 1;
+        if (GUILayout.Button("3. DÉCOLLAGE & VOL", hubCurrentTab == 2 ? activeBtnStyle : buttonStyle, GUILayout.Height(32))) hubCurrentTab = 2;
+        if (GUILayout.Button("4. CORPORATION", hubCurrentTab == 3 ? activeBtnStyle : buttonStyle, GUILayout.Height(32))) hubCurrentTab = 3;
         GUILayout.Space(16);
         GUILayout.EndHorizontal();
 
@@ -708,7 +773,7 @@ public class EarthBaseController : MonoBehaviour
 
         GUILayout.Space(16);
 
-        if (GUILayout.Button("🚀 DÉCOLLER VERS L'ESPACE (MISE EN ORBITE TERRESTRE)", activeBtnStyle, GUILayout.Height(48)))
+        if (GUILayout.Button("DÉCOLLER VERS L'ESPACE (MISE EN ORBITE TERRESTRE)", activeBtnStyle, GUILayout.Height(48)))
         {
             LaunchMissionToSpace();
         }

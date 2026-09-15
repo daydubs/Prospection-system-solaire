@@ -186,11 +186,8 @@ public class MainMenuController : MonoBehaviour
             }
             else
             {
-                // Toggle main menu if game has started
-                if (hasActiveGame)
-                {
-                    ToggleMenu();
-                }
+                // Toggle main menu on Escape
+                ToggleMenu();
             }
         }
     }
@@ -211,7 +208,16 @@ public class MainMenuController : MonoBehaviour
         }
         else
         {
-            Cursor.visible = true;
+            if (EarthBaseController.Instance != null && EarthBaseController.Instance.currentLocation == GameLocationState.EarthBase)
+            {
+                Cursor.lockState = CursorLockMode.Locked;
+                Cursor.visible = false;
+            }
+            else
+            {
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
+            }
         }
 
         // Pause / Unpause solar system
@@ -267,24 +273,24 @@ public class MainMenuController : MonoBehaviour
         switch (selectedDifficulty)
         {
             case 0: // Facile
-                if (difficultyTitleText != null) difficultyTitleText.text = "🟢 <color=#44ff88>FACILE : PIONNIER SUBVENTIONNÉ</color>";
+                if (difficultyTitleText != null) difficultyTitleText.text = "<color=#44ff88>[FACILE] PIONNIER SUBVENTIONNÉ</color>";
                 if (difficultyDescText != null) difficultyDescText.text = "Subventions gouvernementales complètes et équipement spatial optimisé. Idéal pour explorer le système solaire sans stress financier.";
-                if (difficultyCreditsText != null) difficultyCreditsText.text = "💳 <b>Capital de départ :</b> <color=#ffd700>50 000 CR</color>";
-                if (difficultyInfluenceText != null) difficultyInfluenceText.text = "🤝 <b>Influence initiale :</b> <color=#44ff88>Terre +25% | Mars +20% | Ceinture +20% | Jupiter +20%</color>";
+                if (difficultyCreditsText != null) difficultyCreditsText.text = "<b>Capital de départ :</b> <color=#ffd700>50 000 CR</color>";
+                if (difficultyInfluenceText != null) difficultyInfluenceText.text = "<b>Influence initiale :</b> <color=#44ff88>Terre +25% | Mars +20% | Ceinture +20% | Jupiter +20%</color>";
                 break;
 
             case 1: // Normal
-                if (difficultyTitleText != null) difficultyTitleText.text = "🟡 <color=#00e5ff>NORMAL : PROSPECTEUR INDÉPENDANT</color>";
+                if (difficultyTitleText != null) difficultyTitleText.text = "<color=#00e5ff>[NORMAL] PROSPECTEUR INDÉPENDANT</color>";
                 if (difficultyDescText != null) difficultyDescText.text = "Prêt bancaire standard et vaisseau d'exploration d'origine. Équilibre parfait entre gestion des ressources et liberté de navigation.";
-                if (difficultyCreditsText != null) difficultyCreditsText.text = "💳 <b>Capital de départ :</b> <color=#ffd700>25 000 CR</color>";
-                if (difficultyInfluenceText != null) difficultyInfluenceText.text = "🤝 <b>Influence initiale :</b> <color=#00e5ff>Terre +10% | Ceinture +5% | Mars 0% | Jupiter 0%</color>";
+                if (difficultyCreditsText != null) difficultyCreditsText.text = "<b>Capital de départ :</b> <color=#ffd700>25 000 CR</color>";
+                if (difficultyInfluenceText != null) difficultyInfluenceText.text = "<b>Influence initiale :</b> <color=#00e5ff>Terre +10% | Ceinture +5% | Mars 0% | Jupiter 0%</color>";
                 break;
 
             case 2: // Difficile
-                if (difficultyTitleText != null) difficultyTitleText.text = "🔴 <color=#ff5533>DIFFICILE : VÉTÉRAN ENDETTÉ</color>";
+                if (difficultyTitleText != null) difficultyTitleText.text = "<color=#ff5533>[DIFFICILE] VÉTÉRAN ENDETTÉ</color>";
                 if (difficultyDescText != null) difficultyDescText.text = "Dette colossale, réputation compromise auprès des corporations terriennes et fonds d'urgence réduits au strict minimum.";
-                if (difficultyCreditsText != null) difficultyCreditsText.text = "💳 <b>Capital de départ :</b> <color=#ffd700>10 000 CR</color>";
-                if (difficultyInfluenceText != null) difficultyInfluenceText.text = "🤝 <b>Influence initiale :</b> <color=#ff5533>Terre -10% | Mars -5% | Ceinture +10% | Jupiter -10%</color>";
+                if (difficultyCreditsText != null) difficultyCreditsText.text = "<b>Capital de départ :</b> <color=#ffd700>10 000 CR</color>";
+                if (difficultyInfluenceText != null) difficultyInfluenceText.text = "<b>Influence initiale :</b> <color=#ff5533>Terre -10% | Mars -5% | Ceinture +10% | Jupiter -10%</color>";
                 break;
         }
     }
@@ -323,7 +329,7 @@ public class MainMenuController : MonoBehaviour
 
         GameManager.Instance.StartNewGame(pilot, corp, selectedDifficulty);
 
-        ShowNotification($"🚀 Lancement de la mission pour {pilot} ({corp}) !");
+        ShowNotification($"Lancement de la mission pour {pilot} ({corp}) !");
         StartCoroutine(LaunchGameSequence());
     }
 
@@ -337,8 +343,11 @@ public class MainMenuController : MonoBehaviour
         yield return new WaitForSeconds(0.4f);
         SetMenuVisibility(false);
 
-        // Focus camera or reset position on starting planet (Terre or Station)
-        if (SolarSystemManager.Instance != null)
+        if (EarthBaseController.Instance != null)
+        {
+            EarthBaseController.Instance.SetLocationState(GameLocationState.EarthBase);
+        }
+        else if (SolarSystemManager.Instance != null)
         {
             SolarSystemManager.Instance.isPaused = false;
         }
@@ -348,7 +357,7 @@ public class MainMenuController : MonoBehaviour
     {
         if (!hasActiveGame)
         {
-            OnClickOpenNewGame();
+            OnClickConfirmStartNewGame();
             return;
         }
 

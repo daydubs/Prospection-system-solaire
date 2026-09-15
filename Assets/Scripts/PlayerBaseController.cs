@@ -98,6 +98,7 @@ public class PlayerBaseController : MonoBehaviour
 
         if (characterController.isGrounded)
         {
+            Debug.Log("Player is grounded.");
             verticalVelocity = -1f;
             if (keyboard.spaceKey.wasPressedThisFrame)
             {
@@ -106,6 +107,7 @@ public class PlayerBaseController : MonoBehaviour
         }
         else
         {
+            Debug.Log("Player is in the air.");
             verticalVelocity += gravity * Time.deltaTime;
         }
 

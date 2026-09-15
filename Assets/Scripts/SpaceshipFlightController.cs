@@ -10,25 +10,25 @@ public enum FlightMode
 
 public class SpaceshipFlightController : MonoBehaviour
 {
-    [Header("Flight Parameters")]
-    public float normalSpeed = 30f;
-    public float boostMultiplier = 4f;
-    public float rotationSpeed = 60f;
+    [Header("Flight Parameters (Calibrated: 2-3 in-game days Earth->Moon at cruise speed)")]
+    public float normalSpeed = 0.08f;
+    public float boostMultiplier = 3.5f;
+    public float rotationSpeed = 50f;
     public float mouseSensitivity = 2f;
-    public float acceleration = 10f;
-    public float deceleration = 15f;
+    public float acceleration = 0.05f;
+    public float deceleration = 0.08f;
 
     [Header("Autopilot Parameters")]
-    public float warpMaxSpeed = 250f;
-    public float warpAcceleration = 40f;
-    public float arriveDistanceOffset = 3f;
+    public float warpMaxSpeed = 160f;
+    public float warpAcceleration = 15f;
+    public float arriveDistanceOffset = 2.5f;
     public float arrivalDamping = 5f;
 
     [Header("Orbit / Inspect Parameters")]
     public float orbitDistanceMultiplier = 3f;
-    public float orbitRotateSpeed = 40f;
+    public float orbitRotateSpeed = 30f;
     public float minOrbitDist = 2f;
-    public float maxOrbitDist = 300f;
+    public float maxOrbitDist = 1500f;
 
     [Header("Camera & View")]
     public Camera shipCamera;
@@ -46,6 +46,16 @@ public class SpaceshipFlightController : MonoBehaviour
     private float orbitAngleX = 20f;
     private float orbitAngleY = 0f;
     private float currentOrbitDist = 20f;
+
+    private float GetSimulationDeltaTime()
+    {
+        if (SolarSystemManager.Instance != null)
+        {
+            if (SolarSystemManager.Instance.isPaused) return 0f;
+            return Time.deltaTime * SolarSystemManager.Instance.timeScale;
+        }
+        return Time.deltaTime;
+    }
 
     private void Start()
     {
@@ -206,23 +216,24 @@ public class SpaceshipFlightController : MonoBehaviour
 
         bool isBoosting = keyboard.leftShiftKey.isPressed;
         float targetSpeedMagnitude = (isBoosting ? normalSpeed * boostMultiplier : normalSpeed);
+        float simDt = GetSimulationDeltaTime();
 
         Vector3 inputDir = (transform.forward * moveForward + transform.right * moveSide + transform.up * moveUp).normalized;
         if (inputDir.sqrMagnitude > 0.01f)
         {
             targetSpeed = targetSpeedMagnitude;
-            velocity = Vector3.MoveTowards(velocity, inputDir * targetSpeed, acceleration * Time.deltaTime);
+            velocity = Vector3.MoveTowards(velocity, inputDir * targetSpeed, acceleration * (simDt > 0f ? simDt : Time.deltaTime));
         }
         else
         {
             targetSpeed = 0f;
-            velocity = Vector3.MoveTowards(velocity, Vector3.zero, deceleration * Time.deltaTime);
+            velocity = Vector3.MoveTowards(velocity, Vector3.zero, deceleration * (simDt > 0f ? simDt : Time.deltaTime));
         }
 
-        transform.position += velocity * Time.deltaTime;
+        transform.position += velocity * simDt;
         currentSpeed = velocity.magnitude;
 
-        // Rotation (Right mouse button drag or Q/E roll)
+        // Rotation (Right mouse button drag or Q/E roll) - responsive with real time
         float roll = 0f;
         if (keyboard.qKey.isPressed) roll += 1f;
         if (keyboard.eKey.isPressed) roll -= 1f;
@@ -247,6 +258,9 @@ public class SpaceshipFlightController : MonoBehaviour
             return;
         }
 
+        float simDt = GetSimulationDeltaTime();
+        if (simDt <= 0f) return;
+
         CelestialBody dest = SolarSystemManager.Instance.currentDestination;
         float targetDistFromCenter = Mathf.Max(dest.bodyRadius * arriveDistanceOffset, 6f);
         Vector3 targetPos = dest.GetApproachPosition(transform.position, arriveDistanceOffset);
@@ -269,10 +283,10 @@ public class SpaceshipFlightController : MonoBehaviour
         transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, 5f * Time.deltaTime);
 
         // Speed calculation based on distance
-        float desiredSpeed = Mathf.Clamp(dist * 1.5f, 5f, warpMaxSpeed);
-        currentSpeed = Mathf.MoveTowards(currentSpeed, desiredSpeed, warpAcceleration * Time.deltaTime);
+        float desiredSpeed = Mathf.Clamp(dist * 0.8f, 0.5f, warpMaxSpeed);
+        currentSpeed = Mathf.MoveTowards(currentSpeed, desiredSpeed, warpAcceleration * simDt);
 
-        transform.position = Vector3.MoveTowards(transform.position, targetPos, currentSpeed * Time.deltaTime);
+        transform.position = Vector3.MoveTowards(transform.position, targetPos, currentSpeed * simDt);
     }
 
     private void UpdateOrbitInspect()
@@ -307,7 +321,8 @@ public class SpaceshipFlightController : MonoBehaviour
         }
 
         // Passive slow orbital rotation
-        orbitAngleY += orbitRotateSpeed * 0.1f * Time.deltaTime;
+        float simDt = GetSimulationDeltaTime();
+        orbitAngleY += orbitRotateSpeed * 0.1f * (simDt > 0f ? simDt : Time.deltaTime);
 
         Quaternion rotation = Quaternion.Euler(orbitAngleX, orbitAngleY, 0f);
         Vector3 offset = rotation * new Vector3(0f, 0f, -currentOrbitDist);

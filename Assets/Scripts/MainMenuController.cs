@@ -340,7 +340,9 @@ public class MainMenuController : MonoBehaviour
 
     private IEnumerator LaunchGameSequence()
     {
+        Debug.Log("[MainMenuController] Lancement de la partie en cours... Attente de 0.4s.");
         yield return new WaitForSeconds(0.4f);
+        Debug.Log("[MainMenuController] Fermeture du menu principal et activation du contrôle joueur !");
         SetMenuVisibility(false);
 
         if (EarthBaseController.Instance != null)

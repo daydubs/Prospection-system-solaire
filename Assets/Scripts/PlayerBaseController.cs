@@ -29,6 +29,7 @@ public class PlayerBaseController : MonoBehaviour
 
     private void Awake()
     {
+        Debug.Log($"[PlayerBaseController] Awake() - Position initiale du joueur : {transform.position}");
         characterController = GetComponent<CharacterController>();
         if (cameraTransform == null)
         {
@@ -41,10 +42,12 @@ public class PlayerBaseController : MonoBehaviour
     {
         // When enabled, force sync physics transforms so CharacterController recognizes the position
         Physics.SyncTransforms();
+        Debug.Log($"[PlayerBaseController] OnEnable() - Position : {transform.position}");
     }
 
     private void Start()
     {
+        Debug.Log($"[PlayerBaseController] Start() (AVANT bump) - Position : {transform.position}");
         // Fix CharacterController falling through floor on spawn:
         // When the game starts, UI is active and the player doesn't move, but
         // physics are not resolved yet.
@@ -53,10 +56,14 @@ public class PlayerBaseController : MonoBehaviour
         // (Note: Unparenting has been intentionally omitted to avoid coordinate system regressions).
         transform.position += Vector3.up * 1f; // Slight bump up
         Physics.SyncTransforms();
+        Debug.Log($"[PlayerBaseController] Start() (APRES bump) - Position : {transform.position}");
     }
 
     private void Update()
     {
+        // Log physics state unconditionally to track position even while in menus
+        LogPhysicsState();
+
         // Don't process player movement when main menu is open or when Hub UI is active
         if (MainMenuController.Instance != null && MainMenuController.Instance.isMenuOpen)
         {
@@ -73,8 +80,6 @@ public class PlayerBaseController : MonoBehaviour
         HandleLook();
         HandleMovement();
         CheckInteraction();
-
-        LogPhysicsState();
     }
 
     private void HandleLook()

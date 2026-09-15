@@ -37,22 +37,6 @@ public class PlayerBaseController : MonoBehaviour
         }
     }
 
-    private void Start()
-    {
-        // Unparent to avoid CharacterController physics glitches with offset/scaled parents
-        transform.SetParent(null);
-
-        // Remove redundant CapsuleCollider if it exists (can conflict with CharacterController)
-        CapsuleCollider cc = GetComponent<CapsuleCollider>();
-        if (cc != null) Destroy(cc);
-
-        // Snap to ground to prevent falling through if started slightly above the floor
-        if (characterController != null)
-        {
-            characterController.Move(Vector3.down * 0.5f);
-        }
-    }
-
     private void OnEnable()
     {
         // When enabled, force sync physics transforms so CharacterController recognizes the position
@@ -77,6 +61,8 @@ public class PlayerBaseController : MonoBehaviour
         HandleLook();
         HandleMovement();
         CheckInteraction();
+
+        LogPhysicsState();
     }
 
     private void HandleLook()
@@ -136,6 +122,42 @@ public class PlayerBaseController : MonoBehaviour
 
         Vector3 finalMovement = (moveDir * currentSpeed) + (Vector3.up * verticalVelocity);
         characterController.Move(finalMovement * dt);
+    }
+
+    private int logFrameSkip = 0;
+    private void LogPhysicsState()
+    {
+        if (characterController == null) return;
+
+        // Skip some frames so we don't spam the console too hard, 
+        // but still capture the fall. Logging every 5th frame.
+        logFrameSkip++;
+        if (logFrameSkip % 5 != 0) return;
+
+        string state = $"[PlayerPhysicsLog] PosY: {transform.position.y:F3}, " +
+                       $"VelocityY: {verticalVelocity:F3}, " +
+                       $"CC.isGrounded: {characterController.isGrounded}";
+
+        RaycastHit hit;
+        float rayDist = 5f;
+        // Raycast from slightly above the center to ensure we hit the floor even if slightly embedded
+        Vector3 rayStart = transform.position + Vector3.up * 0.1f;
+        if (Physics.Raycast(rayStart, Vector3.down, out hit, rayDist))
+        {
+            state += $", HitDist: {hit.distance:F3}, HitObj: {hit.collider.gameObject.name}";
+
+            // Warning if we seem to be falling through
+            if (!characterController.isGrounded && hit.distance < (characterController.height / 2f) + 0.2f && verticalVelocity < -2f)
+            {
+                Debug.LogWarning(">>> [WARNING] PLAYER FALLING THROUGH DETECTED! " + state);
+            }
+        }
+        else
+        {
+            state += $", HitDist: >{rayDist} (No ground found below)";
+        }
+
+        Debug.Log(state);
     }
 
     private void CheckInteraction()

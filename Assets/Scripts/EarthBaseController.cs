@@ -174,11 +174,6 @@ public class EarthBaseController : MonoBehaviour
             if (playerController != null)
             {
                 playerController.gameObject.SetActive(true);
-
-                // Re-sync player physics transform to ensure CharacterController doesn't glitch through floor
-                // if it was disabled and re-enabled at a high negative Y offset
-                Physics.SyncTransforms();
-
                 playerController.canMove = true;
             }
 

@@ -37,22 +37,6 @@ public class PlayerBaseController : MonoBehaviour
         }
     }
 
-    private void Start()
-    {
-        // Unparent to avoid CharacterController physics glitches with offset/scaled parents
-        transform.SetParent(null);
-
-        // Remove redundant CapsuleCollider if it exists (can conflict with CharacterController)
-        CapsuleCollider cc = GetComponent<CapsuleCollider>();
-        if (cc != null) Destroy(cc);
-
-        // Snap to ground to prevent falling through if started slightly above the floor
-        if (characterController != null)
-        {
-            characterController.Move(Vector3.down * 0.5f);
-        }
-    }
-
     private void OnEnable()
     {
         // When enabled, force sync physics transforms so CharacterController recognizes the position

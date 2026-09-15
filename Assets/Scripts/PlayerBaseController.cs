@@ -49,6 +49,11 @@ public class PlayerBaseController : MonoBehaviour
         // Snap to ground to prevent falling through if started slightly above the floor
         if (characterController != null)
         {
+            // Force reset the CharacterController's internal physics state
+            // This is the recommended fix when Auto Sync Transforms is off.
+            characterController.enabled = false;
+            characterController.enabled = true;
+
             characterController.Move(Vector3.down * 0.5f);
         }
     }

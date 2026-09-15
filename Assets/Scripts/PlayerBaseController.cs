@@ -96,10 +96,12 @@ public class PlayerBaseController : MonoBehaviour
         bool isSprinting = keyboard.leftShiftKey.isPressed;
         float currentSpeed = isSprinting ? sprintSpeed : walkSpeed;
 
+        float dt = Time.deltaTime;
+        if (dt > 0.1f) dt = 0.1f; // Clamp to avoid large movement spikes (e.g., initial frame drops)
+
         if (characterController.isGrounded)
         {
-            Debug.Log("Player is grounded.");
-            verticalVelocity = -1f;
+            verticalVelocity = -2f; // Slight negative force to keep grounded reliably
             if (keyboard.spaceKey.wasPressedThisFrame)
             {
                 verticalVelocity = Mathf.Sqrt(jumpHeight * -2f * gravity);
@@ -107,12 +109,12 @@ public class PlayerBaseController : MonoBehaviour
         }
         else
         {
-            Debug.Log("Player is in the air.");
-            verticalVelocity += gravity * Time.deltaTime;
+            verticalVelocity += gravity * dt;
+            if (verticalVelocity < -50f) verticalVelocity = -50f; // Terminal velocity
         }
 
         Vector3 finalMovement = (moveDir * currentSpeed) + (Vector3.up * verticalVelocity);
-        characterController.Move(finalMovement * Time.deltaTime);
+        characterController.Move(finalMovement * dt);
     }
 
     private void CheckInteraction()

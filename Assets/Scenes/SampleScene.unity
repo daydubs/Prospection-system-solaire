@@ -131,7 +131,7 @@ GameObject:
   - component: {fileID: 413860}
   - component: {fileID: 413859}
   - component: {fileID: 413858}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Assembly_Pad
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -392,7 +392,7 @@ GameObject:
   - component: {fileID: 1097554}
   - component: {fileID: 1097553}
   - component: {fileID: 1097552}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1002,7 +1002,7 @@ GameObject:
   - component: {fileID: 17611647}
   - component: {fileID: 17611650}
   - component: {fileID: 17611648}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Screen_Surface
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1205,7 +1205,7 @@ GameObject:
   - component: {fileID: 32789395}
   - component: {fileID: 32789394}
   - component: {fileID: 32789393}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Gantry_Base
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1429,7 +1429,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 43675178}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: GiantScreen_Hub
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1468,7 +1468,7 @@ GameObject:
   - component: {fileID: 43992076}
   - component: {fileID: 43992075}
   - component: {fileID: 43992074}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Part_Hull
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5129,7 +5129,7 @@ GameObject:
   - component: {fileID: 112078089}
   - component: {fileID: 112078088}
   - component: {fileID: 112078087}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Screen_Frame
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5362,7 +5362,7 @@ GameObject:
   - component: {fileID: 117225433}
   - component: {fileID: 117225436}
   - component: {fileID: 117225434}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Holo_StationRing
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5626,7 +5626,7 @@ GameObject:
   - component: {fileID: 124137477}
   - component: {fileID: 124137476}
   - component: {fileID: 124137475}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Cylinder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -10704,7 +10704,7 @@ GameObject:
   - component: {fileID: 241335034}
   - component: {fileID: 241335033}
   - component: {fileID: 241335032}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Cylinder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -12026,7 +12026,7 @@ GameObject:
   - component: {fileID: 274506787}
   - component: {fileID: 274506786}
   - component: {fileID: 274506785}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Hangar_Floor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -12909,7 +12909,7 @@ GameObject:
   - component: {fileID: 301106574}
   - component: {fileID: 301106573}
   - component: {fileID: 301106572}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: PillarRing
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -14289,7 +14289,7 @@ GameObject:
   - component: {fileID: 329904964}
   - component: {fileID: 329904963}
   - component: {fileID: 329904962}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Pillar_-24_16
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -14840,7 +14840,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 338895338}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Spaceship_Assembly_Hangar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -17381,7 +17381,7 @@ GameObject:
   - component: {fileID: 412804688}
   - component: {fileID: 412804687}
   - component: {fileID: 412804686}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Pillar_24_-16
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -17857,7 +17857,7 @@ GameObject:
   - component: {fileID: 424813253}
   - component: {fileID: 424813252}
   - component: {fileID: 424813251}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: PillarRing
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -18655,7 +18655,7 @@ GameObject:
   - component: {fileID: 457136215}
   - component: {fileID: 457136214}
   - component: {fileID: 457136213}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Part_ShieldEmitter
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -19562,7 +19562,7 @@ GameObject:
   - component: {fileID: 484740797}
   - component: {fileID: 484740796}
   - component: {fileID: 484740795}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Part_Cockpit
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -23524,7 +23524,7 @@ GameObject:
   - component: {fileID: 565240831}
   - component: {fileID: 565240834}
   - component: {fileID: 565240832}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: FloorStripe_3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -24726,7 +24726,7 @@ GameObject:
   - component: {fileID: 594738934}
   - component: {fileID: 594738933}
   - component: {fileID: 594738932}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Back_Wall
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -27082,7 +27082,7 @@ GameObject:
   - component: {fileID: 648667516}
   - component: {fileID: 648667515}
   - component: {fileID: 648667514}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Left_Wall
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -29131,7 +29131,7 @@ GameObject:
   - component: {fileID: 697208470}
   - component: {fileID: 697208469}
   - component: {fileID: 697208468}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Capsule
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -29469,7 +29469,7 @@ GameObject:
   - component: {fileID: 710582866}
   - component: {fileID: 710582865}
   - component: {fileID: 710582864}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Pillar_0_16
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -30109,7 +30109,7 @@ GameObject:
   - component: {fileID: 724905350}
   - component: {fileID: 724905349}
   - component: {fileID: 724905348}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: PillarRing
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -31190,7 +31190,7 @@ GameObject:
   - component: {fileID: 759106991}
   - component: {fileID: 759106990}
   - component: {fileID: 759106989}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -31787,7 +31787,7 @@ GameObject:
   - component: {fileID: 782912446}
   - component: {fileID: 782912449}
   - component: {fileID: 782912447}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: FloorStripe_-4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -32126,7 +32126,7 @@ GameObject:
   - component: {fileID: 800916870}
   - component: {fileID: 800916873}
   - component: {fileID: 800916871}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Dais_Border
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -32291,7 +32291,7 @@ GameObject:
   - component: {fileID: 806840113}
   - component: {fileID: 806840116}
   - component: {fileID: 806840114}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Pad_Ring
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -35389,7 +35389,7 @@ GameObject:
   - component: {fileID: 886237290}
   - component: {fileID: 886237292}
   - component: {fileID: 886237291}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Base_Hangar_Light2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -36076,7 +36076,7 @@ GameObject:
   - component: {fileID: 902269663}
   - component: {fileID: 902269666}
   - component: {fileID: 902269664}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Screen_Border_Bottom
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -41097,7 +41097,7 @@ GameObject:
   - component: {fileID: 992972227}
   - component: {fileID: 992972230}
   - component: {fileID: 992972228}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Hologram_Console
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -44712,7 +44712,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1062573724}
   - component: {fileID: 1062573723}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: EarthBase_Root
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -48646,7 +48646,7 @@ GameObject:
   - component: {fileID: 1146112745}
   - component: {fileID: 1146112748}
   - component: {fileID: 1146112746}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Holo_StationCore
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -48737,7 +48737,7 @@ GameObject:
   - component: {fileID: 1147207729}
   - component: {fileID: 1147207732}
   - component: {fileID: 1147207730}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: FloorStripe_-3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -48828,7 +48828,7 @@ GameObject:
   - component: {fileID: 1155221457}
   - component: {fileID: 1155221456}
   - component: {fileID: 1155221455}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Part_MiningLaser
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -50722,7 +50722,7 @@ GameObject:
   - component: {fileID: 1224434834}
   - component: {fileID: 1224434837}
   - component: {fileID: 1224434835}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: FloorStripe_2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -51410,7 +51410,7 @@ GameObject:
   - component: {fileID: 1242135783}
   - component: {fileID: 1242135782}
   - component: {fileID: 1242135781}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: PillarRing
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -52589,7 +52589,7 @@ GameObject:
   - component: {fileID: 1285441960}
   - component: {fileID: 1285441963}
   - component: {fileID: 1285441961}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Console_Neon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -53548,7 +53548,7 @@ GameObject:
   - component: {fileID: 1304010244}
   - component: {fileID: 1304010243}
   - component: {fileID: 1304010242}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: PillarRing
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -63774,7 +63774,7 @@ GameObject:
   - component: {fileID: 1509321460}
   - component: {fileID: 1509321463}
   - component: {fileID: 1509321461}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: FloorStripe_0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -65865,7 +65865,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1547323613}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Part_ExtraCargo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -66335,7 +66335,7 @@ GameObject:
   - component: {fileID: 1559256885}
   - component: {fileID: 1559256884}
   - component: {fileID: 1559256883}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Command_Dais
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -67841,7 +67841,7 @@ GameObject:
   - component: {fileID: 1587844141}
   - component: {fileID: 1587844140}
   - component: {fileID: 1587844139}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Capsule
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -70350,7 +70350,7 @@ GameObject:
   - component: {fileID: 1649769067}
   - component: {fileID: 1649769070}
   - component: {fileID: 1649769068}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Gantry_Ring
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -71334,7 +71334,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1669555692}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Part_WingsAndEngines
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -72755,7 +72755,7 @@ GameObject:
   - component: {fileID: 1691489842}
   - component: {fileID: 1691489841}
   - component: {fileID: 1691489840}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Pillar_0_-16
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -73094,7 +73094,7 @@ GameObject:
   - component: {fileID: 1701329359}
   - component: {fileID: 1701329358}
   - component: {fileID: 1701329357}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Command_Console_Desk
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -73320,7 +73320,7 @@ GameObject:
   - component: {fileID: 1709544192}
   - component: {fileID: 1709544191}
   - component: {fileID: 1709544190}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Pillar_-24_-16
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -74916,7 +74916,7 @@ GameObject:
   - component: {fileID: 1773883425}
   - component: {fileID: 1773883424}
   - component: {fileID: 1773883423}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Pillar_24_16
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -76142,7 +76142,7 @@ GameObject:
   - component: {fileID: 1791617555}
   - component: {fileID: 1791617558}
   - component: {fileID: 1791617556}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: FloorStripe_4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -76973,7 +76973,7 @@ GameObject:
   - component: {fileID: 1813931107}
   - component: {fileID: 1813931106}
   - component: {fileID: 1813931105}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: PillarRing
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -77310,7 +77310,7 @@ GameObject:
   - component: {fileID: 1815343523}
   - component: {fileID: 1815343526}
   - component: {fileID: 1815343524}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: FloorStripe_-2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -81565,7 +81565,7 @@ GameObject:
   - component: {fileID: 1943282349}
   - component: {fileID: 1943282351}
   - component: {fileID: 1943282350}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Base_Interior_Light1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -83273,7 +83273,7 @@ GameObject:
   - component: {fileID: 1979894958}
   - component: {fileID: 1979894961}
   - component: {fileID: 1979894959}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Screen_Border_Top
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -91163,7 +91163,7 @@ GameObject:
   - component: {fileID: 2051419783}
   - component: {fileID: 2051419782}
   - component: {fileID: 2051419781}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Right_Wall
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -92069,7 +92069,7 @@ GameObject:
   - component: {fileID: 2085262867}
   - component: {fileID: 2085262870}
   - component: {fileID: 2085262868}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: FloorStripe_1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -92921,7 +92921,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2126189316}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: SpaceStation_HoloPlatform
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -93905,7 +93905,7 @@ GameObject:
   - component: {fileID: 2147470625}
   - component: {fileID: 2147470628}
   - component: {fileID: 2147470626}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: FloorStripe_-1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -93992,9 +93992,21 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1062573724}
     m_Modifications:
+    - target: {fileID: 1388471882693185735, guid: b0fb549f8a9981046b156cd01730f369, type: 3}
+      propertyPath: m_IncludeLayers.m_Bits
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 2053200088665750725, guid: b0fb549f8a9981046b156cd01730f369, type: 3}
       propertyPath: m_Name
       value: Player_BaseCapsule
+      objectReference: {fileID: 0}
+    - target: {fileID: 2053200088665750725, guid: b0fb549f8a9981046b156cd01730f369, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2053200088665750725, guid: b0fb549f8a9981046b156cd01730f369, type: 3}
+      propertyPath: m_TagString
+      value: Player
       objectReference: {fileID: 0}
     - target: {fileID: 2643320870262251017, guid: b0fb549f8a9981046b156cd01730f369, type: 3}
       propertyPath: m_LocalPosition.x
@@ -94036,10 +94048,34 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3869500934950656320, guid: b0fb549f8a9981046b156cd01730f369, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4264935020658722563, guid: b0fb549f8a9981046b156cd01730f369, type: 3}
+      propertyPath: walkSpeed
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 4264935020658722563, guid: b0fb549f8a9981046b156cd01730f369, type: 3}
+      propertyPath: sprintSpeed
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 4264935020658722563, guid: b0fb549f8a9981046b156cd01730f369, type: 3}
+      propertyPath: mouseSensitivity
+      value: 2.2
+      objectReference: {fileID: 0}
     - target: {fileID: 5861962403959650379, guid: b0fb549f8a9981046b156cd01730f369, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 947308624}
+    - target: {fileID: 6483663137033847264, guid: b0fb549f8a9981046b156cd01730f369, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6483663137033847264, guid: b0fb549f8a9981046b156cd01730f369, type: 3}
+      propertyPath: m_IncludeLayers.m_Bits
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

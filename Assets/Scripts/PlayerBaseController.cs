@@ -37,25 +37,21 @@ public class PlayerBaseController : MonoBehaviour
         }
     }
 
-    private void Start()
-    {
-        // Unparent to avoid CharacterController physics glitches with offset/scaled parents
-        transform.SetParent(null);
-
-        // Remove redundant CapsuleCollider if it exists (can conflict with CharacterController)
-        CapsuleCollider cc = GetComponent<CapsuleCollider>();
-        if (cc != null) Destroy(cc);
-
-        // Snap to ground to prevent falling through if started slightly above the floor
-        if (characterController != null)
-        {
-            characterController.Move(Vector3.down * 0.5f);
-        }
-    }
-
     private void OnEnable()
     {
         // When enabled, force sync physics transforms so CharacterController recognizes the position
+        Physics.SyncTransforms();
+    }
+
+    private void Start()
+    {
+        // Fix CharacterController falling through floor on spawn:
+        // When the game starts, UI is active and the player doesn't move, but
+        // physics are not resolved yet.
+        // The floor is perfectly flat and sometimes the player is initialized exactly at the boundary.
+        // A slight manual bump ensures the CC initiates its collision resolution correctly downwards.
+        // (Note: Unparenting has been intentionally omitted to avoid coordinate system regressions).
+        transform.position += Vector3.up * 1f; // Slight bump up
         Physics.SyncTransforms();
     }
 

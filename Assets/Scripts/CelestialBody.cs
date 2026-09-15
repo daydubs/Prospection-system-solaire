@@ -23,13 +23,13 @@ public class CelestialBody : MonoBehaviour
     [Header("Orbital Parameters")]
     public Transform orbitCenter;
     public float orbitRadius = 20f;
-    public float orbitSpeed = 5f; // degrees per second at 1x time scale
+    public float orbitPeriodDays = 365.25f; // in-game days to complete one orbit
     public float orbitInclination = 0f;
     public float initialOrbitAngle = 0f;
     public Color orbitLineColor = new Color(0.3f, 0.6f, 1f, 0.4f);
 
     [Header("Rotation")]
-    public float rotationSpeed = 15f; // degrees per second
+    public float rotationPeriodDays = 1f; // in-game days to complete one rotation
     public Vector3 rotationAxis = Vector3.up;
     public float axialTilt = 0f;
 
@@ -71,12 +71,12 @@ public class CelestialBody : MonoBehaviour
         bodyCollider.isTrigger = false;
     }
 
-    public void Initialize(Transform center, float radius, float oSpeed, float rSpeed, float size, Color orbitCol, float tilt = 0f, float startAngle = 0f)
+    public void Initialize(Transform center, float radius, float oPeriodDays, float rPeriodDays, float size, Color orbitCol, float tilt = 0f, float startAngle = 0f)
     {
         orbitCenter = center;
         orbitRadius = radius;
-        orbitSpeed = oSpeed;
-        rotationSpeed = rSpeed;
+        orbitPeriodDays = oPeriodDays;
+        rotationPeriodDays = rPeriodDays;
         bodyRadius = size;
         orbitLineColor = orbitCol;
         axialTilt = tilt;
@@ -147,10 +147,19 @@ public class CelestialBody : MonoBehaviour
 
     public void UpdatePosition(float deltaTime)
     {
+        float inGameSecondsMultiplier = GameManager.Instance != null ? GameManager.Instance.inGameSecondsPerRealSecond : 720f;
+        float inGameDaysPassed = (deltaTime * inGameSecondsMultiplier) / 86400f;
+
         // Orbit around center
         if (orbitCenter != null && orbitRadius > 0.01f)
         {
-            currentOrbitAngle += orbitSpeed * deltaTime;
+            float orbitDeltaAngle = 0f;
+            if (Mathf.Abs(orbitPeriodDays) > 0.0001f)
+            {
+                orbitDeltaAngle = (360f / orbitPeriodDays) * inGameDaysPassed;
+            }
+
+            currentOrbitAngle += orbitDeltaAngle;
             if (currentOrbitAngle >= 360f) currentOrbitAngle -= 360f;
             if (currentOrbitAngle < 0f) currentOrbitAngle += 360f;
 
@@ -163,13 +172,19 @@ public class CelestialBody : MonoBehaviour
         }
 
         // Self rotation
+        float rotationDeltaAngle = 0f;
+        if (Mathf.Abs(rotationPeriodDays) > 0.0001f)
+        {
+            rotationDeltaAngle = (360f / rotationPeriodDays) * inGameDaysPassed;
+        }
+
         if (visualModel != null)
         {
-            visualModel.transform.Rotate(Vector3.up, rotationSpeed * deltaTime, Space.Self);
+            visualModel.transform.Rotate(Vector3.up, rotationDeltaAngle, Space.Self);
         }
         else
         {
-            transform.Rotate(Vector3.up, rotationSpeed * deltaTime, Space.Self);
+            transform.Rotate(Vector3.up, rotationDeltaAngle, Space.Self);
         }
     }
 

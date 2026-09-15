@@ -48,8 +48,8 @@ public class SolarSystemBuilder : MonoBehaviour
         sunBody.bodyType = CelestialBodyType.Star;
         sunBody.bodyRadius = 20f;
         sunBody.orbitRadius = 0f;
-        sunBody.orbitSpeed = 0f;
-        sunBody.rotationSpeed = 1.5f;
+        sunBody.orbitPeriodDays = 0f;
+        sunBody.rotationPeriodDays = 27f; // Sun rotation takes ~27 days
         sunBody.description = "L'étoile au centre de notre système solaire. Elle contient 99,86 % de la masse totale du système solaire.";
         sunBody.physicalCharacteristics = "• Type : Naine jaune (G2V)\n• Température de surface : 5 500 °C\n• Diamètre : 1 392 700 km\n• Âge : ~4,6 milliards d'années";
 
@@ -69,40 +69,40 @@ public class SolarSystemBuilder : MonoBehaviour
         // (Name, OrbitRadius, OrbitSpeed, Size, Color, RotationSpeed, AxialTilt, MatKey, Description, Facts)
         
         // --- MERCURY (0.39 AU = 230 units) ---
-        CelestialBody mercury = CreatePlanet(root.transform, sunObj.transform, "Mercure", 230f, 4.15f, 1.1f, mats["Mercury"], 3f, 0.03f,
+        CelestialBody mercury = CreatePlanet(root.transform, sunObj.transform, "Mercure", 230f, 88f, 1.1f, mats["Mercury"], 58.6f, 0.03f,
             new Color(0.7f, 0.65f, 0.6f, 0.5f),
             "La planète la plus proche du Soleil et la plus petite du système solaire.",
             "• Distance moyenne : 57,9 millions km (0,39 UA)\n• Période orbitale : 88 jours\n• Satellites : 0\n• Température : -180°C à +430°C");
 
         // --- VENUS (0.72 AU = 430 units) ---
-        CelestialBody venus = CreatePlanet(root.transform, sunObj.transform, "Vénus", 430f, 1.62f, 2.4f, mats["Venus"], -2f, 177.3f,
+        CelestialBody venus = CreatePlanet(root.transform, sunObj.transform, "Vénus", 430f, 225f, 2.4f, mats["Venus"], -243f, 177.3f,
             new Color(0.9f, 0.8f, 0.4f, 0.5f),
             "Deuxième planète du système solaire, caractérisée par une atmosphère épaisse et un effet de serre extrême.",
             "• Distance moyenne : 108,2 millions km (0,72 UA)\n• Période orbitale : 225 jours\n• Satellites : 0\n• Pression au sol : 92 bars\n• Température : 465°C constante");
 
         // --- EARTH & MOON (1.00 AU = 600 units) ---
-        CelestialBody earth = CreatePlanet(root.transform, sunObj.transform, "Terre", 600f, 1.0f, 2.5f, mats["Earth"], 15f, 23.4f,
+        CelestialBody earth = CreatePlanet(root.transform, sunObj.transform, "Terre", 600f, 365.25f, 2.5f, mats["Earth"], 1f, 23.4f,
             new Color(0.2f, 0.6f, 1f, 0.6f),
             "Notre planète d'origine, seul monde connu abritant la vie et de vastes océans d'eau liquide.",
             "• Distance moyenne : 149,6 millions km (1,0 UA)\n• Période orbitale : 365,25 jours\n• Satellites : 1 (La Lune)\n• Atmosphère : 78% Azote, 21% Oxygène");
 
-        CelestialBody moon = CreateMoon(root.transform, earth.transform, "Lune", 25f, 13.3f, 0.7f, mats["Moon"], 10f,
+        CelestialBody moon = CreateMoon(root.transform, earth.transform, "Lune", 25f, 27.3f, 0.7f, mats["Moon"], 27.3f,
             new Color(0.8f, 0.8f, 0.85f, 0.4f),
             "Le seul satellite naturel permanent de la Terre et le cinquième plus grand satellite du système solaire.",
             "• Distance de la Terre : 384 400 km (~2-3 jours de vol à vitesse de croisière)\n• Période orbitale : 27,3 jours\n• Gravité : 1,62 m/s² (1/6ème terrestre)");
         earth.satellites.Add(moon);
 
         // --- MARS & MOONS (1.52 AU = 910 units) ---
-        CelestialBody mars = CreatePlanet(root.transform, sunObj.transform, "Mars", 910f, 0.53f, 1.5f, mats["Mars"], 14f, 25.2f,
+        CelestialBody mars = CreatePlanet(root.transform, sunObj.transform, "Mars", 910f, 687f, 1.5f, mats["Mars"], 1.026f, 25.2f,
             new Color(1f, 0.4f, 0.2f, 0.5f),
             "La planète rouge, abritant le plus haut volcan du système solaire (Olympus Mons) et d'anciens lits de rivières asséchées.",
             "• Distance moyenne : 227,9 millions km (1,52 UA)\n• Période orbitale : 687 jours\n• Satellites : 2 (Phobos, Déimos)\n• Atmosphère : 95% CO2");
 
-        CelestialBody phobos = CreateMoon(root.transform, mars.transform, "Phobos", 6.0f, 35f, 0.35f, mats["Phobos"], 20f,
+        CelestialBody phobos = CreateMoon(root.transform, mars.transform, "Phobos", 6.0f, 0.31f, 0.35f, mats["Phobos"], 0.31f,
             new Color(0.6f, 0.5f, 0.4f, 0.4f),
             "La plus grande et la plus proche des deux lunes de Mars.",
             "• Orbite très basse à seulement 6 000 km d'altitude martienne.");
-        CelestialBody deimos = CreateMoon(root.transform, mars.transform, "Déimos", 10.0f, 22f, 0.25f, mats["Deimos"], 15f,
+        CelestialBody deimos = CreateMoon(root.transform, mars.transform, "Déimos", 10.0f, 1.26f, 0.25f, mats["Deimos"], 1.26f,
             new Color(0.55f, 0.5f, 0.45f, 0.4f),
             "La plus petite et la plus éloignée des deux lunes martiennes.",
             "• Forme irrégulière d'astéroïde capturé.");
@@ -113,24 +113,24 @@ public class SolarSystemBuilder : MonoBehaviour
         CreateAsteroidBelt(root.transform, 1380f, 1860f, 400, mats["Asteroid"]);
 
         // --- JUPITER & MOONS (5.20 AU = 3120 units) ---
-        CelestialBody jupiter = CreatePlanet(root.transform, sunObj.transform, "Jupiter", 3120f, 0.084f, 8.5f, mats["Jupiter"], 25f, 3.1f,
+        CelestialBody jupiter = CreatePlanet(root.transform, sunObj.transform, "Jupiter", 3120f, 4333f, 8.5f, mats["Jupiter"], 0.41f, 3.1f,
             new Color(0.95f, 0.75f, 0.5f, 0.6f),
             "La plus imposante géante gazeuse du système solaire, connue pour sa Grande Tache Rouge et son puissant champ magnétique.",
             "• Distance moyenne : 778,5 millions km (5,2 UA)\n• Période orbitale : 11,86 ans\n• Satellites confirmés : 95+\n• Masse : 318 fois la Terre");
 
-        CelestialBody io = CreateMoon(root.transform, jupiter.transform, "Io", 22f, 28f, 0.65f, mats["Io"], 20f,
+        CelestialBody io = CreateMoon(root.transform, jupiter.transform, "Io", 22f, 1.77f, 0.65f, mats["Io"], 1.77f,
             new Color(0.9f, 0.8f, 0.2f, 0.4f),
             "Le corps le plus géologiquement actif du système solaire avec plus de 400 volcans en éruption permanente.",
             "• Forces de marée extrêmes créées par Jupiter et les lunes voisines.");
-        CelestialBody europa = CreateMoon(root.transform, jupiter.transform, "Europe", 32f, 20f, 0.6f, mats["Europa"], 15f,
+        CelestialBody europa = CreateMoon(root.transform, jupiter.transform, "Europe", 32f, 3.55f, 0.6f, mats["Europa"], 3.55f,
             new Color(0.7f, 0.85f, 1f, 0.4f),
             "Monde glacé recouvert d'un immense océan liquide sous sa croûte de glace, candidat majeur pour la recherche de vie extraterrestre.",
             "• Océan sous-glaciaire profond de ~100 km.");
-        CelestialBody ganymede = CreateMoon(root.transform, jupiter.transform, "Ganymède", 45f, 14f, 0.85f, mats["Ganymede"], 12f,
+        CelestialBody ganymede = CreateMoon(root.transform, jupiter.transform, "Ganymède", 45f, 7.15f, 0.85f, mats["Ganymede"], 7.15f,
             new Color(0.65f, 0.6f, 0.55f, 0.4f),
             "Le plus grand satellite naturel du système solaire, plus grand que la planète Mercure.",
             "• Possède son propre champ magnétique.");
-        CelestialBody callisto = CreateMoon(root.transform, jupiter.transform, "Callisto", 62f, 9f, 0.8f, mats["Callisto"], 10f,
+        CelestialBody callisto = CreateMoon(root.transform, jupiter.transform, "Callisto", 62f, 16.7f, 0.8f, mats["Callisto"], 16.7f,
             new Color(0.5f, 0.48f, 0.45f, 0.4f),
             "Surface fortement cratérisée et l'une des plus anciennes du système solaire.",
             "• Cratères d'impact géants dont Valhalla.");
@@ -140,18 +140,18 @@ public class SolarSystemBuilder : MonoBehaviour
         jupiter.satellites.Add(callisto);
 
         // --- SATURN & RINGS & MOONS (9.58 AU = 5750 units) ---
-        CelestialBody saturn = CreatePlanet(root.transform, sunObj.transform, "Saturne", 5750f, 0.034f, 7.0f, mats["Saturn"], 22f, 26.7f,
+        CelestialBody saturn = CreatePlanet(root.transform, sunObj.transform, "Saturne", 5750f, 10759f, 7.0f, mats["Saturn"], 0.45f, 26.7f,
             new Color(0.9f, 0.85f, 0.65f, 0.6f),
             "Célèbre pour son spectaculaire et vaste système d'anneaux composés de milliards de fragments de glace et de poussières.",
             "• Distance moyenne : 1,43 milliard km (9,58 UA)\n• Période orbitale : 29,45 ans\n• Satellites confirmés : 146+\n• Densité moyenne inférieure à l'eau !");
 
         CreateSaturnRings(saturn.transform, 1.35f, 2.5f, mats["SaturnRings"]);
 
-        CelestialBody titan = CreateMoon(root.transform, saturn.transform, "Titan", 42f, 16f, 0.8f, mats["Titan"], 14f,
+        CelestialBody titan = CreateMoon(root.transform, saturn.transform, "Titan", 42f, 15.9f, 0.8f, mats["Titan"], 15.9f,
             new Color(0.95f, 0.7f, 0.3f, 0.4f),
             "Le deuxième plus grand satellite du système solaire, le seul possédant une atmosphère dense et des lacs de méthane liquide.",
             "• Atmosphère riche en diazote (98%)\n• Présence de pluie et cycle d'hydrocarbures.");
-        CelestialBody enceladus = CreateMoon(root.transform, saturn.transform, "Encelade", 25f, 24f, 0.45f, mats["Enceladus"], 20f,
+        CelestialBody enceladus = CreateMoon(root.transform, saturn.transform, "Encelade", 25f, 1.37f, 0.45f, mats["Enceladus"], 1.37f,
             new Color(0.85f, 0.95f, 1f, 0.4f),
             "Petit satellite de glace ultra-réfléchissant éjectant des geysers d'eau salée depuis son océan sous-glaciaire.",
             "• Cryovolcanisme actif au pôle sud.");
@@ -159,16 +159,16 @@ public class SolarSystemBuilder : MonoBehaviour
         saturn.satellites.Add(enceladus);
 
         // --- URANUS & MOONS (19.2 AU = 11500 units) ---
-        CelestialBody uranus = CreatePlanet(root.transform, sunObj.transform, "Uranus", 11500f, 0.012f, 4.5f, mats["Uranus"], 16f, 97.8f,
+        CelestialBody uranus = CreatePlanet(root.transform, sunObj.transform, "Uranus", 11500f, 30688f, 4.5f, mats["Uranus"], -0.72f, 97.8f,
             new Color(0.4f, 0.85f, 0.9f, 0.5f),
             "Géante de glace dont l'axe de rotation est presque totalement couché sur son plan orbital.",
             "• Distance moyenne : 2,87 milliards km (19,2 UA)\n• Période orbitale : 84 ans\n• Température atmosphérique minimale : -224°C");
 
-        CelestialBody titania = CreateMoon(root.transform, uranus.transform, "Titania", 28f, 18f, 0.55f, mats["Titania"], 18f,
+        CelestialBody titania = CreateMoon(root.transform, uranus.transform, "Titania", 28f, 8.7f, 0.55f, mats["Titania"], 8.7f,
             new Color(0.6f, 0.7f, 0.75f, 0.4f),
             "La plus grande lune d'Uranus, parsemée de canyons et de vallées de failles géantes.",
             "• Découverte par William Herschel en 1787.");
-        CelestialBody oberon = CreateMoon(root.transform, uranus.transform, "Obéron", 42f, 12f, 0.5f, mats["Oberon"], 15f,
+        CelestialBody oberon = CreateMoon(root.transform, uranus.transform, "Obéron", 42f, 13.5f, 0.5f, mats["Oberon"], 13.5f,
             new Color(0.55f, 0.65f, 0.7f, 0.4f),
             "La deuxième plus grande lune d'Uranus et la plus externe des grandes lunes.",
             "• Surface couverte de cratères aux fonds sombres.");
@@ -176,25 +176,25 @@ public class SolarSystemBuilder : MonoBehaviour
         uranus.satellites.Add(oberon);
 
         // --- NEPTUNE & TRITON (30.1 AU = 18000 units) ---
-        CelestialBody neptune = CreatePlanet(root.transform, sunObj.transform, "Neptune", 18000f, 0.006f, 4.3f, mats["Neptune"], 15f, 28.3f,
+        CelestialBody neptune = CreatePlanet(root.transform, sunObj.transform, "Neptune", 18000f, 60182f, 4.3f, mats["Neptune"], 0.67f, 28.3f,
             new Color(0.2f, 0.4f, 1f, 0.5f),
             "La planète la plus lointaine du système solaire, caractérisée par des vents supersoniques pouvant dépasser 2 000 km/h.",
             "• Distance moyenne : 4,5 milliards km (30,1 UA)\n• Période orbitale : 164,8 ans\n• Teinte bleue due à la présence de méthane");
 
-        CelestialBody triton = CreateMoon(root.transform, neptune.transform, "Triton", 30f, -15f, 0.65f, mats["Triton"], 16f,
+        CelestialBody triton = CreateMoon(root.transform, neptune.transform, "Triton", 30f, -5.87f, 0.65f, mats["Triton"], 5.87f,
             new Color(0.7f, 0.75f, 0.9f, 0.4f),
             "La seule grande lune du système solaire avec une orbite rétrograde, vestige probable d'un corps capturé de la ceinture de Kuiper.",
             "• Geysers d'azote actif crachant des poussières sombres.");
         neptune.satellites.Add(triton);
 
         // --- PLUTO & CHARON (39.5 AU = 23700 units) ---
-        CelestialBody pluto = CreatePlanet(root.transform, sunObj.transform, "Pluton", 23700f, 0.004f, 0.9f, mats["Pluto"], 10f, 122.5f,
+        CelestialBody pluto = CreatePlanet(root.transform, sunObj.transform, "Pluton", 23700f, 90560f, 0.9f, mats["Pluto"], -6.38f, 122.5f,
             new Color(0.75f, 0.65f, 0.55f, 0.4f),
             "La plus célèbre des planètes naines, au cœur de la ceinture de Kuiper avec son grand glacier d'azote en forme de cœur (Tombaugh Regio).",
             "• Distance moyenne : 5,9 milliards km (39,5 UA)\n• Période orbitale : 248 ans\n• Forme un système binaire avec Charon");
         pluto.bodyType = CelestialBodyType.DwarfPlanet;
 
-        CelestialBody charon = CreateMoon(root.transform, pluto.transform, "Charon", 12f, 15f, 0.5f, mats["Charon"], 10f,
+        CelestialBody charon = CreateMoon(root.transform, pluto.transform, "Charon", 12f, 6.38f, 0.5f, mats["Charon"], 6.38f,
             new Color(0.6f, 0.58f, 0.55f, 0.4f),
             "La plus grande lune de Pluton, si massive que le barycentre du couple est situé dans l'espace entre les deux astres.",
             "• En verrouillage gravitationnel mutuel total avec Pluton.");
@@ -227,7 +227,7 @@ public class SolarSystemBuilder : MonoBehaviour
         Debug.Log("[SolarSystemBuilder] Solar system generated successfully with all planets, moons, asteroid belt and spaceship!");
     }
 
-    private static CelestialBody CreatePlanet(Transform root, Transform center, string name, float orbitRadius, float orbitSpeed, float size, Material mat, float rotationSpeed, float tilt, Color orbitCol, string desc, string facts)
+    private static CelestialBody CreatePlanet(Transform root, Transform center, string name, float orbitRadius, float orbitPeriodDays, float size, Material mat, float rotationPeriodDays, float tilt, Color orbitCol, string desc, string facts)
     {
         GameObject planetObj = GameObject.CreatePrimitive(PrimitiveType.Sphere);
         planetObj.name = name;
@@ -240,12 +240,12 @@ public class SolarSystemBuilder : MonoBehaviour
         body.bodyType = CelestialBodyType.Planet;
         body.description = desc;
         body.physicalCharacteristics = facts;
-        body.Initialize(center, orbitRadius, orbitSpeed, rotationSpeed, size, orbitCol, tilt, Random.Range(0f, 360f));
+        body.Initialize(center, orbitRadius, orbitPeriodDays, rotationPeriodDays, size, orbitCol, tilt, Random.Range(0f, 360f));
 
         return body;
     }
 
-    private static CelestialBody CreateMoon(Transform root, Transform center, string name, float orbitRadius, float orbitSpeed, float size, Material mat, float rotationSpeed, Color orbitCol, string desc, string facts)
+    private static CelestialBody CreateMoon(Transform root, Transform center, string name, float orbitRadius, float orbitPeriodDays, float size, Material mat, float rotationPeriodDays, Color orbitCol, string desc, string facts)
     {
         GameObject moonObj = GameObject.CreatePrimitive(PrimitiveType.Sphere);
         moonObj.name = name;
@@ -258,7 +258,7 @@ public class SolarSystemBuilder : MonoBehaviour
         body.bodyType = CelestialBodyType.Moon;
         body.description = desc;
         body.physicalCharacteristics = facts;
-        body.Initialize(center, orbitRadius, orbitSpeed, rotationSpeed, size, orbitCol, 0f, Random.Range(0f, 360f));
+        body.Initialize(center, orbitRadius, orbitPeriodDays, rotationPeriodDays, size, orbitCol, 0f, Random.Range(0f, 360f));
 
         return body;
     }

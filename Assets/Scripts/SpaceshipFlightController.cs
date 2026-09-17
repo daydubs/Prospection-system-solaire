@@ -38,6 +38,11 @@ public class SpaceshipFlightController : MonoBehaviour
     [Header("Camera & View")]
     public Camera shipCamera;
     public Transform cameraMountPoint;
+    public Vector3 firstPersonCameraOffset = new Vector3(0f, 1f, 2f); // Adjust in Inspector for cockpit seat
+    public Vector3 thirdPersonCameraOffset = new Vector3(0f, 2f, -10f); // Pulled back view
+    public bool isFirstPersonView = false;
+
+    [HideInInspector] // Keeping it for compatibility if needed elsewhere, but transitioning to FP/TP offsets
     public Vector3 cameraOffset = new Vector3(0f, 2f, -6f);
 
     [Header("Status")]
@@ -73,7 +78,7 @@ public class SpaceshipFlightController : MonoBehaviour
         {
             GameObject mount = new GameObject("CameraMount");
             mount.transform.SetParent(transform, false);
-            mount.transform.localPosition = cameraOffset;
+            mount.transform.localPosition = isFirstPersonView ? firstPersonCameraOffset : thirdPersonCameraOffset;
             cameraMountPoint = mount.transform;
         }
     }
@@ -120,17 +125,10 @@ public class SpaceshipFlightController : MonoBehaviour
         var keyboard = Keyboard.current;
         if (keyboard == null) return;
 
-        // F key: Toggle Free Flight / Inspect
+        // F key: Toggle Camera View (First/Third Person)
         if (keyboard.fKey.wasPressedThisFrame)
         {
-            if (currentMode == FlightMode.OrbitInspect)
-            {
-                SetFlightMode(FlightMode.FreeFlight);
-            }
-            else
-            {
-                FocusOnDestination();
-            }
+            isFirstPersonView = !isFirstPersonView;
         }
 
         // T key: Engage Autopilot
@@ -352,6 +350,13 @@ public class SpaceshipFlightController : MonoBehaviour
     private void UpdateCameraPosition()
     {
         if (shipCamera == null) return;
+
+        // Smoothly interpolate the camera mount's local position based on the selected view mode
+        if (cameraMountPoint != null)
+        {
+            Vector3 targetOffset = isFirstPersonView ? firstPersonCameraOffset : thirdPersonCameraOffset;
+            cameraMountPoint.localPosition = Vector3.Lerp(cameraMountPoint.localPosition, targetOffset, 5f * Time.deltaTime);
+        }
 
         if (currentMode == FlightMode.OrbitInspect)
         {

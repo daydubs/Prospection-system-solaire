@@ -97,7 +97,7 @@ public class EarthBaseController : MonoBehaviour
     private void Start()
     {
         UpdateHangarShipVisuals();
-        
+
         // Find Earth reference
         if (earthCelestialBody == null && SolarSystemManager.Instance != null)
         {
@@ -395,8 +395,8 @@ public class EarthBaseController : MonoBehaviour
         if (earthCelestialBody == null) return;
 
         // Check if station already exists
-        Transform existingStation = earthCelestialBody.transform.parent != null 
-            ? earthCelestialBody.transform.parent.Find("Station Orbitale Alpha") 
+        Transform existingStation = earthCelestialBody.transform.parent != null
+            ? earthCelestialBody.transform.parent.Find("Station Orbitale Alpha")
             : GameObject.Find("Station Orbitale Alpha")?.transform;
 
         if (existingStation != null)
@@ -440,9 +440,9 @@ public class EarthBaseController : MonoBehaviour
         stationBody.bodyName = "Station Orbitale Alpha";
         stationBody.bodyType = CelestialBodyType.Moon; // Orbits Earth
         stationBody.orbitRadius = 4.2f;
-        stationBody.orbitSpeed = 55f;
+        stationBody.orbitPeriodDays = 0.063f; // ~90 minutes orbit
         stationBody.bodyRadius = 0.5f;
-        stationBody.rotationSpeed = 10f;
+        stationBody.rotationPeriodDays = 0.063f;
         stationBody.orbitCenter = earthCelestialBody.transform;
         stationBody.description = "La station spatiale orbitale terrestre construite et déployée par votre corporation. Hub de ravitaillement et de recherche scientifique de pointe.";
         stationBody.physicalCharacteristics = "• Altitude orbitale : 420 km\n• Énergie : Panneaux solaires photovoltaïques\n• Modules actifs : Laboratoire & Baie d'amarrage";

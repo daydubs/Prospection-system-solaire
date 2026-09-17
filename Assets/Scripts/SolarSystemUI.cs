@@ -388,7 +388,7 @@ public class SolarSystemUI : MonoBehaviour
         GUILayout.BeginHorizontal();
         GUILayout.Label($"<b>Capacité Soute :</b> <color=#ffd700>{ship.CurrentCargoTons:F1} / {ship.maxCargoCapacity:F1} tonnes</color>", headerStyle);
         GUILayout.FlexibleSpace();
-        
+
         // Quick button to add sample mined resources for demonstration
         if (GUILayout.Button("+ Miner Minerais Test", buttonStyle, GUILayout.Width(160), GUILayout.Height(24)))
         {
@@ -420,7 +420,7 @@ public class SolarSystemUI : MonoBehaviour
             GUILayout.BeginVertical("box");
             GUILayout.BeginHorizontal();
             GUILayout.Label($"<b>{item.resourceName}</b> : {item.quantity:F1} t (<color=#ffd700>~{itemTotalValue:N0} CR</color>)", bodyStyle);
-            
+
             if (GUILayout.Button($"Vendre tout (+{itemTotalValue:N0} CR)", buttonStyle, GUILayout.Width(170), GUILayout.Height(24)))
             {
                 gm.SellCargo(item.resourceId, item.quantity);
@@ -458,7 +458,7 @@ public class SolarSystemUI : MonoBehaviour
             float dist = Vector3.Distance(playerShip != null ? playerShip.transform.position : mainCam.transform.position, dest.transform.position);
             string distText = dist < 50f ? $"{(dist * 15376f):N0} km" : $"{(dist / 600f):F2} UA";
             string labelText = $"▶ {dest.bodyName.ToUpper()} [{distText}]";
-            
+
             GUIStyle markerStyle = new GUIStyle(bodyStyle);
             markerStyle.fontSize = 13;
             markerStyle.fontStyle = FontStyle.Bold;
@@ -553,8 +553,8 @@ public class SolarSystemUI : MonoBehaviour
         string distFormatted = dist < 50f ? $"{(dist * 15376f):N0} km ({dist:F1} u)" : $"{(dist / 600f):F2} UA ({(dist * 249333f / 1000000f):F1} M km)";
         GUILayout.Label($"• <b>Distance vaisseau :</b> {distFormatted}", bodyStyle);
         GUILayout.Label($"• <b>Rayon orbital :</b> {(dest.orbitRadius / 600f):F2} UA ({dest.orbitRadius:F0} u)", bodyStyle);
-        GUILayout.Label($"• <b>Vitesse orbitale :</b> {dest.orbitSpeed:F2}°/s", bodyStyle);
-        
+        GUILayout.Label($"• <b>Période orbitale :</b> {Mathf.Abs(dest.orbitPeriodDays):F2} jours", bodyStyle);
+
         if (!string.IsNullOrEmpty(dest.description))
         {
             GUILayout.Space(5);

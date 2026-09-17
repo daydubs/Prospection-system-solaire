@@ -124,6 +124,11 @@ public class MainMenuController : MonoBehaviour
         SelectDifficulty(1); // Default to normal difficulty
         ShowMainMenu();
 
+        if (notificationBanner != null)
+        {
+            notificationBanner.SetActive(false);
+        }
+
         if (isMainMenuScene)
         {
             isPauseMode = false;
@@ -422,7 +427,7 @@ public class MainMenuController : MonoBehaviour
             _ => $"Sauvegarde #{slotIndex}"
         };
 
-        ShowNotification($"📂 Chargement: {slotName}...");
+        ShowNotification($"Chargement: {slotName}...");
 
         if (SceneTransitionManager.Instance != null)
         {
@@ -665,7 +670,7 @@ public class MainMenuController : MonoBehaviour
 
     public void OnApplySettings()
     {
-        ShowNotification("✓ Paramètres sauvegardés et appliqués !");
+        ShowNotification("Paramètres sauvegardés et appliqués !");
         ShowMainMenu();
     }
 

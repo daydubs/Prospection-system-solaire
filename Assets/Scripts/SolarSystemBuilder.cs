@@ -17,7 +17,7 @@ public class SolarSystemBuilder : MonoBehaviour
         }
 
         GameObject root = new GameObject("SolarSystem_Root");
-        
+
         // Ensure GameManager is present
         if (GameManager.Instance == null)
         {
@@ -67,7 +67,7 @@ public class SolarSystemBuilder : MonoBehaviour
 
         // 5. Create Planets and Moons (1 AU = 600 units)
         // (Name, OrbitRadius, OrbitSpeed, Size, Color, RotationSpeed, AxialTilt, MatKey, Description, Facts)
-        
+
         // --- MERCURY (0.39 AU = 230 units) ---
         CelestialBody mercury = CreatePlanet(root.transform, sunObj.transform, "Mercure", 230f, 88f, 1.1f, mats["Mercury"], 58.6f, 0.03f,
             new Color(0.7f, 0.65f, 0.6f, 0.5f),
@@ -383,7 +383,7 @@ public class SolarSystemBuilder : MonoBehaviour
             float dist = Random.Range(30000f, 55000f);
             particles[i].position = dir * dist;
             particles[i].startSize = Random.Range(80f, 240f);
-            
+
             float hue = Random.Range(0.55f, 0.65f); // Cool white/blue and faint golden stars
             if (Random.value < 0.25f) hue = Random.Range(0.08f, 0.15f);
             Color starCol = Color.HSVToRGB(hue, Random.Range(0.1f, 0.4f), Random.Range(0.75f, 1f));
@@ -395,88 +395,88 @@ public class SolarSystemBuilder : MonoBehaviour
 
     private static GameObject CreatePlayerSpaceship(Transform root, Vector3 initialPos)
     {
-        GameObject ship = new GameObject("Spaceship_Explorer");
-        ship.transform.SetParent(root, false);
-        ship.transform.position = initialPos;
-        ship.transform.rotation = Quaternion.LookRotation(Vector3.forward);
-
-        // Ship Body (Aerodynamic sci-fi fuselage)
-        GameObject hull = GameObject.CreatePrimitive(PrimitiveType.Cube);
-        hull.name = "Ship_Hull";
-        hull.transform.SetParent(ship.transform, false);
-        hull.transform.localScale = new Vector3(0.9f, 0.4f, 2.2f);
-
-        // Nose cockpit
-        GameObject cockpit = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-        cockpit.name = "Ship_Cockpit";
-        cockpit.transform.SetParent(ship.transform, false);
-        cockpit.transform.localPosition = new Vector3(0f, 0.1f, 0.9f);
-        cockpit.transform.localScale = new Vector3(0.65f, 0.35f, 0.8f);
-
-        // Wings
-        GameObject wings = GameObject.CreatePrimitive(PrimitiveType.Cube);
-        wings.name = "Ship_Wings";
-        wings.transform.SetParent(ship.transform, false);
-        wings.transform.localPosition = new Vector3(0f, 0f, -0.2f);
-        wings.transform.localScale = new Vector3(2.6f, 0.08f, 1.2f);
-
-        // Thruster engines
-        GameObject leftEngine = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
-        leftEngine.name = "Left_Engine";
-        leftEngine.transform.SetParent(ship.transform, false);
-        leftEngine.transform.localPosition = new Vector3(-0.55f, 0f, -1.1f);
-        leftEngine.transform.localScale = new Vector3(0.3f, 0.4f, 0.3f);
-        leftEngine.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
-
-        GameObject rightEngine = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
-        rightEngine.name = "Right_Engine";
-        rightEngine.transform.SetParent(ship.transform, false);
-        rightEngine.transform.localPosition = new Vector3(0.55f, 0f, -1.1f);
-        rightEngine.transform.localScale = new Vector3(0.3f, 0.4f, 0.3f);
-        rightEngine.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
-
-        // Headlight spotlight
-        GameObject lightObj = new GameObject("Ship_Headlight");
-        lightObj.transform.SetParent(ship.transform, false);
-        lightObj.transform.localPosition = new Vector3(0f, 0f, 1.2f);
-        Light spot = lightObj.AddComponent<Light>();
-        spot.type = LightType.Spot;
-        spot.color = new Color(0.85f, 0.95f, 1f);
-        spot.intensity = 20f;
-        spot.range = 150f;
-        spot.spotAngle = 60f;
-
-        // Apply materials to ship parts
-        Shader urpLit = Shader.Find("Universal Render Pipeline/Lit");
-        if (urpLit == null) urpLit = Shader.Find("Standard");
-
-        Material hullMat = new Material(urpLit);
-        hullMat.color = new Color(0.15f, 0.18f, 0.22f);
-        hullMat.SetFloat("_Metallic", 0.85f);
-        hullMat.SetFloat("_Smoothness", 0.75f);
-        hull.GetComponent<Renderer>().sharedMaterial = hullMat;
-        wings.GetComponent<Renderer>().sharedMaterial = hullMat;
-
-        Material cockpitMat = new Material(urpLit);
-        cockpitMat.color = new Color(0f, 0.7f, 1f);
-        cockpitMat.SetFloat("_Smoothness", 0.95f);
-        cockpitMat.SetFloat("_Metallic", 0.5f);
-        cockpit.GetComponent<Renderer>().sharedMaterial = cockpitMat;
-
-        Material engineMat = new Material(urpLit);
-        engineMat.color = new Color(1f, 0.5f, 0f);
-        if (engineMat.HasProperty("_EmissionColor"))
+#if UNITY_EDITOR
+        GameObject shipPrefab = UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Spaceship_Vessel.prefab");
+        if (shipPrefab != null)
         {
-            engineMat.EnableKeyword("_EMISSION");
-            engineMat.SetColor("_EmissionColor", new Color(1f, 0.4f, 0f) * 2.5f);
+            GameObject shipInstance = UnityEditor.PrefabUtility.InstantiatePrefab(shipPrefab, root) as GameObject;
+            shipInstance.name = "Spaceship_Explorer";
+            shipInstance.transform.position = initialPos;
+            shipInstance.transform.rotation = Quaternion.LookRotation(Vector3.forward);
+            return shipInstance;
         }
-        leftEngine.GetComponent<Renderer>().sharedMaterial = engineMat;
-        rightEngine.GetComponent<Renderer>().sharedMaterial = engineMat;
 
-        // Add controller
-        SpaceshipFlightController ctrl = ship.AddComponent<SpaceshipFlightController>();
+        // Modular FBX meshes fallback if prefab is not available
+        GameObject c2Prefab = UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>("Assets/models/Cockpit2.fbx");
+        GameObject cmdPrefab = UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>("Assets/models/Command.fbx");
+        GameObject wnePrefab = UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>("Assets/models/WingsNEngine_low.fbx");
 
-        return ship;
+        if (c2Prefab != null && cmdPrefab != null && wnePrefab != null)
+        {
+            GameObject ship = new GameObject("Spaceship_Explorer");
+            ship.transform.SetParent(root, false);
+            ship.transform.position = initialPos;
+            ship.transform.rotation = Quaternion.LookRotation(Vector3.forward);
+
+            var ctrlComp = ship.AddComponent<SpaceshipFlightController>();
+            ctrlComp.normalSpeed = 0.08f;
+            ctrlComp.boostMultiplier = 3.5f;
+            ctrlComp.cameraOffset = new Vector3(0f, 2.2f, -6.8f);
+
+            var boxCol = ship.AddComponent<BoxCollider>();
+            boxCol.center = Vector3.zero;
+            boxCol.size = new Vector3(5f, 2f, 5.7f);
+
+            GameObject model = new GameObject("Model");
+            model.transform.SetParent(ship.transform, false);
+            model.transform.localPosition = new Vector3(0f, -0.99f, 0.80f);
+
+            GameObject c2 = UnityEditor.PrefabUtility.InstantiatePrefab(c2Prefab, model.transform) as GameObject;
+            GameObject cmd = UnityEditor.PrefabUtility.InstantiatePrefab(cmdPrefab, model.transform) as GameObject;
+            GameObject wne = UnityEditor.PrefabUtility.InstantiatePrefab(wnePrefab, model.transform) as GameObject;
+
+            c2.name = "Cockpit2";
+            cmd.name = "Command";
+            wne.name = "WingsNEngine";
+
+            c2.transform.localPosition = new Vector3(0f, 1f, 0f);
+            c2.transform.localRotation = Quaternion.Euler(270.02f, 0f, 0f);
+            c2.transform.localScale = new Vector3(100f, 100f, 100f);
+
+            cmd.transform.localPosition = new Vector3(0f, 1f, 0f);
+            cmd.transform.localRotation = Quaternion.Euler(270.02f, 0f, 0f);
+            cmd.transform.localScale = new Vector3(100f, 100f, 100f);
+
+            wne.transform.localPosition = new Vector3(0f, 1f, -1.79f);
+            wne.transform.localRotation = Quaternion.Euler(0f, 0f, 0f);
+            wne.transform.localScale = new Vector3(100f, 100f, 100f);
+
+            GameObject lightObj = new GameObject("Ship_Headlight");
+            lightObj.transform.SetParent(ship.transform, false);
+            lightObj.transform.localPosition = new Vector3(0f, 0.2f, 2.9f);
+            Light spot = lightObj.AddComponent<Light>();
+            spot.type = LightType.Spot;
+            spot.color = new Color(0.85f, 0.95f, 1f);
+            spot.intensity = 25f;
+            spot.range = 200f;
+            spot.spotAngle = 60f;
+
+            GameObject mount = new GameObject("CameraMount");
+            mount.transform.SetParent(ship.transform, false);
+            mount.transform.localPosition = new Vector3(0f, 2.2f, -6.8f);
+            ctrlComp.cameraMountPoint = mount.transform;
+
+            return ship;
+        }
+#endif
+
+        // Primitive fallback
+        GameObject fallbackShip = new GameObject("Spaceship_Explorer");
+        fallbackShip.transform.SetParent(root, false);
+        fallbackShip.transform.position = initialPos;
+        fallbackShip.transform.rotation = Quaternion.LookRotation(Vector3.forward);
+        fallbackShip.AddComponent<SpaceshipFlightController>();
+        return fallbackShip;
     }
 
     private static Dictionary<string, Material> CreatePlanetMaterials()

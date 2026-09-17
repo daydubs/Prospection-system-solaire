@@ -82,7 +82,7 @@ public class CelestialBody : MonoBehaviour
         axialTilt = tilt;
         initialOrbitAngle = startAngle;
         currentOrbitAngle = startAngle;
-        
+
         transform.localScale = Vector3.one * (size * 2f);
         SetupCollider();
         CreateOrbitLine();
@@ -102,7 +102,7 @@ public class CelestialBody : MonoBehaviour
             orbitLine.useWorldSpace = false;
             orbitLine.loop = true;
             orbitLine.positionCount = orbitResolution;
-            
+
             // Thin glowing line
             orbitLine.startWidth = Mathf.Max(0.15f, orbitRadius * 0.003f);
             orbitLine.endWidth = orbitLine.startWidth;

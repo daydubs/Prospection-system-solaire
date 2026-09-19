@@ -92,6 +92,13 @@ public class SolarSystemBuilder : MonoBehaviour
             "• Distance de la Terre : 384 400 km (~2-3 jours de vol à vitesse de croisière)\n• Période orbitale : 27,3 jours\n• Gravité : 1,62 m/s² (1/6ème terrestre)");
         earth.satellites.Add(moon);
 
+        // --- ORBITAL SPACE STATION (Earth orbit, 6.5 units) ---
+        CelestialBody station = CreateOrbitalStation(root.transform, earth.transform);
+        if (station != null)
+        {
+            earth.satellites.Add(station);
+        }
+
         // --- MARS & MOONS (1.52 AU = 910 units) ---
         CelestialBody mars = CreatePlanet(root.transform, sunObj.transform, "Mars", 910f, 687f, 1.5f, mats["Mars"], 1.026f, 25.2f,
             new Color(1f, 0.4f, 0.2f, 0.5f),
@@ -263,6 +270,27 @@ public class SolarSystemBuilder : MonoBehaviour
         return body;
     }
 
+    private static CelestialBody CreateOrbitalStation(Transform root, Transform earthCenter)
+    {
+#if UNITY_EDITOR
+        GameObject prefab = UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Station_Orbital.prefab");
+        if (prefab != null)
+        {
+            GameObject stationInstance = (GameObject)UnityEditor.PrefabUtility.InstantiatePrefab(prefab, root);
+            stationInstance.name = "Station Orbitale Alpha";
+            CelestialBody cb = stationInstance.GetComponent<CelestialBody>();
+            cb.orbitCenter = earthCenter;
+            cb.orbitRadius = 6.5f;
+            cb.orbitPeriodDays = 15f;
+            cb.rotationPeriodDays = 5f;
+            cb.bodyRadius = 0.6f;
+            cb.orbitLineColor = new Color(0f, 0.85f, 1f, 0.6f);
+            return cb;
+        }
+#endif
+        return null;
+    }
+
     private static void CreateSaturnRings(Transform saturnTransform, float innerRadius, float outerRadius, Material ringMat)
     {
         GameObject ringsObj = new GameObject("Saturn_Rings");
@@ -422,6 +450,8 @@ public class SolarSystemBuilder : MonoBehaviour
             ctrlComp.normalSpeed = 0.08f;
             ctrlComp.boostMultiplier = 3.5f;
             ctrlComp.cameraOffset = new Vector3(0f, 2.2f, -6.8f);
+            ctrlComp.firstPersonCameraOffset = new Vector3(0.06f, -0.11f, 1.61f);
+            ctrlComp.thirdPersonCameraOffset = new Vector3(0f, 2f, -10f);
 
             var boxCol = ship.AddComponent<BoxCollider>();
             boxCol.center = Vector3.zero;

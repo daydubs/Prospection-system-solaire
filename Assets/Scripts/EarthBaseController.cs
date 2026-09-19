@@ -37,13 +37,19 @@ public class EarthBaseController : MonoBehaviour
     public GameObject spaceStationHoloModel;
 
     [Header("Space Station Construction")]
-    public bool isCoreBuilt = false;
-    public bool isSolarPanelsBuilt = false;
-    public bool isScienceLabBuilt = false;
-    public bool isDockingBayBuilt = false;
+    public bool isCoreBuilt = true;
+    public bool isSolarPanelsBuilt = true;
+    public bool isScienceLabBuilt = true;
+    public bool isDockingBayBuilt = true;
     public bool isStationLaunched = false;
     public GameObject orbitalStationPrefab;
     public CelestialBody earthCelestialBody;
+
+    [Header("Modular Mesh References for Station")]
+    public GameObject stationCorePart;
+    public GameObject stationLabPart;
+    public GameObject stationSolarPanelsPart;
+    public GameObject stationDockingBayPart;
 
     [Header("Spaceship Modular Parts")]
     public bool hasCockpit = true;
@@ -97,6 +103,7 @@ public class EarthBaseController : MonoBehaviour
     private void Start()
     {
         UpdateHangarShipVisuals();
+        UpdateStationVisuals();
 
         // Find Earth reference
         if (earthCelestialBody == null && SolarSystemManager.Instance != null)
@@ -325,6 +332,14 @@ public class EarthBaseController : MonoBehaviour
 
     #region Space Station Construction & Launch
 
+    public void UpdateStationVisuals()
+    {
+        if (stationCorePart != null) stationCorePart.SetActive(isCoreBuilt);
+        if (stationLabPart != null) stationLabPart.SetActive(isScienceLabBuilt);
+        if (stationSolarPanelsPart != null) stationSolarPanelsPart.SetActive(isSolarPanelsBuilt);
+        if (stationDockingBayPart != null) stationDockingBayPart.SetActive(isDockingBayBuilt);
+    }
+
     public void BuildStationModule(string moduleKey)
     {
         GameManager gm = GameManager.Instance;
@@ -337,6 +352,7 @@ public class EarthBaseController : MonoBehaviour
                 {
                     isCoreBuilt = true;
                     gm.playerStats.AddXP(250);
+                    UpdateStationVisuals();
                 }
                 break;
 
@@ -345,6 +361,7 @@ public class EarthBaseController : MonoBehaviour
                 {
                     isSolarPanelsBuilt = true;
                     gm.playerStats.AddXP(150);
+                    UpdateStationVisuals();
                 }
                 break;
 
@@ -353,6 +370,7 @@ public class EarthBaseController : MonoBehaviour
                 {
                     isScienceLabBuilt = true;
                     gm.playerStats.AddXP(200);
+                    UpdateStationVisuals();
                 }
                 break;
 
@@ -361,6 +379,7 @@ public class EarthBaseController : MonoBehaviour
                 {
                     isDockingBayBuilt = true;
                     gm.playerStats.AddXP(200);
+                    UpdateStationVisuals();
                 }
                 break;
         }
@@ -405,50 +424,53 @@ public class EarthBaseController : MonoBehaviour
             return;
         }
 
-        // Create 3D Space Station GameObject in Earth Orbit
         Transform parentTransform = earthCelestialBody.transform.parent != null ? earthCelestialBody.transform.parent : earthCelestialBody.transform;
-        GameObject stationObj = new GameObject("Station Orbitale Alpha");
-        stationObj.transform.SetParent(parentTransform, false);
+        GameObject stationObj;
 
-        // Station Central Core
-        GameObject coreObj = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
-        coreObj.name = "Station_Core";
-        coreObj.transform.SetParent(stationObj.transform, false);
-        coreObj.transform.localScale = new Vector3(0.8f, 0.6f, 0.8f);
+        if (orbitalStationPrefab != null)
+        {
+            stationObj = Instantiate(orbitalStationPrefab, parentTransform);
+            stationObj.name = "Station Orbitale Alpha";
+        }
+        else
+        {
+            stationObj = new GameObject("Station Orbitale Alpha");
+            stationObj.transform.SetParent(parentTransform, false);
 
-        // Station Ring / Habitat Wheel
-        GameObject ringObj = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
-        ringObj.name = "Station_Ring";
-        ringObj.transform.SetParent(stationObj.transform, false);
-        ringObj.transform.localScale = new Vector3(2.5f, 0.1f, 2.5f);
+#if UNITY_EDITOR
+            GameObject fbx = UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>("Assets/models/StationOrbital.fbx");
+            if (fbx != null)
+            {
+                GameObject model = Instantiate(fbx, stationObj.transform);
+                model.name = "Model";
+                model.transform.localPosition = new Vector3(0f, -8.68f, 12.93f);
+                model.transform.localScale = Vector3.one * 0.08f;
+            }
+#endif
+        }
 
-        // Solar Array Wings
-        GameObject solarLeft = GameObject.CreatePrimitive(PrimitiveType.Cube);
-        solarLeft.name = "Solar_Left";
-        solarLeft.transform.SetParent(stationObj.transform, false);
-        solarLeft.transform.localPosition = new Vector3(-2f, 0f, 0f);
-        solarLeft.transform.localScale = new Vector3(1.8f, 0.05f, 0.6f);
+        CelestialBody stationBody = stationObj.GetComponent<CelestialBody>();
+        if (stationBody == null)
+        {
+            stationBody = stationObj.AddComponent<CelestialBody>();
+        }
 
-        GameObject solarRight = GameObject.CreatePrimitive(PrimitiveType.Cube);
-        solarRight.name = "Solar_Right";
-        solarRight.transform.SetParent(stationObj.transform, false);
-        solarRight.transform.localPosition = new Vector3(2f, 0f, 0f);
-        solarRight.transform.localScale = new Vector3(1.8f, 0.05f, 0.6f);
-
-        // Add CelestialBody component to make it targetable and orbiting
-        CelestialBody stationBody = stationObj.AddComponent<CelestialBody>();
         stationBody.bodyName = "Station Orbitale Alpha";
-        stationBody.bodyType = CelestialBodyType.Moon; // Orbits Earth
-        stationBody.orbitRadius = 4.2f;
-        stationBody.orbitPeriodDays = 0.063f; // ~90 minutes orbit
-        stationBody.bodyRadius = 0.5f;
-        stationBody.rotationPeriodDays = 0.063f;
+        stationBody.bodyType = CelestialBodyType.Moon;
+        stationBody.orbitRadius = 6.5f;
+        stationBody.orbitPeriodDays = 15f;
+        stationBody.bodyRadius = 0.6f;
+        stationBody.rotationPeriodDays = 5f;
         stationBody.orbitCenter = earthCelestialBody.transform;
-        stationBody.description = "La station spatiale orbitale terrestre construite et déployée par votre corporation. Hub de ravitaillement et de recherche scientifique de pointe.";
-        stationBody.physicalCharacteristics = "• Altitude orbitale : 420 km\n• Énergie : Panneaux solaires photovoltaïques\n• Modules actifs : Laboratoire & Baie d'amarrage";
+        stationBody.orbitLineColor = new Color(0f, 0.85f, 1f, 0.6f);
+        stationBody.description = "La station spatiale orbitale terrestre construite et déployée par votre corporation. Hub de ravitaillement et de recherche scientifique de pointe comprenant le Core, le Lab, les Panneaux Solaires et la Baie d'Amarrage.";
+        stationBody.physicalCharacteristics = "• Altitude orbitale : 420 km\n• Énergie : Panneaux solaires photovoltaïques\n• Modules actifs : Core, Lab, Panneaux Solaires & Docking Bay";
 
-        earthCelestialBody.satellites.Add(stationBody);
-        if (SolarSystemManager.Instance != null)
+        if (!earthCelestialBody.satellites.Contains(stationBody))
+        {
+            earthCelestialBody.satellites.Add(stationBody);
+        }
+        if (SolarSystemManager.Instance != null && !SolarSystemManager.Instance.allBodies.Contains(stationBody))
         {
             SolarSystemManager.Instance.allBodies.Add(stationBody);
         }

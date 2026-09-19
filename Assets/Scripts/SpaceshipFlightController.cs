@@ -38,7 +38,7 @@ public class SpaceshipFlightController : MonoBehaviour
     [Header("Camera & View")]
     public Camera shipCamera;
     public Transform cameraMountPoint;
-    public Vector3 firstPersonCameraOffset = new Vector3(0f, 1f, 2f); // Adjust in Inspector for cockpit seat
+    public Vector3 firstPersonCameraOffset = new Vector3(0.06f, -0.11f, 1.61f); // Adjust in Inspector for cockpit seat
     public Vector3 thirdPersonCameraOffset = new Vector3(0f, 2f, -10f); // Pulled back view
     public bool isFirstPersonView = false;
 
@@ -351,11 +351,14 @@ public class SpaceshipFlightController : MonoBehaviour
     {
         if (shipCamera == null) return;
 
-        // Smoothly interpolate the camera mount's local position based on the selected view mode
+        // Smoothly interpolate the camera mount's local position and rotation based on the selected view mode
         if (cameraMountPoint != null)
         {
             Vector3 targetOffset = isFirstPersonView ? firstPersonCameraOffset : thirdPersonCameraOffset;
             cameraMountPoint.localPosition = Vector3.Lerp(cameraMountPoint.localPosition, targetOffset, 5f * Time.deltaTime);
+
+            Quaternion targetRot = isFirstPersonView ? Quaternion.identity : Quaternion.Euler(8f, 0f, 0f);
+            cameraMountPoint.localRotation = Quaternion.Slerp(cameraMountPoint.localRotation, targetRot, 5f * Time.deltaTime);
         }
 
         if (currentMode == FlightMode.OrbitInspect)

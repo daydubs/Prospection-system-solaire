@@ -295,6 +295,9 @@ MonoBehaviour:
   maxOrbitDist: 1500
   shipCamera: {fileID: 0}
   cameraMountPoint: {fileID: 498470399092373131}
+  firstPersonCameraOffset: {x: 0.06, y: -0.11, z: 1.61}
+  thirdPersonCameraOffset: {x: 0, y: 2, z: -10}
+  isFirstPersonView: 0
   cameraOffset: {x: 0, y: 2.2, z: -6.8}
   currentMode: 0
   currentSpeed: 0

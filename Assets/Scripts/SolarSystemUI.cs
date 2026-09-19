@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -504,7 +505,8 @@ public class SolarSystemUI : MonoBehaviour
                 CelestialBody moon = moons[m];
                 GUILayout.BeginHorizontal();
                 GUILayout.Space(25);
-                DrawBodyButton(moon, " ↳ 🌕 ", moonColor);
+                string moonIcon = moon.bodyName.IndexOf("Station", StringComparison.OrdinalIgnoreCase) >= 0 ? " ↳ 🛰️ " : " ↳ 🌕 ";
+                DrawBodyButton(moon, moonIcon, moonColor);
                 GUILayout.EndHorizontal();
             }
         }
@@ -544,7 +546,7 @@ public class SolarSystemUI : MonoBehaviour
         GUILayout.Space(10);
 
         GUILayout.Label($"TELEMETRIE: {dest.bodyName.ToUpper()}", headerStyle);
-        GUILayout.Label($"Type: {GetBodyTypeString(dest.bodyType)}", titleStyle);
+        GUILayout.Label($"Type: {GetBodyTypeString(dest)}", titleStyle);
         GUILayout.Space(5);
 
         infoScrollPos = GUILayout.BeginScrollView(infoScrollPos, false, false);
@@ -696,6 +698,16 @@ public class SolarSystemUI : MonoBehaviour
 
         GUILayout.EndHorizontal();
         GUILayout.EndArea();
+    }
+
+    private string GetBodyTypeString(CelestialBody body)
+    {
+        if (body == null) return "Corps céleste";
+        if (body.bodyName.IndexOf("Station", StringComparison.OrdinalIgnoreCase) >= 0)
+        {
+            return "Station Spatiale Orbitale";
+        }
+        return GetBodyTypeString(body.bodyType);
     }
 
     private string GetBodyTypeString(CelestialBodyType type)

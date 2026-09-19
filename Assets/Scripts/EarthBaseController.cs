@@ -68,27 +68,19 @@ public class EarthBaseController : MonoBehaviour
     public GameObject shipShieldEmitterPart;
     public GameObject shipExtraCargoPart;
 
-    [Header("UI Styling")]
-    public Color primaryColor = new Color(0f, 0.85f, 1f, 1f);
-    public Color accentColor = new Color(1f, 0.75f, 0.1f, 1f);
-    public Color successColor = new Color(0.2f, 0.9f, 0.4f, 1f);
-    public Color warningColor = new Color(1f, 0.35f, 0.2f, 1f);
-    public Color hubBgColor = new Color(0.04f, 0.08f, 0.16f, 0.96f);
 
-    private GUIStyle headerStyle;
-    private GUIStyle titleStyle;
-    private GUIStyle bodyStyle;
-    private GUIStyle buttonStyle;
-    private GUIStyle activeBtnStyle;
-    private GUIStyle cardBoxStyle;
-    private GUIStyle badgeStyle;
-    private Texture2D panelTex;
-    private Texture2D activeBtnTex;
-    private Texture2D normalBtnTex;
-    private Texture2D cardTex;
+    [Header("Hub Canvas References (World Space)")]
+    public GameObject mainHubCanvas; // Le Canvas principal (l'écran géant)
+    public GameObject interactionPromptCanvas; // Le petit "Appuyez sur E"
 
-    private Vector2 stationScroll;
-    private Vector2 shipScroll;
+    [Header("Hub Tabs Arrays")]
+    public UnityEngine.UI.Button[] tabButtons; // Boutons pour changer d'onglet
+    public GameObject[] tabPanels; // 0: Station, 1: Vaisseau, 2: Lancement, 3: Corporation
+
+    [Header("UI Text References")]
+    public TMPro.TMP_Text creditsText;
+    public TMPro.TMP_Text corporationNameText;
+
 
     private void Awake()
     {
@@ -117,6 +109,14 @@ public class EarthBaseController : MonoBehaviour
 
     private void Update()
     {
+        if (currentLocation != GameLocationState.EarthBase) return;
+
+        // Interaction prompt when near screen and UI is closed
+        if (interactionPromptCanvas != null)
+        {
+            interactionPromptCanvas.SetActive(!isHubUIOpen && playerController != null && playerController.isNearHubScreen);
+        }
+
         if (Keyboard.current != null && Keyboard.current.eKey.wasPressedThisFrame)
         {
             // If near screen or already open, toggle
@@ -144,10 +144,17 @@ public class EarthBaseController : MonoBehaviour
     public void SetHubUIVisibility(bool open)
     {
         isHubUIOpen = open;
+
+        if (mainHubCanvas != null)
+        {
+            mainHubCanvas.SetActive(open);
+        }
+
         if (open)
         {
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
+            RefreshUIValues(); // Actualise les données à l'ouverture
         }
         else
         {
@@ -162,6 +169,61 @@ public class EarthBaseController : MonoBehaviour
                 Cursor.visible = true;
             }
         }
+    }
+
+    // Nouvelle méthode pour changer d'onglet via les boutons
+    public void SelectTab(int tabIndex)
+    {
+        hubCurrentTab = tabIndex;
+
+        // Active/Désactive les panneaux
+        if (tabPanels != null)
+        {
+            for (int i = 0; i < tabPanels.Length; i++)
+            {
+                if (tabPanels[i] != null)
+                {
+                    tabPanels[i].SetActive(i == tabIndex);
+                }
+            }
+        }
+
+        // Optionnel : Changer la couleur des boutons pour montrer l'onglet actif
+        if (tabButtons != null)
+        {
+            for (int i = 0; i < tabButtons.Length; i++)
+            {
+                if (tabButtons[i] != null)
+                {
+                    var colors = tabButtons[i].colors;
+                    // Ex: gris pour inactif, bleu pour actif
+                    colors.normalColor = (i == tabIndex) ? new Color(0f, 0.55f, 0.95f, 0.9f) : new Color(0.08f, 0.16f, 0.28f, 0.85f);
+                    tabButtons[i].colors = colors;
+                }
+            }
+        }
+
+        RefreshUIValues();
+    }
+
+    // Nouvelle méthode pour rafraichir les valeurs textuelles de l'UI si nécessaire
+    public void RefreshUIValues()
+    {
+        GameManager gm = GameManager.Instance;
+        if (gm == null) return;
+
+        if (creditsText != null)
+        {
+            creditsText.text = $"Crédits : {gm.Credits:N0} CR";
+        }
+
+        if (corporationNameText != null && gm.playerStats != null)
+        {
+            corporationNameText.text = gm.playerStats.corporationName;
+        }
+
+        // Vous pouvez ajouter ici l'actualisation du texte des boutons de construction/lancement
+        // selon l'état actuel (fonds suffisants, etc.)
     }
 
     public void SetLocationState(GameLocationState state)
@@ -490,351 +552,5 @@ public class EarthBaseController : MonoBehaviour
 
     #endregion
 
-    #region OnGUI Base Hub
 
-    private void InitStyles()
-    {
-        if (panelTex == null)
-        {
-            panelTex = MakeTex(2, 2, hubBgColor);
-            activeBtnTex = MakeTex(2, 2, new Color(0f, 0.55f, 0.95f, 0.9f));
-            normalBtnTex = MakeTex(2, 2, new Color(0.08f, 0.16f, 0.28f, 0.85f));
-            cardTex = MakeTex(2, 2, new Color(0.05f, 0.1f, 0.18f, 0.9f));
-        }
-
-        if (headerStyle == null)
-        {
-            headerStyle = new GUIStyle(GUI.skin.label);
-            headerStyle.fontSize = 16;
-            headerStyle.fontStyle = FontStyle.Bold;
-            headerStyle.normal.textColor = primaryColor;
-
-            titleStyle = new GUIStyle(GUI.skin.label);
-            titleStyle.fontSize = 20;
-            titleStyle.fontStyle = FontStyle.Bold;
-            titleStyle.normal.textColor = Color.white;
-
-            bodyStyle = new GUIStyle(GUI.skin.label);
-            bodyStyle.fontSize = 13;
-            bodyStyle.normal.textColor = new Color(0.9f, 0.95f, 1f, 0.95f);
-            bodyStyle.wordWrap = true;
-
-            buttonStyle = new GUIStyle(GUI.skin.button);
-            buttonStyle.fontSize = 13;
-            buttonStyle.fontStyle = FontStyle.Bold;
-            buttonStyle.normal.background = normalBtnTex;
-            buttonStyle.normal.textColor = Color.white;
-            buttonStyle.hover.textColor = accentColor;
-
-            activeBtnStyle = new GUIStyle(buttonStyle);
-            activeBtnStyle.normal.background = activeBtnTex;
-            activeBtnStyle.normal.textColor = Color.yellow;
-
-            cardBoxStyle = new GUIStyle(GUI.skin.box);
-            cardBoxStyle.normal.background = cardTex;
-            cardBoxStyle.padding = new RectOffset(10, 10, 8, 8);
-
-            badgeStyle = new GUIStyle(bodyStyle);
-            badgeStyle.fontSize = 14;
-            badgeStyle.fontStyle = FontStyle.Bold;
-        }
-    }
-
-    private Texture2D MakeTex(int width, int height, Color col)
-    {
-        Color[] pix = new Color[width * height];
-        for (int i = 0; i < pix.Length; ++i) pix[i] = col;
-        Texture2D result = new Texture2D(width, height);
-        result.SetPixels(pix);
-        result.Apply();
-        return result;
-    }
-
-    private void OnGUI()
-    {
-        if (currentLocation != GameLocationState.EarthBase) return;
-
-        // Interaction prompt when near screen and UI is closed
-        if (!isHubUIOpen && playerController != null && playerController.isNearHubScreen)
-        {
-            InitStyles();
-            DrawScreenInteractionPrompt();
-            return;
-        }
-
-        if (!isHubUIOpen) return;
-
-        InitStyles();
-        DrawGiantScreenHubModal();
-    }
-
-    private void DrawScreenInteractionPrompt()
-    {
-        float promptW = 460f;
-        float promptH = 48f;
-        Rect rect = new Rect((Screen.width - promptW) * 0.5f, Screen.height - promptH - 40f, promptW, promptH);
-
-        GUI.Box(rect, GUIContent.none, cardBoxStyle);
-        GUILayout.BeginArea(rect);
-        GUILayout.BeginHorizontal();
-        GUILayout.Space(12);
-        GUILayout.Label("<b>[E]</b> <color=#00e5ff>ACCÉDER À L'ÉCRAN GÉANT DU HUB CENTRAL</color>", headerStyle);
-        GUILayout.EndHorizontal();
-        GUILayout.EndArea();
-    }
-
-    private void DrawGiantScreenHubModal()
-    {
-        GameManager gm = GameManager.Instance;
-        if (gm == null) return;
-
-        float winW = 860f;
-        float winH = 580f;
-        Rect winRect = new Rect((Screen.width - winW) * 0.5f, (Screen.height - winH) * 0.5f, winW, winH);
-
-        GUI.Box(winRect, GUIContent.none, cardBoxStyle);
-        GUILayout.BeginArea(winRect);
-        GUILayout.Space(12);
-
-        // Header Title
-        GUILayout.BeginHorizontal();
-        GUILayout.Space(16);
-        string corpName = gm.playerStats != null ? gm.playerStats.corporationName : "Astraea Mining Corp";
-        GUILayout.Label($"BASE TERRESTRE • HUB D'OPÉRATIONS ({corpName.ToUpper()})", titleStyle);
-        GUILayout.FlexibleSpace();
-        if (GUILayout.Button("[X] FERMER [E]", buttonStyle, GUILayout.Width(130), GUILayout.Height(28)))
-        {
-            SetHubUIVisibility(false);
-        }
-        GUILayout.Space(16);
-        GUILayout.EndHorizontal();
-
-        // Top Status Bar (Credits, Commander, Difficulty)
-        GUILayout.Space(6);
-        GUILayout.BeginHorizontal();
-        GUILayout.Space(16);
-        GUILayout.Label($"Commandant: <color=#00e5ff>{gm.playerStats.pilotName}</color>", bodyStyle, GUILayout.Width(220));
-        GUILayout.Label($"Crédits: <color=#ffd700>{gm.Credits:N0} CR</color>", badgeStyle, GUILayout.Width(180));
-        GUILayout.Label($"Statut: <color=#44ff88>{gm.playerStats.difficultyName}</color>", bodyStyle);
-        GUILayout.EndHorizontal();
-
-        GUILayout.Space(10);
-
-        // Tabs
-        GUILayout.BeginHorizontal();
-        GUILayout.Space(16);
-        if (GUILayout.Button("1. STATION SPATIALE", hubCurrentTab == 0 ? activeBtnStyle : buttonStyle, GUILayout.Height(32))) hubCurrentTab = 0;
-        if (GUILayout.Button("2. CHANTIER VAISSEAU", hubCurrentTab == 1 ? activeBtnStyle : buttonStyle, GUILayout.Height(32))) hubCurrentTab = 1;
-        if (GUILayout.Button("3. DÉCOLLAGE & VOL", hubCurrentTab == 2 ? activeBtnStyle : buttonStyle, GUILayout.Height(32))) hubCurrentTab = 2;
-        if (GUILayout.Button("4. CORPORATION", hubCurrentTab == 3 ? activeBtnStyle : buttonStyle, GUILayout.Height(32))) hubCurrentTab = 3;
-        GUILayout.Space(16);
-        GUILayout.EndHorizontal();
-
-        GUILayout.Space(12);
-
-        // Tab Body
-        GUILayout.BeginHorizontal();
-        GUILayout.Space(16);
-        GUILayout.BeginVertical();
-
-        switch (hubCurrentTab)
-        {
-            case 0:
-                DrawStationConstructionTab(gm);
-                break;
-            case 1:
-                DrawSpaceshipConstructionTab(gm);
-                break;
-            case 2:
-                DrawLaunchTab(gm);
-                break;
-            case 3:
-                DrawCorporationTab(gm);
-                break;
-        }
-
-        GUILayout.EndVertical();
-        GUILayout.Space(16);
-        GUILayout.EndHorizontal();
-
-        GUILayout.EndArea();
-    }
-
-    private void DrawStationConstructionTab(GameManager gm)
-    {
-        GUILayout.Label("<b>Fabrication et Mise en Orbite de la Station Spatiale Terrestre :</b>", headerStyle);
-        GUILayout.Label("Assemblez les modules requis sur la rampe de lancement pour déployer la station en orbite basse terrestre.", bodyStyle);
-        GUILayout.Space(8);
-
-        stationScroll = GUILayout.BeginScrollView(stationScroll, false, true, GUILayout.Height(320));
-
-        // Module 1: Noyau Central
-        DrawStationModuleCard("Module Central de Commandement & Énergie", "Noyau opérationnel et générateurs principaux.", 10000, isCoreBuilt, () => BuildStationModule("core"), gm);
-
-        // Module 2: Panneaux Solaires
-        DrawStationModuleCard("Panneaux Solaires Haute Puissance", "Génération d'énergie continue pour tous les sous-systèmes orbitaux.", 6000, isSolarPanelsBuilt, () => BuildStationModule("solar"), gm);
-
-        // Module 3: Laboratoire
-        DrawStationModuleCard("Laboratoire Scientifique Avancé", "Permet l'analyse géologique des échantillons et accélère la recherche.", 8000, isScienceLabBuilt, () => BuildStationModule("lab"), gm);
-
-        // Module 4: Baie d'Amarrage
-        DrawStationModuleCard("Baie d'Amarrage & Plateforme Logistique", "Permet le transfert automatique de fret et le ravitaillement des vaisseaux.", 7000, isDockingBayBuilt, () => BuildStationModule("dock"), gm);
-
-        GUILayout.EndScrollView();
-
-        GUILayout.Space(10);
-        GUILayout.BeginHorizontal();
-
-        if (isStationLaunched)
-        {
-            GUILayout.Label("<color=#44ff88>✓ <b>STATION ORBITALE ALPHA DÉPLOYÉE EN ORBITE TERRESTRE</b></color>", badgeStyle);
-        }
-        else if (IsStationReadyToLaunch)
-        {
-            if (GUILayout.Button("🚀 LANCER LA STATION EN ORBITE TERRESTRE", activeBtnStyle, GUILayout.Height(36)))
-            {
-                LaunchStationToOrbit();
-            }
-        }
-        else
-        {
-            GUILayout.Label("<i>(Construisez au minimum le Module Central et les Panneaux Solaires pour débloquer le lancement)</i>", bodyStyle);
-        }
-
-        GUILayout.EndHorizontal();
-    }
-
-    private void DrawStationModuleCard(string name, string desc, double cost, bool isBuilt, Action onBuild, GameManager gm)
-    {
-        GUILayout.BeginVertical(cardBoxStyle);
-        GUILayout.BeginHorizontal();
-
-        string statusText = isBuilt ? "<color=#44ff88>[✓ CONSTRUIT]</color>" : $"<color=#ffd700>[{cost:N0} CR]</color>";
-        GUILayout.Label($"<b>{name}</b> {statusText}", bodyStyle);
-
-        if (!isBuilt)
-        {
-            bool canAfford = gm.CanAfford(cost);
-            GUI.enabled = canAfford;
-            if (GUILayout.Button(canAfford ? "Fabriquer Module" : "Fonds insuffisants", buttonStyle, GUILayout.Width(160), GUILayout.Height(24)))
-            {
-                onBuild?.Invoke();
-            }
-            GUI.enabled = true;
-        }
-
-        GUILayout.EndHorizontal();
-        GUILayout.Label($"<color=#aaaaaa>{desc}</color>", bodyStyle);
-        GUILayout.EndVertical();
-        GUILayout.Space(4);
-    }
-
-    private void DrawSpaceshipConstructionTab(GameManager gm)
-    {
-        GUILayout.Label("<b>Chantier Naval & Assemblage Modulaire du Vaisseau :</b>", headerStyle);
-        GUILayout.Label("Personnalisez et équipez votre navette spatiale de prospection directement dans le hangar terrestre.", bodyStyle);
-        GUILayout.Space(8);
-
-        shipScroll = GUILayout.BeginScrollView(shipScroll, false, true, GUILayout.Height(320));
-
-        // Part 1: Cockpit & Châssis (Base)
-        GUILayout.BeginVertical(cardBoxStyle);
-        GUILayout.Label("<b>Cockpit Panoramique & Châssis Principal</b> <color=#44ff88>[✓ INSTALLÉ DE SÉRIE]</color>", bodyStyle);
-        GUILayout.Label("<color=#aaaaaa>Structure de base profilée pour vol atmosphérique et rentrée orbitale.</color>", bodyStyle);
-        GUILayout.EndVertical();
-        GUILayout.Space(4);
-
-        // Part 2: Propulseurs
-        GUILayout.BeginVertical(cardBoxStyle);
-        GUILayout.Label("<b>Propulseurs Ioniques Standard</b> <color=#44ff88>[✓ INSTALLÉ DE SÉRIE]</color>", bodyStyle);
-        GUILayout.Label("<color=#aaaaaa>Moteurs de croisière et tuyères de contrôle d'attitude.</color>", bodyStyle);
-        GUILayout.EndVertical();
-        GUILayout.Space(4);
-
-        // Part 3: Laser Minier
-        DrawShipPartCard("Laser Minier Impulsionnel de Bord", "Permet de fragmenter et miner les astéroïdes rocheux et comètes.", 5000, hasMiningLaser, () => BuildShipPart("mining_laser"), gm);
-
-        // Part 4: Bouclier
-        DrawShipPartCard("Générateur de Bouclier Déflecteur", "Ajoute +50 MW de protection contre les micro-météorites et impacts.", 8000, hasShieldGenerators, () => BuildShipPart("shield"), gm);
-
-        // Part 5: Soute Étendue
-        DrawShipPartCard("Extension de Soute Modulaire (+50t)", "Double la capacité de stockage des minerais extraits.", 6000, hasExtraCargoBay, () => BuildShipPart("cargo"), gm);
-
-        GUILayout.EndScrollView();
-    }
-
-    private void DrawShipPartCard(string name, string desc, double cost, bool isInstalled, Action onInstall, GameManager gm)
-    {
-        GUILayout.BeginVertical(cardBoxStyle);
-        GUILayout.BeginHorizontal();
-
-        string status = isInstalled ? "<color=#44ff88>[✓ INSTALLÉ]</color>" : $"<color=#ffd700>[{cost:N0} CR]</color>";
-        GUILayout.Label($"<b>{name}</b> {status}", bodyStyle);
-
-        if (!isInstalled)
-        {
-            bool canAfford = gm.CanAfford(cost);
-            GUI.enabled = canAfford;
-            if (GUILayout.Button(canAfford ? "Installer Pièce" : "Fonds insuffisants", buttonStyle, GUILayout.Width(160), GUILayout.Height(24)))
-            {
-                onInstall?.Invoke();
-            }
-            GUI.enabled = true;
-        }
-
-        GUILayout.EndHorizontal();
-        GUILayout.Label($"<color=#aaaaaa>{desc}</color>", bodyStyle);
-        GUILayout.EndVertical();
-        GUILayout.Space(4);
-    }
-
-    private void DrawLaunchTab(GameManager gm)
-    {
-        GUILayout.Label("<b>Centre de Lancement & Navigation Orbitale :</b>", headerStyle);
-        GUILayout.Space(8);
-
-        GUILayout.BeginVertical(cardBoxStyle);
-        GUILayout.Label("<b>Vérifications pré-vol :</b>", headerStyle);
-        GUILayout.Label($"• Vaisseau prêt : <color=#44ff88>OPÉRATIONNEL ({gm.shipStats.shipName})</color>", bodyStyle);
-        GUILayout.Label($"• Station Spatiale : {(isStationLaunched ? "<color=#44ff88>DÉPLOYÉE EN ORBITE</color>" : "<color=#ffaa00>EN CHANTIER AU SOL</color>")}", bodyStyle);
-        GUILayout.Label($"• Carburant embarqué : <color=#00e5ff>{gm.shipStats.currentFuel:F0} / {gm.shipStats.maxFuel:F0} Litres</color>", bodyStyle);
-        GUILayout.Label($"• Intégrité coque : <color=#00e5ff>{gm.shipStats.currentHull:F0} / {gm.shipStats.maxHull:F0} PV</color>", bodyStyle);
-        GUILayout.EndVertical();
-
-        GUILayout.Space(16);
-
-        if (GUILayout.Button("DÉCOLLER VERS L'ESPACE (MISE EN ORBITE TERRESTRE)", activeBtnStyle, GUILayout.Height(48)))
-        {
-            LaunchMissionToSpace();
-        }
-    }
-
-    private void DrawCorporationTab(GameManager gm)
-    {
-        PlayerStats p = gm.playerStats;
-        if (p == null) return;
-
-        GUILayout.Label($"<b>Corporation :</b> <color=#00ffff>{p.corporationName}</color>", headerStyle);
-        GUILayout.Label($"<b>Commandant en chef :</b> {p.pilotName} ({p.title})", titleStyle);
-        GUILayout.Space(8);
-
-        GUILayout.BeginVertical(cardBoxStyle);
-        GUILayout.Label("<b>Ressources de la Compagnie :</b>", headerStyle);
-        GUILayout.Label($"• Trésorerie disponible : <color=#ffd700>{gm.Credits:N0} CR</color>", bodyStyle);
-        GUILayout.Label($"• Niveau exécutif : Rang {p.level} (XP: {p.currentXP} / {p.xpToNextLevel})", bodyStyle);
-        GUILayout.Label($"• Mode de départ : {p.difficultyName}", bodyStyle);
-        GUILayout.EndVertical();
-
-        GUILayout.Space(8);
-
-        GUILayout.BeginVertical(cardBoxStyle);
-        GUILayout.Label("<b>Influence Diplomatique & Relations de Faction :</b>", headerStyle);
-        GUILayout.Label($"• <b>Coalition Terrestre :</b> {p.repEarthCoalition:F0}%", bodyStyle);
-        GUILayout.Label($"• <b>République de Mars :</b> {p.repMarsRepublic:F0}%", bodyStyle);
-        GUILayout.Label($"• <b>Alliance de la Ceinture :</b> {p.repBeltAlliance:F0}%", bodyStyle);
-        GUILayout.Label($"• <b>Consortium Jovien :</b> {p.repJovianConsortium:F0}%", bodyStyle);
-        GUILayout.EndVertical();
-    }
-
-    #endregion
 }

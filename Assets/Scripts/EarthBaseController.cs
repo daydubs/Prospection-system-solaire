@@ -29,12 +29,17 @@ public class EarthBaseController : MonoBehaviour
 
     [Header("References")]
     public Transform hubScreenTransform;
+    public Transform hubCameraTarget; // Position/angle parfait pour cadrer et interagir avec l'écran géant
     public PlayerBaseController playerController;
     public Camera baseCamera;
     public Camera spaceCamera;
     public GameObject baseEnvironmentRoot;
     public GameObject spaceshipHangarModel;
     public GameObject spaceStationHoloModel;
+
+    [Header("Camera Transition")]
+    public float cameraTransitionDuration = 0.45f;
+    private Coroutine cameraTransitionCoroutine;
 
     [Header("Space Station Construction")]
     public bool isCoreBuilt = true;
@@ -103,6 +108,48 @@ public class EarthBaseController : MonoBehaviour
             earthCelestialBody = SolarSystemManager.Instance.allBodies.Find(b => b.bodyName.Equals("Terre", StringComparison.OrdinalIgnoreCase));
         }
 
+        // Auto-find hub camera viewpoint if not assigned
+        if (hubCameraTarget == null)
+        {
+            var camPoint = GameObject.Find("Hub_Camera_Viewpoint");
+            if (camPoint != null) hubCameraTarget = camPoint.transform;
+        }
+
+        // Initialize World Space Canvas with Base Camera
+        if (mainHubCanvas != null)
+        {
+            var canvasComp = mainHubCanvas.GetComponent<Canvas>();
+            if (canvasComp != null && baseCamera != null)
+            {
+                canvasComp.worldCamera = baseCamera;
+            }
+
+            // Auto-wire exit button
+            var exitBtn = mainHubCanvas.transform.Find("Principal/ExitBt")?.GetComponent<UnityEngine.UI.Button>();
+            if (exitBtn != null)
+            {
+                exitBtn.onClick.RemoveAllListeners();
+                exitBtn.onClick.AddListener(() => SetHubUIVisibility(false));
+            }
+        }
+
+        // Auto-wire tab buttons if assigned
+        if (tabButtons != null)
+        {
+            for (int i = 0; i < tabButtons.Length; i++)
+            {
+                if (tabButtons[i] != null)
+                {
+                    int tabIndex = i;
+                    tabButtons[i].onClick.RemoveAllListeners();
+                    tabButtons[i].onClick.AddListener(() => SelectTab(tabIndex));
+                }
+            }
+        }
+
+        // Make sure tab 0 is initialized
+        SelectTab(0);
+
         // Initially in Earth Base mode
         SetLocationState(GameLocationState.EarthBase);
     }
@@ -117,12 +164,16 @@ public class EarthBaseController : MonoBehaviour
             interactionPromptCanvas.SetActive(!isHubUIOpen && playerController != null && playerController.isNearHubScreen);
         }
 
-        if (Keyboard.current != null && Keyboard.current.eKey.wasPressedThisFrame)
+        // Toggle / interact on E or Enter
+        if (Keyboard.current != null && (Keyboard.current.eKey.wasPressedThisFrame || Keyboard.current.enterKey.wasPressedThisFrame))
         {
-            // If near screen or already open, toggle
-            if (playerController != null && playerController.isNearHubScreen && !isHubUIOpen)
+            if (isHubUIOpen)
             {
-                ToggleHubUI();
+                SetHubUIVisibility(false);
+            }
+            else if (playerController != null && playerController.isNearHubScreen)
+            {
+                SetHubUIVisibility(true);
             }
         }
 
@@ -147,17 +198,33 @@ public class EarthBaseController : MonoBehaviour
 
         if (mainHubCanvas != null)
         {
+            var canvasComp = mainHubCanvas.GetComponent<Canvas>();
+            if (canvasComp != null && baseCamera != null)
+            {
+                canvasComp.worldCamera = baseCamera;
+            }
             mainHubCanvas.SetActive(open);
         }
 
         if (open)
         {
+            if (playerController != null)
+            {
+                playerController.canMove = false;
+            }
+
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
-            RefreshUIValues(); // Actualise les données à l'ouverture
+
+            SelectTab(hubCurrentTab);
+            RefreshUIValues();
+
+            StartCameraTransition(true);
         }
         else
         {
+            StartCameraTransition(false);
+
             if (currentLocation == GameLocationState.EarthBase && (MainMenuController.Instance == null || !MainMenuController.Instance.isMenuOpen))
             {
                 Cursor.lockState = CursorLockMode.Locked;
@@ -169,6 +236,81 @@ public class EarthBaseController : MonoBehaviour
                 Cursor.visible = true;
             }
         }
+    }
+
+    private void StartCameraTransition(bool toHub)
+    {
+        if (cameraTransitionCoroutine != null)
+        {
+            StopCoroutine(cameraTransitionCoroutine);
+            cameraTransitionCoroutine = null;
+        }
+
+        if (baseCamera != null)
+        {
+            cameraTransitionCoroutine = StartCoroutine(CameraTransitionRoutine(toHub));
+        }
+    }
+
+    private System.Collections.IEnumerator CameraTransitionRoutine(bool toHub)
+    {
+        float duration = Mathf.Max(0.05f, cameraTransitionDuration);
+        float elapsed = 0f;
+
+        Vector3 startPos = baseCamera.transform.position;
+        Quaternion startRot = baseCamera.transform.rotation;
+
+        Vector3 targetPos;
+        Quaternion targetRot;
+
+        if (toHub)
+        {
+            targetPos = hubCameraTarget != null ? hubCameraTarget.position : new Vector3(-12f, 5.60f, 8.50f);
+            targetRot = hubCameraTarget != null ? hubCameraTarget.rotation : Quaternion.identity;
+        }
+        else
+        {
+            Vector3 localPos = playerController != null ? playerController.DefaultCameraLocalPos : new Vector3(0f, 0.75f, 0f);
+            float pitch = playerController != null ? playerController.CameraPitch : 0f;
+            targetPos = playerController != null ? playerController.transform.TransformPoint(localPos) : startPos;
+            targetRot = playerController != null ? playerController.transform.rotation * Quaternion.Euler(pitch, 0f, 0f) : startRot;
+        }
+
+        while (elapsed < duration)
+        {
+            elapsed += Time.unscaledDeltaTime;
+            float t = Mathf.Clamp01(elapsed / duration);
+            float smoothT = Mathf.SmoothStep(0f, 1f, t);
+
+            if (!toHub && playerController != null)
+            {
+                Vector3 localPos = playerController.DefaultCameraLocalPos;
+                float pitch = playerController.CameraPitch;
+                targetPos = playerController.transform.TransformPoint(localPos);
+                targetRot = playerController.transform.rotation * Quaternion.Euler(pitch, 0f, 0f);
+            }
+
+            baseCamera.transform.position = Vector3.Lerp(startPos, targetPos, smoothT);
+            baseCamera.transform.rotation = Quaternion.Slerp(startRot, targetRot, smoothT);
+            yield return null;
+        }
+
+        if (toHub)
+        {
+            baseCamera.transform.position = targetPos;
+            baseCamera.transform.rotation = targetRot;
+        }
+        else
+        {
+            if (playerController != null)
+            {
+                baseCamera.transform.localPosition = playerController.DefaultCameraLocalPos;
+                baseCamera.transform.localRotation = Quaternion.Euler(playerController.CameraPitch, 0f, 0f);
+                playerController.canMove = true;
+            }
+        }
+
+        cameraTransitionCoroutine = null;
     }
 
     // Nouvelle méthode pour changer d'onglet via les boutons
@@ -196,7 +338,6 @@ public class EarthBaseController : MonoBehaviour
                 if (tabButtons[i] != null)
                 {
                     var colors = tabButtons[i].colors;
-                    // Ex: gris pour inactif, bleu pour actif
                     colors.normalColor = (i == tabIndex) ? new Color(0f, 0.55f, 0.95f, 0.9f) : new Color(0.08f, 0.16f, 0.28f, 0.85f);
                     tabButtons[i].colors = colors;
                 }
@@ -210,20 +351,18 @@ public class EarthBaseController : MonoBehaviour
     public void RefreshUIValues()
     {
         GameManager gm = GameManager.Instance;
-        if (gm == null) return;
+        string credText = gm != null ? $"Crédits : {gm.Credits:N0} CR" : "Crédits : 50,000 CR";
+        string corpText = (gm != null && gm.playerStats != null) ? gm.playerStats.corporationName : "Astra Corp";
 
         if (creditsText != null)
         {
-            creditsText.text = $"Crédits : {gm.Credits:N0} CR";
+            creditsText.text = credText;
         }
 
-        if (corporationNameText != null && gm.playerStats != null)
+        if (corporationNameText != null)
         {
-            corporationNameText.text = gm.playerStats.corporationName;
+            corporationNameText.text = $"Commandant : {corpText}   |   {credText}   |   Statut : Opérationnel";
         }
-
-        // Vous pouvez ajouter ici l'actualisation du texte des boutons de construction/lancement
-        // selon l'état actuel (fonds suffisants, etc.)
     }
 
     public void SetLocationState(GameLocationState state)

@@ -26,6 +26,15 @@ public class PlayerBaseController : MonoBehaviour
     private CharacterController characterController;
     private float verticalVelocity = 0f;
     private float cameraPitch = 0f;
+    private Vector3 defaultCameraLocalPos = new Vector3(0f, 0.75f, 0f);
+
+    public float CameraPitch
+    {
+        get => cameraPitch;
+        set => cameraPitch = value;
+    }
+
+    public Vector3 DefaultCameraLocalPos => defaultCameraLocalPos;
 
     private void Awake()
     {
@@ -35,6 +44,10 @@ public class PlayerBaseController : MonoBehaviour
         {
             Camera cam = GetComponentInChildren<Camera>();
             if (cam != null) cameraTransform = cam.transform;
+        }
+        if (cameraTransform != null)
+        {
+            defaultCameraLocalPos = cameraTransform.localPosition;
         }
     }
 
@@ -135,19 +148,16 @@ public class PlayerBaseController : MonoBehaviour
 
     private void CheckInteraction()
     {
-        var keyboard = Keyboard.current;
-        if (keyboard == null) return;
+        if (EarthBaseController.Instance == null) return;
 
-        // Check distance to Giant Hub Screen
-        if (EarthBaseController.Instance != null && EarthBaseController.Instance.hubScreenTransform != null)
-        {
-            float dist = Vector3.Distance(transform.position, EarthBaseController.Instance.hubScreenTransform.position);
-            isNearHubScreen = dist <= interactRange;
+        float distDesk = EarthBaseController.Instance.hubScreenTransform != null
+            ? Vector3.Distance(transform.position, EarthBaseController.Instance.hubScreenTransform.position)
+            : float.MaxValue;
 
-            if (isNearHubScreen && (keyboard.eKey.wasPressedThisFrame || keyboard.enterKey.wasPressedThisFrame))
-            {
-                EarthBaseController.Instance.ToggleHubUI();
-            }
-        }
+        float distScreen = EarthBaseController.Instance.hubCameraTarget != null
+            ? Vector3.Distance(transform.position, EarthBaseController.Instance.hubCameraTarget.position)
+            : float.MaxValue;
+
+        isNearHubScreen = Mathf.Min(distDesk, distScreen) <= interactRange;
     }
 }

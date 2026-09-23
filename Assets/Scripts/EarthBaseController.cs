@@ -81,6 +81,29 @@ public class EarthBaseController : MonoBehaviour
     public TMPro.TMP_Text creditsText;
     public TMPro.TMP_Text corporationNameText;
 
+    [Header("UI Buttons & Texts - Station")]
+    public UnityEngine.UI.Button btnBuildCore;
+    public TMPro.TMP_Text txtCostCore;
+    public UnityEngine.UI.Button btnBuildSolar;
+    public TMPro.TMP_Text txtCostSolar;
+    public UnityEngine.UI.Button btnBuildLab;
+    public TMPro.TMP_Text txtCostLab;
+    public UnityEngine.UI.Button btnBuildDock;
+    public TMPro.TMP_Text txtCostDock;
+
+    [Header("UI Buttons & Texts - Spaceship")]
+    public UnityEngine.UI.Button btnBuildLaser;
+    public TMPro.TMP_Text txtCostLaser;
+    public UnityEngine.UI.Button btnBuildShield;
+    public TMPro.TMP_Text txtCostShield;
+    public UnityEngine.UI.Button btnBuildCargo;
+    public TMPro.TMP_Text txtCostCargo;
+
+    [Header("UI Buttons & Texts - Launch")]
+    public UnityEngine.UI.Button btnLaunchStation;
+    public TMPro.TMP_Text txtStatusLaunchStation;
+    public UnityEngine.UI.Button btnLaunchMission;
+
 
     private void Awake()
     {
@@ -222,8 +245,61 @@ public class EarthBaseController : MonoBehaviour
             corporationNameText.text = gm.playerStats.corporationName;
         }
 
-        // Vous pouvez ajouter ici l'actualisation du texte des boutons de construction/lancement
-        // selon l'état actuel (fonds suffisants, etc.)
+        // Actualisation du texte des boutons de construction/lancement
+
+        // STATION
+        UpdateModuleButton(btnBuildCore, txtCostCore, isCoreBuilt, 10000, gm.Credits);
+        UpdateModuleButton(btnBuildSolar, txtCostSolar, isSolarPanelsBuilt, 6000, gm.Credits);
+        UpdateModuleButton(btnBuildLab, txtCostLab, isScienceLabBuilt, 8000, gm.Credits);
+        UpdateModuleButton(btnBuildDock, txtCostDock, isDockingBayBuilt, 7000, gm.Credits);
+
+        // VAISSEAU
+        UpdateModuleButton(btnBuildLaser, txtCostLaser, hasMiningLaser, 5000, gm.Credits);
+        UpdateModuleButton(btnBuildShield, txtCostShield, hasShieldGenerators, 8000, gm.Credits);
+        UpdateModuleButton(btnBuildCargo, txtCostCargo, hasExtraCargoBay, 6000, gm.Credits);
+
+        // LANCEMENT STATION
+        if (btnLaunchStation != null && txtStatusLaunchStation != null)
+        {
+            if (isStationLaunched)
+            {
+                txtStatusLaunchStation.text = "Déjà lancée";
+                btnLaunchStation.interactable = false;
+            }
+            else if (IsStationReadyToLaunch)
+            {
+                txtStatusLaunchStation.text = "Prête au lancement";
+                btnLaunchStation.interactable = true;
+            }
+            else
+            {
+                txtStatusLaunchStation.text = "Conditions requises :\nCore & Solaires";
+                btnLaunchStation.interactable = false;
+            }
+        }
+
+        // LANCEMENT MISSION
+        if (btnLaunchMission != null)
+        {
+            // Le vaisseau est prêt s'il est assemblé (hasCockpit && hasHullChassis && hasIonEngines)
+            btnLaunchMission.interactable = isSpaceshipAssembled;
+        }
+    }
+
+    private void UpdateModuleButton(UnityEngine.UI.Button btn, TMPro.TMP_Text txt, bool isBuilt, double cost, double currentCredits)
+    {
+        if (btn == null || txt == null) return;
+
+        if (isBuilt)
+        {
+            txt.text = "Construit";
+            btn.interactable = false;
+        }
+        else
+        {
+            txt.text = $"{cost:N0} CR";
+            btn.interactable = currentCredits >= cost;
+        }
     }
 
     public void SetLocationState(GameLocationState state)
@@ -371,6 +447,7 @@ public class EarthBaseController : MonoBehaviour
         }
 
         CheckShipReadiness();
+        RefreshUIValues();
     }
 
     private void CheckShipReadiness()
@@ -445,6 +522,8 @@ public class EarthBaseController : MonoBehaviour
                 }
                 break;
         }
+
+        RefreshUIValues();
     }
 
     public bool IsStationReadyToLaunch => isCoreBuilt && isSolarPanelsBuilt;
@@ -464,6 +543,8 @@ public class EarthBaseController : MonoBehaviour
 
         SpawnOrbitalStationInSolarSystem();
         Debug.Log("[EarthBase] 🛰️ La Station Spatiale Terrestre 'Station Orbitale Alpha' a été déployée en orbite avec succès !");
+
+        RefreshUIValues();
     }
 
     private void SpawnOrbitalStationInSolarSystem()

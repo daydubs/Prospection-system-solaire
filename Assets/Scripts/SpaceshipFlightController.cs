@@ -307,7 +307,10 @@ public class SpaceshipFlightController : MonoBehaviour
         float desiredSpeed = Mathf.Clamp(dist * 0.8f, 0.5f, maxAllowedSpeed);
         currentSpeed = Mathf.MoveTowards(currentSpeed, desiredSpeed, currentAcceleration * simDt);
 
-        transform.position = Vector3.MoveTowards(transform.position, targetPos, currentSpeed * simDt);
+        // Tether the movement to the moving target's reference frame
+        Vector3 currentOffset = transform.position - targetPos;
+        Vector3 newOffset = Vector3.MoveTowards(currentOffset, Vector3.zero, currentSpeed * simDt);
+        transform.position = targetPos + newOffset;
     }
 
     private void UpdateOrbitInspect()

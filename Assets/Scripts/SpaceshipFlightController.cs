@@ -10,7 +10,7 @@ public enum FlightMode
 
 public class SpaceshipFlightController : MonoBehaviour
 {
-    [Header("Flight Parameters (Calibrated: 2-3 in-game days Earth->Moon at cruise speed)")]
+    [Header("Flight Parameters")]
     public float normalSpeed = 0.08f;
     public float boostMultiplier = 3.5f;
     public float rotationSpeed = 50f;
@@ -23,9 +23,9 @@ public class SpaceshipFlightController : MonoBehaviour
     public float techSpeedMultiplier = 1f;
     public bool hasWarpTechnology = false;
 
-    [Header("Autopilot Parameters")]
-    public float baseAutoMaxSpeed = 10f; // Was warpMaxSpeed (160f)
-    public float baseAutoAcceleration = 2f; // Was warpAcceleration (15f)
+    [Header("Autopilot Parameters (Calibrated: ~2 in-game days Earth->Moon)")]
+    public float baseAutoMaxSpeed = 5.2f; // 10f -> 5.2f for 2-day travel
+    public float baseAutoAcceleration = 1f; // Scaled down with max speed
     public float arriveDistanceOffset = 2.5f;
     public float arrivalDamping = 5f;
 

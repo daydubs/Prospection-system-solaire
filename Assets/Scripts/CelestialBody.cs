@@ -151,6 +151,28 @@ public class CelestialBody : MonoBehaviour
         }
     }
 
+
+    public Vector3 GetVelocity()
+    {
+        if (orbitCenter == null || orbitRadius <= 0.01f || Mathf.Abs(orbitPeriodDays) < 0.0001f)
+            return Vector3.zero;
+
+        float inGameSecondsMultiplier = GameManager.Instance != null ? GameManager.Instance.inGameSecondsPerRealSecond : 720f;
+        // radians per real second
+        float radPerSec = (2f * Mathf.PI / orbitPeriodDays) * (inGameSecondsMultiplier / 86400f);
+
+        // Remove timeScale multiplication from here because simDt in FlightController already handles it.
+        // If we scaled it here too, the ship would aim for a quad-scaled velocity.
+
+        float scaledOrbitRadius = orbitRadius * orbitCenter.lossyScale.x;
+
+        float rad = currentOrbitAngle * Mathf.Deg2Rad;
+        Vector3 localVel = new Vector3(-Mathf.Sin(rad) * scaledOrbitRadius * radPerSec, 0f, Mathf.Cos(rad) * scaledOrbitRadius * radPerSec);
+
+        Quaternion inclinationRot = Quaternion.Euler(orbitInclination, 0f, 0f);
+        return inclinationRot * localVel;
+    }
+
     public void UpdatePosition(float deltaTime)
     {
         float inGameSecondsMultiplier = GameManager.Instance != null ? GameManager.Instance.inGameSecondsPerRealSecond : 720f;

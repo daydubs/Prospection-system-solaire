@@ -297,19 +297,51 @@ public class SpaceshipFlightController : MonoBehaviour
             return;
         }
 
-        // Rotate smoothly towards target
-        Quaternion targetRot = Quaternion.LookRotation(toTarget.normalized);
-        transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, 5f * Time.deltaTime);
+        // Get target velocity
+        Vector3 targetVelocity = dest.GetVelocity();
+        float targetSpeedMagnitude = targetVelocity.magnitude;
 
-        // Speed calculation based on distance and tech
+        // Speed calculation based on distance and tech, dynamically adjusting to target speed
         float maxAllowedSpeed = baseAutoMaxSpeed * techSpeedMultiplier;
-        float currentAcceleration = baseAutoAcceleration * techSpeedMultiplier;
 
-        // Ensure we don't slow down too much so moving planets don't outrun us
-        float desiredSpeed = Mathf.Clamp(distToOrbit * 0.8f, 5f, maxAllowedSpeed);
+        // Boost max speed and acceleration if the target is extremely fast
+        if (targetSpeedMagnitude > maxAllowedSpeed * 0.5f)
+        {
+            maxAllowedSpeed = targetSpeedMagnitude * 2.0f + maxAllowedSpeed;
+        }
+
+        float currentAcceleration = baseAutoAcceleration * techSpeedMultiplier;
+        if (targetSpeedMagnitude > currentAcceleration * 0.5f)
+        {
+            currentAcceleration = targetSpeedMagnitude + currentAcceleration * 2f;
+        }
+
+        // Distance-based braking curve, ensuring we stay faster than target until close
+        float brakingDist = maxAllowedSpeed * 2f;
+        float desiredSpeed = maxAllowedSpeed;
+
+        if (distToOrbit < brakingDist)
+        {
+            float t = distToOrbit / brakingDist;
+            desiredSpeed = Mathf.Max(targetSpeedMagnitude + 5f, maxAllowedSpeed * t);
+        }
+
         currentSpeed = Mathf.MoveTowards(currentSpeed, desiredSpeed, currentAcceleration * simDt);
 
-        transform.position = Vector3.MoveTowards(transform.position, targetPos, currentSpeed * simDt);
+        // Movement with interception offset based on target velocity
+        float timeToIntercept = distToCenter / Mathf.Max(currentSpeed, 0.1f);
+        // Clamp interception prediction to avoid aiming too far into the future when far away
+        timeToIntercept = Mathf.Clamp(timeToIntercept, 0f, 10f);
+        Vector3 interceptPos = targetPos + targetVelocity * timeToIntercept;
+
+        Vector3 interceptDir = (interceptPos - transform.position).normalized;
+        if (interceptDir.sqrMagnitude < 0.001f) interceptDir = toTarget.normalized;
+
+        // Rotate smoothly towards interception point
+        Quaternion targetRot = Quaternion.LookRotation(interceptDir);
+        transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, 5f * Time.deltaTime);
+
+        transform.position += interceptDir * currentSpeed * simDt;
     }
 
     private void UpdateOrbitInspect()

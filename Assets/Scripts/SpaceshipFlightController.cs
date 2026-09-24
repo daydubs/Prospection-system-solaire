@@ -281,12 +281,13 @@ public class SpaceshipFlightController : MonoBehaviour
         CelestialBody dest = SolarSystemManager.Instance.currentDestination;
         float scaledRadius = dest.bodyRadius * dest.transform.lossyScale.x;
         float targetDistFromCenter = Mathf.Max(scaledRadius * arriveDistanceOffset, 6f);
-        Vector3 targetPos = dest.GetApproachPosition(transform.position, arriveDistanceOffset);
+        Vector3 targetPos = dest.transform.position;
 
         Vector3 toTarget = targetPos - transform.position;
-        float dist = toTarget.magnitude;
+        float distToCenter = toTarget.magnitude;
+        float distToOrbit = Mathf.Max(0f, distToCenter - targetDistFromCenter);
 
-        if (dist < 2f)
+        if (distToOrbit < 2f)
         {
             // Arrived at destination orbit
             currentSpeed = 0f;
@@ -304,7 +305,8 @@ public class SpaceshipFlightController : MonoBehaviour
         float maxAllowedSpeed = baseAutoMaxSpeed * techSpeedMultiplier;
         float currentAcceleration = baseAutoAcceleration * techSpeedMultiplier;
 
-        float desiredSpeed = Mathf.Clamp(dist * 0.8f, 0.5f, maxAllowedSpeed);
+        // Ensure we don't slow down too much so moving planets don't outrun us
+        float desiredSpeed = Mathf.Clamp(distToOrbit * 0.8f, 5f, maxAllowedSpeed);
         currentSpeed = Mathf.MoveTowards(currentSpeed, desiredSpeed, currentAcceleration * simDt);
 
         transform.position = Vector3.MoveTowards(transform.position, targetPos, currentSpeed * simDt);
@@ -377,8 +379,11 @@ public class SpaceshipFlightController : MonoBehaviour
         {
             if (cameraMountPoint != null)
             {
-                shipCamera.transform.position = Vector3.Lerp(shipCamera.transform.position, cameraMountPoint.position, 15f * Time.deltaTime);
-                shipCamera.transform.rotation = Quaternion.Slerp(shipCamera.transform.rotation, cameraMountPoint.rotation, 15f * Time.deltaTime);
+                // Use a higher lerp speed to ensure camera keeps up when time is accelerated
+                float lerpSpeed = 15f * Mathf.Max(1f, SolarSystemManager.Instance != null ? SolarSystemManager.Instance.timeScale : 1f);
+
+                shipCamera.transform.position = Vector3.Lerp(shipCamera.transform.position, cameraMountPoint.position, lerpSpeed * Time.deltaTime);
+                shipCamera.transform.rotation = Quaternion.Slerp(shipCamera.transform.rotation, cameraMountPoint.rotation, lerpSpeed * Time.deltaTime);
             }
         }
     }

@@ -170,7 +170,18 @@ public class CelestialBody : MonoBehaviour
         Vector3 localVel = new Vector3(-Mathf.Sin(rad) * scaledOrbitRadius * radPerSec, 0f, Mathf.Cos(rad) * scaledOrbitRadius * radPerSec);
 
         Quaternion inclinationRot = Quaternion.Euler(orbitInclination, 0f, 0f);
-        return inclinationRot * localVel;
+        Vector3 absoluteVel = inclinationRot * localVel;
+
+        if (orbitCenter != null)
+        {
+            CelestialBody centerBody = orbitCenter.GetComponent<CelestialBody>();
+            if (centerBody != null)
+            {
+                absoluteVel += centerBody.GetVelocity();
+            }
+        }
+
+        return absoluteVel;
     }
 
     public void UpdatePosition(float deltaTime)

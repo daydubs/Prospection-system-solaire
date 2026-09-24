@@ -41,33 +41,47 @@ public class SolarSystemManager : MonoBehaviour
 
     private void Start()
     {
+        CelestialBody earth = allBodies.Find(b => b.bodyName.Equals("Terre", StringComparison.OrdinalIgnoreCase) || b.bodyName.Equals("Earth", StringComparison.OrdinalIgnoreCase));
+
         if (centralStar != null && currentDestination == null)
         {
             // Default select Earth if available, else central star
-            CelestialBody earth = allBodies.Find(b => b.bodyName.Equals("Terre", StringComparison.OrdinalIgnoreCase) || b.bodyName.Equals("Earth", StringComparison.OrdinalIgnoreCase));
             CelestialBody dest = earth != null ? earth : centralStar;
             SetDestination(dest);
+        }
 
-            // Force spaceship to start in orbit of the initial destination
-            if (playerShip != null)
+        // Initialize positions of all celestial bodies first
+        if (centralStar != null)
+        {
+            centralStar.UpdatePosition(0f);
+        }
+        for (int i = 0; i < allBodies.Count; i++)
+        {
+            if (allBodies[i] != null && allBodies[i] != centralStar)
             {
-                playerShip.WarpToDestination();
+                allBodies[i].UpdatePosition(0f);
             }
+        }
 
-            // Fix Station Orbitale Alpha orbit if present
-            if (earth != null)
+        // Fix Station Orbitale Alpha orbit if present
+        if (earth != null)
+        {
+            CelestialBody station = allBodies.Find(b => b.bodyName.Equals("Station Orbitale Alpha", StringComparison.OrdinalIgnoreCase));
+            if (station != null)
             {
-                CelestialBody station = allBodies.Find(b => b.bodyName.Equals("Station Orbitale Alpha", StringComparison.OrdinalIgnoreCase));
-                if (station != null)
+                station.orbitCenter = earth.transform;
+                if (!earth.satellites.Contains(station))
                 {
-                    station.orbitCenter = earth.transform;
-                    if (!earth.satellites.Contains(station))
-                    {
-                        earth.satellites.Add(station);
-                    }
-                    station.UpdatePosition(0f);
+                    earth.satellites.Add(station);
                 }
+                station.UpdatePosition(0f);
             }
+        }
+
+        // Force spaceship to start in orbit of the destination
+        if (playerShip != null && currentDestination != null)
+        {
+            playerShip.WarpToDestination();
         }
     }
 

@@ -28,6 +28,9 @@ public class SolarSystemBuilder : MonoBehaviour
         SolarSystemManager manager = root.AddComponent<SolarSystemManager>();
         SolarSystemUI ui = root.AddComponent<SolarSystemUI>();
 
+        // Add MovementLogger for debugging
+        root.AddComponent<MovementLogger>();
+
         // 2. Space Environment (Starfield & ambient)
         CreateStarfield(root.transform);
 

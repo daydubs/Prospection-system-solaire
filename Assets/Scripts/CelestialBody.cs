@@ -203,7 +203,7 @@ public class CelestialBody : MonoBehaviour
         // Keep a clear offset from the body's scaled surface
         float scaledRadius = bodyRadius * transform.lossyScale.x;
         float distance = Mathf.Max(scaledRadius * offsetMultiplier, 4f);
-        return transform.position + dir * distance + Vector3.up * (distance * 0.25f);
+        return transform.position + dir * distance;
     }
 
     private void OnMouseDown()

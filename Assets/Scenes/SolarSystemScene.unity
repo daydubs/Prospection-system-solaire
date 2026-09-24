@@ -13686,6 +13686,50 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 340685068}
   m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &344865268
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 344865270}
+  - component: {fileID: 344865269}
+  m_Layer: 0
+  m_Name: MovementLogger
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &344865269
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 344865268}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2faa39cf985da564db3819778e5ad16b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MovementLogger
+--- !u!4 &344865270
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 344865268}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 5592.6772, y: 27.20854, z: -2316.5671}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &347247895
 GameObject:
   m_ObjectHideFlags: 0
@@ -16819,7 +16863,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 34d80c0e464257f4eadbf79054982cd6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SolarSystemUI
-  systemManager: {fileID: 0}
+  systemManager: {fileID: 458186094}
   playerShip: {fileID: 491591398}
   mainCam: {fileID: 330585545}
   primaryColor: {r: 0, g: 0.85, b: 1, a: 1}
@@ -17702,6 +17746,10 @@ PrefabInstance:
       propertyPath: shipCamera
       value: 
       objectReference: {fileID: 330585545}
+    - target: {fileID: 1654576545961454509, guid: 9907fa8e0d2bc3647adefa08e0e665f7, type: 3}
+      propertyPath: normalSpeed
+      value: 0.8
+      objectReference: {fileID: 0}
     - target: {fileID: 1654576545961454509, guid: 9907fa8e0d2bc3647adefa08e0e665f7, type: 3}
       propertyPath: maxOrbitDist
       value: 150
@@ -86333,3 +86381,4 @@ SceneRoots:
   - {fileID: 916728426}
   - {fileID: 1210904452}
   - {fileID: 458186095}
+  - {fileID: 344865270}

@@ -45,7 +45,29 @@ public class SolarSystemManager : MonoBehaviour
         {
             // Default select Earth if available, else central star
             CelestialBody earth = allBodies.Find(b => b.bodyName.Equals("Terre", StringComparison.OrdinalIgnoreCase) || b.bodyName.Equals("Earth", StringComparison.OrdinalIgnoreCase));
-            SetDestination(earth != null ? earth : centralStar);
+            CelestialBody dest = earth != null ? earth : centralStar;
+            SetDestination(dest);
+
+            // Force spaceship to start in orbit of the initial destination
+            if (playerShip != null)
+            {
+                playerShip.WarpToDestination();
+            }
+
+            // Fix Station Orbitale Alpha orbit if present
+            if (earth != null)
+            {
+                CelestialBody station = allBodies.Find(b => b.bodyName.Equals("Station Orbitale Alpha", StringComparison.OrdinalIgnoreCase));
+                if (station != null)
+                {
+                    station.orbitCenter = earth.transform;
+                    if (!earth.satellites.Contains(station))
+                    {
+                        earth.satellites.Add(station);
+                    }
+                    station.UpdatePosition(0f);
+                }
+            }
         }
     }
 

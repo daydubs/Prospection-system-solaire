@@ -85,8 +85,12 @@ public class SpaceshipFlightController : MonoBehaviour
 
     private void Update()
     {
-        UpdateDestinationDistance();
         HandleFlightModeInputs();
+    }
+
+    private void LateUpdate()
+    {
+        UpdateDestinationDistance();
 
         switch (currentMode)
         {

@@ -169,7 +169,8 @@ public class SpaceshipFlightController : MonoBehaviour
             if (SolarSystemManager.Instance != null && SolarSystemManager.Instance.currentDestination != null)
             {
                 CelestialBody dest = SolarSystemManager.Instance.currentDestination;
-                currentOrbitDist = Mathf.Max(dest.bodyRadius * orbitDistanceMultiplier, 5f);
+                float scaledRadius = dest.bodyRadius * dest.transform.lossyScale.x;
+                currentOrbitDist = Mathf.Max(scaledRadius * orbitDistanceMultiplier, 5f);
             }
         }
     }
@@ -274,7 +275,8 @@ public class SpaceshipFlightController : MonoBehaviour
         if (simDt <= 0f) return;
 
         CelestialBody dest = SolarSystemManager.Instance.currentDestination;
-        float targetDistFromCenter = Mathf.Max(dest.bodyRadius * arriveDistanceOffset, 6f);
+        float scaledRadius = dest.bodyRadius * dest.transform.lossyScale.x;
+        float targetDistFromCenter = Mathf.Max(scaledRadius * arriveDistanceOffset, 6f);
         Vector3 targetPos = dest.GetApproachPosition(transform.position, arriveDistanceOffset);
 
         Vector3 toTarget = targetPos - transform.position;
@@ -314,6 +316,7 @@ public class SpaceshipFlightController : MonoBehaviour
 
         CelestialBody dest = SolarSystemManager.Instance.currentDestination;
         var mouse = Mouse.current;
+        float scaledRadius = dest.bodyRadius * dest.transform.lossyScale.x;
 
         if (mouse != null)
         {
@@ -322,7 +325,7 @@ public class SpaceshipFlightController : MonoBehaviour
             if (Mathf.Abs(scroll) > 0.01f)
             {
                 currentOrbitDist -= scroll * 0.05f * (currentOrbitDist * 0.2f);
-                currentOrbitDist = Mathf.Clamp(currentOrbitDist, dest.bodyRadius * 1.3f, maxOrbitDist);
+                currentOrbitDist = Mathf.Clamp(currentOrbitDist, scaledRadius * 1.3f, maxOrbitDist);
             }
 
             // Right click drag rotate

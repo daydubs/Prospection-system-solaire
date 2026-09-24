@@ -86,7 +86,7 @@ public class SolarSystemBuilder : MonoBehaviour
             "Notre planète d'origine, seul monde connu abritant la vie et de vastes océans d'eau liquide.",
             "• Distance moyenne : 149,6 millions km (1,0 UA)\n• Période orbitale : 365,25 jours\n• Satellites : 1 (La Lune)\n• Atmosphère : 78% Azote, 21% Oxygène");
 
-        CelestialBody moon = CreateMoon(root.transform, earth.transform, "Lune", 25f, 27.3f, 0.7f, mats["Moon"], 27.3f,
+        CelestialBody moon = CreateMoon(root.transform, earth.transform, "Lune", 75f, 27.3f, 0.7f, mats["Moon"], 27.3f,
             new Color(0.8f, 0.8f, 0.85f, 0.4f),
             "Le seul satellite naturel permanent de la Terre et le cinquième plus grand satellite du système solaire.",
             "• Distance de la Terre : 384 400 km (~2-3 jours de vol à vitesse de croisière)\n• Période orbitale : 27,3 jours\n• Gravité : 1,62 m/s² (1/6ème terrestre)");

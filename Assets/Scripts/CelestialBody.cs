@@ -126,12 +126,18 @@ public class CelestialBody : MonoBehaviour
     {
         if (orbitLine == null || orbitRadius <= 0.1f) return;
 
+        float scaledOrbitRadius = orbitRadius;
+        if (orbitCenter != null)
+        {
+            scaledOrbitRadius *= orbitCenter.lossyScale.x;
+        }
+
         Quaternion inclinationRot = Quaternion.Euler(orbitInclination, 0f, 0f);
         Vector3[] points = new Vector3[orbitResolution];
         for (int i = 0; i < orbitResolution; i++)
         {
             float angle = (i / (float)orbitResolution) * 360f * Mathf.Deg2Rad;
-            Vector3 localPos = new Vector3(Mathf.Cos(angle) * orbitRadius, 0f, Mathf.Sin(angle) * orbitRadius);
+            Vector3 localPos = new Vector3(Mathf.Cos(angle) * scaledOrbitRadius, 0f, Mathf.Sin(angle) * scaledOrbitRadius);
             points[i] = inclinationRot * localPos;
         }
         orbitLine.SetPositions(points);
@@ -163,8 +169,10 @@ public class CelestialBody : MonoBehaviour
             if (currentOrbitAngle >= 360f) currentOrbitAngle -= 360f;
             if (currentOrbitAngle < 0f) currentOrbitAngle += 360f;
 
+            float scaledOrbitRadius = orbitRadius * orbitCenter.lossyScale.x;
+
             float rad = currentOrbitAngle * Mathf.Deg2Rad;
-            Vector3 orbitLocal = new Vector3(Mathf.Cos(rad) * orbitRadius, 0f, Mathf.Sin(rad) * orbitRadius);
+            Vector3 orbitLocal = new Vector3(Mathf.Cos(rad) * scaledOrbitRadius, 0f, Mathf.Sin(rad) * scaledOrbitRadius);
             Quaternion inclinationRot = Quaternion.Euler(orbitInclination, 0f, 0f);
             Vector3 rotatedLocal = inclinationRot * orbitLocal;
 
@@ -192,8 +200,9 @@ public class CelestialBody : MonoBehaviour
     {
         Vector3 dir = (incomingDirection - transform.position).normalized;
         if (dir.sqrMagnitude < 0.001f) dir = Vector3.forward;
-        // Keep a clear offset from the body's surface
-        float distance = Mathf.Max(bodyRadius * offsetMultiplier, 4f);
+        // Keep a clear offset from the body's scaled surface
+        float scaledRadius = bodyRadius * transform.lossyScale.x;
+        float distance = Mathf.Max(scaledRadius * offsetMultiplier, 4f);
         return transform.position + dir * distance + Vector3.up * (distance * 0.25f);
     }
 

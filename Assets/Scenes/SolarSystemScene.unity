@@ -17748,11 +17748,11 @@ PrefabInstance:
       objectReference: {fileID: 330585545}
     - target: {fileID: 1654576545961454509, guid: 9907fa8e0d2bc3647adefa08e0e665f7, type: 3}
       propertyPath: normalSpeed
-      value: 0.8
+      value: 0.08
       objectReference: {fileID: 0}
     - target: {fileID: 1654576545961454509, guid: 9907fa8e0d2bc3647adefa08e0e665f7, type: 3}
       propertyPath: maxOrbitDist
-      value: 150
+      value: 1500
       objectReference: {fileID: 0}
     - target: {fileID: 3455657487070761185, guid: 9907fa8e0d2bc3647adefa08e0e665f7, type: 3}
       propertyPath: m_Intensity

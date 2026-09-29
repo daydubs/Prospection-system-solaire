@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace InventoryFramework
 {
@@ -18,17 +19,20 @@ namespace InventoryFramework
 
         void Update()
         {
-            if (Input.GetKeyDown(KeyCode.Keypad1))
+            if (Keyboard.current != null)
             {
-                AddItem(testItem);
-            }
-            if (Input.GetKeyDown(KeyCode.Keypad2))
-            {
-                AddItem(testItem2);
-            }
-            if (Input.GetKeyDown(KeyCode.Keypad3))
-            {
-                AddItem(testItem3);
+                if (Keyboard.current.numpad1Key.wasPressedThisFrame || Keyboard.current.digit1Key.wasPressedThisFrame)
+                {
+                    AddItem(testItem);
+                }
+                if (Keyboard.current.numpad2Key.wasPressedThisFrame || Keyboard.current.digit2Key.wasPressedThisFrame)
+                {
+                    AddItem(testItem2);
+                }
+                if (Keyboard.current.numpad3Key.wasPressedThisFrame || Keyboard.current.digit3Key.wasPressedThisFrame)
+                {
+                    AddItem(testItem3);
+                }
             }
         }
 

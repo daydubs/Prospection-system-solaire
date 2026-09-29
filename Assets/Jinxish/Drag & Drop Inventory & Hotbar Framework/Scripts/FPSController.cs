@@ -26,6 +26,23 @@ namespace InventoryFramework
 
 
         CharacterController characterController;
+        private InputSystem_Actions inputActions;
+
+        private void Awake()
+        {
+            inputActions = new InputSystem_Actions();
+        }
+
+        private void OnEnable()
+        {
+            inputActions.Player.Enable();
+        }
+
+        private void OnDisable()
+        {
+            inputActions.Player.Disable();
+        }
+
         void Start()
         {
             characterController = GetComponent<CharacterController>();
@@ -38,22 +55,12 @@ namespace InventoryFramework
             Vector3 forward = transform.TransformDirection(Vector3.forward);
             Vector3 right = transform.TransformDirection(Vector3.right);
 
-            var keyboard = Keyboard.current;
-            var mouse = Mouse.current;
-
             // Press Left Shift to run
-            bool isRunning = keyboard != null && keyboard.leftShiftKey.isPressed;
+            bool isRunning = inputActions.Player.Sprint.IsPressed();
 
-            float verticalInput = 0f;
-            float horizontalInput = 0f;
-
-            if (keyboard != null)
-            {
-                if (keyboard.wKey.isPressed || keyboard.upArrowKey.isPressed) verticalInput += 1f;
-                if (keyboard.sKey.isPressed || keyboard.downArrowKey.isPressed) verticalInput -= 1f;
-                if (keyboard.dKey.isPressed || keyboard.rightArrowKey.isPressed) horizontalInput += 1f;
-                if (keyboard.aKey.isPressed || keyboard.leftArrowKey.isPressed) horizontalInput -= 1f;
-            }
+            Vector2 moveInput = inputActions.Player.Move.ReadValue<Vector2>();
+            float verticalInput = moveInput.y;
+            float horizontalInput = moveInput.x;
 
             float curSpeedX = canMove ? (isRunning ? runSpeed : walkSpeed) * verticalInput : 0;
             float curSpeedY = canMove ? (isRunning ? runSpeed : walkSpeed) * horizontalInput : 0;
@@ -63,7 +70,7 @@ namespace InventoryFramework
             #endregion
 
             #region Handles Jumping
-            bool isJumping = keyboard != null && keyboard.spaceKey.isPressed;
+            bool isJumping = inputActions.Player.Jump.IsPressed();
             if (isJumping && canMove && characterController.isGrounded)
             {
                 moveDirection.y = jumpPower;
@@ -83,9 +90,9 @@ namespace InventoryFramework
             #region Handles Rotation
             characterController.Move(moveDirection * Time.deltaTime);
 
-            if (canMove && mouse != null)
+            if (canMove)
             {
-                Vector2 mouseDelta = mouse.delta.ReadValue();
+                Vector2 mouseDelta = inputActions.Player.Look.ReadValue<Vector2>();
 
                 // Unity's old Input.GetAxis("Mouse X/Y") returns values scaled by sensitivity and framerate.
                 // With new Input System delta, we might need a small multiplier. Let's multiply by 0.1f as a reasonable default for raw delta.

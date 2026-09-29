@@ -33,14 +33,30 @@ namespace InventoryFramework
 
         public ItemTooltip tooltip;
 
+        private InputSystem_Actions inputActions;
+
+        private void Awake()
+        {
+            inputActions = new InputSystem_Actions();
+        }
+
+        private void OnEnable()
+        {
+            inputActions.Player.Enable();
+            inputActions.UI.Enable();
+        }
+
+        private void OnDisable()
+        {
+            inputActions.Player.Disable();
+            inputActions.UI.Disable();
+        }
+
         void Update()
         {
             if (tooltip != null && tooltip.gameObject.activeSelf)
             {
-                if (Mouse.current != null)
-                {
-                    tooltip.UpdatePosition(Mouse.current.position.ReadValue());
-                }
+                tooltip.UpdatePosition(inputActions.UI.Point.ReadValue<Vector2>());
             }
         }
 
@@ -103,7 +119,7 @@ namespace InventoryFramework
             {
                 amount = Mathf.CeilToInt(s.count / 2f);
             }
-            else if (Keyboard.current != null && Keyboard.current.leftShiftKey.isPressed)
+            else if (inputActions.Player.Sprint.IsPressed())
             {
                 amount = 1;
             }

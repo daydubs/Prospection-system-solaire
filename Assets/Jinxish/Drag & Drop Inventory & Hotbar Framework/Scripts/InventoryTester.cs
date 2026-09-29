@@ -12,24 +12,44 @@ namespace InventoryFramework
 
         private ItemPickupHandler itemPickupHandler;
 
+        private InputSystem_Actions inputActions;
+
+        private void Awake()
+        {
+            inputActions = new InputSystem_Actions();
+        }
+
+        private void OnEnable()
+        {
+            inputActions.Player.Enable();
+            inputActions.Player.Hotbar.performed += OnHotbarPerformed;
+        }
+
+        private void OnDisable()
+        {
+            inputActions.Player.Hotbar.performed -= OnHotbarPerformed;
+            inputActions.Player.Disable();
+        }
+
         void Start()
         {
             itemPickupHandler = GameObject.FindGameObjectWithTag("Player").GetComponent<ItemPickupHandler>();
         }
 
-        void Update()
+        private void OnHotbarPerformed(InputAction.CallbackContext context)
         {
-            if (Keyboard.current != null)
+            string controlName = context.control.name;
+            if (int.TryParse(controlName, out int number))
             {
-                if (Keyboard.current.numpad1Key.wasPressedThisFrame || Keyboard.current.digit1Key.wasPressedThisFrame)
+                if (number == 1)
                 {
                     AddItem(testItem);
                 }
-                if (Keyboard.current.numpad2Key.wasPressedThisFrame || Keyboard.current.digit2Key.wasPressedThisFrame)
+                else if (number == 2)
                 {
                     AddItem(testItem2);
                 }
-                if (Keyboard.current.numpad3Key.wasPressedThisFrame || Keyboard.current.digit3Key.wasPressedThisFrame)
+                else if (number == 3)
                 {
                     AddItem(testItem3);
                 }

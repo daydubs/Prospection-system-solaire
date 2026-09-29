@@ -20,6 +20,29 @@ namespace InventoryFramework
         public RectTransform dragLayer;
         public Canvas rootCanvas;
 
+        private InputSystem_Actions inputActions;
+
+        private void Awake()
+        {
+            inputActions = new InputSystem_Actions();
+        }
+
+        private void OnEnable()
+        {
+            inputActions.Player.Enable();
+            inputActions.Player.Hotbar.performed += OnHotbarPerformed;
+            inputActions.Player.Next.performed += OnNextPerformed;
+            inputActions.Player.Previous.performed += OnPreviousPerformed;
+        }
+
+        private void OnDisable()
+        {
+            inputActions.Player.Hotbar.performed -= OnHotbarPerformed;
+            inputActions.Player.Next.performed -= OnNextPerformed;
+            inputActions.Player.Previous.performed -= OnPreviousPerformed;
+            inputActions.Player.Disable();
+        }
+
         void Start()
         {
             foreach (Transform child in slotParent) Destroy(child.gameObject);
@@ -36,47 +59,41 @@ namespace InventoryFramework
             RefreshUI();
         }
 
-        void Update()
+        private void OnHotbarPerformed(InputAction.CallbackContext context)
         {
-            if (Keyboard.current != null)
+            // Parse control name to get the digit
+            string controlName = context.control.name;
+            if (int.TryParse(controlName, out int number))
             {
-                var keys = new[] {
-                    Keyboard.current.digit1Key,
-                    Keyboard.current.digit2Key,
-                    Keyboard.current.digit3Key,
-                    Keyboard.current.digit4Key,
-                    Keyboard.current.digit5Key,
-                    Keyboard.current.digit6Key,
-                    Keyboard.current.digit7Key,
-                    Keyboard.current.digit8Key,
-                    Keyboard.current.digit9Key,
-                    Keyboard.current.digit0Key
-                };
-
-                for (int i = 0; i < hotbar.size && i < keys.Length; i++)
+                // Number is 1-9 (or 0 for 10). Let's adjust to 0-based index.
+                int newIndex = -1;
+                if (number >= 1 && number <= 9)
                 {
-                    if (keys[i].wasPressedThisFrame)
-                    {
-                        selectedIndex = i;
-                        RefreshUI();
-                    }
+                    newIndex = number - 1;
                 }
-            }
-
-            if (Mouse.current != null)
-            {
-                float scroll = Mouse.current.scroll.ReadValue().y;
-                if (scroll > 0f)
+                else if (number == 0) // Key '0' maps to index 9
                 {
-                    selectedIndex = (selectedIndex + 1) % hotbar.size;
-                    RefreshUI();
+                    newIndex = 9;
                 }
-                else if (scroll < 0f)
+
+                if (newIndex != -1 && newIndex < hotbar.size)
                 {
-                    selectedIndex = (selectedIndex - 1 + hotbar.size) % hotbar.size;
+                    selectedIndex = newIndex;
                     RefreshUI();
                 }
             }
+        }
+
+        private void OnNextPerformed(InputAction.CallbackContext context)
+        {
+            selectedIndex = (selectedIndex + 1) % hotbar.size;
+            RefreshUI();
+        }
+
+        private void OnPreviousPerformed(InputAction.CallbackContext context)
+        {
+            selectedIndex = (selectedIndex - 1 + hotbar.size) % hotbar.size;
+            RefreshUI();
         }
 
         public void RefreshUI()

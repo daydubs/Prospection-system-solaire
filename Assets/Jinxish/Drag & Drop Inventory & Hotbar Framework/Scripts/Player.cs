@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace InventoryFramework
 {
@@ -16,7 +17,7 @@ namespace InventoryFramework
 
         void Update()
         {
-            if (Input.GetKeyDown(KeyCode.E))
+            if (Keyboard.current != null && Keyboard.current.eKey.wasPressedThisFrame)
             {
                 fPSController.canMove = !fPSController.canMove;
                 inventory.SetActive(!inventory.activeSelf);

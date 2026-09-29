@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using UnityEngine.Rendering.RenderGraphModule;
+using UnityEngine.InputSystem;
 
 namespace InventoryFramework
 {
@@ -36,7 +37,10 @@ namespace InventoryFramework
         {
             if (tooltip != null && tooltip.gameObject.activeSelf)
             {
-                tooltip.UpdatePosition(Input.mousePosition);
+                if (Mouse.current != null)
+                {
+                    tooltip.UpdatePosition(Mouse.current.position.ReadValue());
+                }
             }
         }
 
@@ -99,7 +103,7 @@ namespace InventoryFramework
             {
                 amount = Mathf.CeilToInt(s.count / 2f);
             }
-            else if (Input.GetKey(KeyCode.LeftShift))
+            else if (Keyboard.current != null && Keyboard.current.leftShiftKey.isPressed)
             {
                 amount = 1;
             }

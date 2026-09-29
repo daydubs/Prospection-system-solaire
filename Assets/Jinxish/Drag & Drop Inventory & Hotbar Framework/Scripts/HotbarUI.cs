@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.InputSystem;
 
 namespace InventoryFramework
 {
@@ -37,25 +38,44 @@ namespace InventoryFramework
 
         void Update()
         {
-            for (int i = 0; i < hotbar.size; i++)
+            if (Keyboard.current != null)
             {
-                if (Input.GetKeyDown(KeyCode.Alpha1 + i))
+                var keys = new[] {
+                    Keyboard.current.digit1Key,
+                    Keyboard.current.digit2Key,
+                    Keyboard.current.digit3Key,
+                    Keyboard.current.digit4Key,
+                    Keyboard.current.digit5Key,
+                    Keyboard.current.digit6Key,
+                    Keyboard.current.digit7Key,
+                    Keyboard.current.digit8Key,
+                    Keyboard.current.digit9Key,
+                    Keyboard.current.digit0Key
+                };
+
+                for (int i = 0; i < hotbar.size && i < keys.Length; i++)
                 {
-                    selectedIndex = i;
-                    RefreshUI();
+                    if (keys[i].wasPressedThisFrame)
+                    {
+                        selectedIndex = i;
+                        RefreshUI();
+                    }
                 }
             }
 
-            float scroll = Input.GetAxis("Mouse ScrollWheel");
-            if (scroll > 0f)
+            if (Mouse.current != null)
             {
-                selectedIndex = (selectedIndex + 1) % hotbar.size;
-                RefreshUI();
-            }
-            else if (scroll < 0f)
-            {
-                selectedIndex = (selectedIndex - 1 + hotbar.size) % hotbar.size;
-                RefreshUI();
+                float scroll = Mouse.current.scroll.ReadValue().y;
+                if (scroll > 0f)
+                {
+                    selectedIndex = (selectedIndex + 1) % hotbar.size;
+                    RefreshUI();
+                }
+                else if (scroll < 0f)
+                {
+                    selectedIndex = (selectedIndex - 1 + hotbar.size) % hotbar.size;
+                    RefreshUI();
+                }
             }
         }
 

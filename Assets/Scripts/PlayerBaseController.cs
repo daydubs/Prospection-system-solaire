@@ -36,10 +36,13 @@ public class PlayerBaseController : MonoBehaviour
 
     public Vector3 DefaultCameraLocalPos => defaultCameraLocalPos;
 
+    private InputSystem_Actions inputActions;
+
     private void Awake()
     {
         Debug.Log($"[PlayerBaseController] Awake() - Position initiale du joueur : {transform.position}");
         characterController = GetComponent<CharacterController>();
+        inputActions = new InputSystem_Actions();
         if (cameraTransform == null)
         {
             Camera cam = GetComponentInChildren<Camera>();
@@ -53,9 +56,15 @@ public class PlayerBaseController : MonoBehaviour
 
     private void OnEnable()
     {
+        inputActions.Player.Enable();
         // When enabled, force sync physics transforms so CharacterController recognizes the position
         Physics.SyncTransforms();
         Debug.Log($"[PlayerBaseController] OnEnable() - Position : {transform.position}");
+    }
+
+    private void OnDisable()
+    {
+        inputActions.Player.Disable();
     }
 
     private void Start()
@@ -91,10 +100,7 @@ public class PlayerBaseController : MonoBehaviour
     {
         if (cameraTransform == null) return;
 
-        var mouse = Mouse.current;
-        if (mouse == null) return;
-
-        Vector2 mouseDelta = mouse.delta.ReadValue() * (mouseSensitivity * 0.1f);
+        Vector2 mouseDelta = inputActions.Player.Look.ReadValue<Vector2>() * (mouseSensitivity * 0.1f);
 
         // Yaw (Player horizontal rotation)
         transform.Rotate(Vector3.up * mouseDelta.x);
@@ -109,21 +115,13 @@ public class PlayerBaseController : MonoBehaviour
     {
         if (characterController == null) return;
 
-        var keyboard = Keyboard.current;
-        if (keyboard == null) return;
-
-        float moveX = 0f;
-        float moveZ = 0f;
-
-        // Support both AZERTY (ZQSD) and QWERTY (WASD)
-        if (keyboard.wKey.isPressed || keyboard.zKey.isPressed || keyboard.upArrowKey.isPressed) moveZ += 1f;
-        if (keyboard.sKey.isPressed || keyboard.downArrowKey.isPressed) moveZ -= 1f;
-        if (keyboard.aKey.isPressed || keyboard.qKey.isPressed || keyboard.leftArrowKey.isPressed) moveX -= 1f;
-        if (keyboard.dKey.isPressed || keyboard.rightArrowKey.isPressed) moveX += 1f;
+        Vector2 moveInput = inputActions.Player.Move.ReadValue<Vector2>();
+        float moveX = moveInput.x;
+        float moveZ = moveInput.y;
 
         Vector3 moveDir = (transform.forward * moveZ + transform.right * moveX).normalized;
 
-        bool isSprinting = keyboard.leftShiftKey.isPressed;
+        bool isSprinting = inputActions.Player.Sprint.IsPressed();
         float currentSpeed = isSprinting ? sprintSpeed : walkSpeed;
 
         float dt = Time.deltaTime;
@@ -134,7 +132,7 @@ public class PlayerBaseController : MonoBehaviour
             verticalVelocity = -2f; // Slight negative force to keep grounded reliably
         }
 
-        if (characterController.isGrounded && keyboard.spaceKey.wasPressedThisFrame)
+        if (characterController.isGrounded && inputActions.Player.Jump.WasPressedThisFrame())
         {
             verticalVelocity = Mathf.Sqrt(jumpHeight * -2f * gravity);
         }

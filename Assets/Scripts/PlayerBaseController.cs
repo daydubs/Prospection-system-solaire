@@ -19,6 +19,10 @@ public class PlayerBaseController : MonoBehaviour
     public float interactRange = 4.5f;
     public bool isNearHubScreen = false;
 
+    [Header("UI & Inventory")]
+    public GameObject inventoryUI;
+    public bool isInventoryOpen = false;
+
     [Header("State")]
     public bool canMove = true;
     public bool isFirstPerson = true;
@@ -27,6 +31,7 @@ public class PlayerBaseController : MonoBehaviour
     private float verticalVelocity = 0f;
     private float cameraPitch = 0f;
     private Vector3 defaultCameraLocalPos = new Vector3(0f, 0.75f, 0f);
+    private IInteractable currentInteractable;
 
     public float CameraPitch
     {
@@ -72,11 +77,19 @@ public class PlayerBaseController : MonoBehaviour
         // Initial sync of physics transforms
         Physics.SyncTransforms();
         verticalVelocity = 0f;
+
+        // Ensure inventory is closed at start
+        if (inventoryUI != null)
+        {
+            inventoryUI.SetActive(false);
+        }
     }
 
     private void Update()
     {
-        // Don't process player movement when main menu or pause is open, or when Hub UI is active
+        HandleInventoryInput();
+
+        // Don't process player movement when main menu, pause, or Hub UI/Inventory is open
         if (MainMenuController.Instance != null && MainMenuController.Instance.isMenuOpen)
         {
             verticalVelocity = 0f;
@@ -89,11 +102,46 @@ public class PlayerBaseController : MonoBehaviour
             return;
         }
 
+        if (isInventoryOpen)
+        {
+            verticalVelocity = 0f;
+            return;
+        }
+
         if (!canMove) return;
 
         HandleLook();
         HandleMovement();
         CheckInteraction();
+        HandleInteractionInput();
+    }
+
+    private void HandleInventoryInput()
+    {
+        if (inputActions.Player.Inventory.WasPressedThisFrame() || (Keyboard.current != null && Keyboard.current.iKey.wasPressedThisFrame))
+        {
+            // Do not toggle inventory if we are in other UI modes
+            if (MainMenuController.Instance != null && MainMenuController.Instance.isMenuOpen) return;
+            if (EarthBaseController.Instance != null && EarthBaseController.Instance.isHubUIOpen) return;
+
+            isInventoryOpen = !isInventoryOpen;
+
+            if (inventoryUI != null)
+            {
+                inventoryUI.SetActive(isInventoryOpen);
+            }
+
+            if (isInventoryOpen)
+            {
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
+            }
+            else
+            {
+                Cursor.lockState = CursorLockMode.Locked;
+                Cursor.visible = false;
+            }
+        }
     }
 
     private void HandleLook()
@@ -146,6 +194,17 @@ public class PlayerBaseController : MonoBehaviour
 
     private void CheckInteraction()
     {
+        // 1. Raycast for IInteractable
+        currentInteractable = null;
+        if (cameraTransform != null)
+        {
+            if (Physics.Raycast(cameraTransform.position, cameraTransform.forward, out RaycastHit hit, interactRange))
+            {
+                currentInteractable = hit.collider.GetComponent<IInteractable>();
+            }
+        }
+
+        // 2. Proximity for EarthBaseController Hub
         if (EarthBaseController.Instance == null) return;
 
         float distDesk = EarthBaseController.Instance.hubScreenTransform != null
@@ -157,5 +216,16 @@ public class PlayerBaseController : MonoBehaviour
             : float.MaxValue;
 
         isNearHubScreen = Mathf.Min(distDesk, distScreen) <= interactRange;
+    }
+
+    private void HandleInteractionInput()
+    {
+        if (inputActions.Player.Interact.WasPressedThisFrame() || (Keyboard.current != null && Keyboard.current.eKey.wasPressedThisFrame))
+        {
+            if (currentInteractable != null)
+            {
+                currentInteractable.Interact();
+            }
+        }
     }
 }

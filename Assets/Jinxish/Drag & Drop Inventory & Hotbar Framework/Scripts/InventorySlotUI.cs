@@ -2,7 +2,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
-using UnityEngine.Rendering.RenderGraphModule;
+using UnityEngine.InputSystem;
 
 namespace InventoryFramework
 {
@@ -34,9 +34,9 @@ namespace InventoryFramework
 
         void Update()
         {
-            if (tooltip != null && tooltip.gameObject.activeSelf)
+            if (tooltip != null && tooltip.gameObject.activeSelf && Mouse.current != null)
             {
-                tooltip.UpdatePosition(Input.mousePosition);
+                tooltip.UpdatePosition(Mouse.current.position.ReadValue());
             }
         }
 
@@ -99,7 +99,7 @@ namespace InventoryFramework
             {
                 amount = Mathf.CeilToInt(s.count / 2f);
             }
-            else if (Input.GetKey(KeyCode.LeftShift))
+            else if (Keyboard.current != null && Keyboard.current.leftShiftKey.isPressed)
             {
                 amount = 1;
             }

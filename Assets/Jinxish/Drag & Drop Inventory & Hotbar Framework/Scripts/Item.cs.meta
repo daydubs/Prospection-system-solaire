@@ -7,3 +7,14 @@ AssetOrigin:
   packageVersion: 1.0.0
   assetPath: Assets/Jinxish/Drag & Drop Inventory & Hotbar Framework/Scripts/Item.cs
   uploadId: 824934
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - icon: {instanceID: 0}
+  - model: {fileID: 919132149155446097, guid: 459a962e97a81aa44926012fef5068e1, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

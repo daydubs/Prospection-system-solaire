@@ -1,8 +1,15 @@
 using UnityEngine;
+using InventoryFramework;
 
 public class MineableResource : MonoBehaviour, IInteractable
 {
-    [Header("Resource Settings")]
+    [Header("Inventory Item Setting (Drag & Drop)")]
+    [Tooltip("L'item qui sera ajouté à l'inventaire. S'il n'est pas assigné, l'ancien système de cargo sera utilisé.")]
+    public Item resourceItem;
+    [Tooltip("La quantité d'item à ajouter dans l'inventaire")]
+    public int dropAmount = 1;
+
+    [Header("Resource Settings (Ancien Cargo)")]
     public string resourceId = "res_water_ice";
     public string resourceName = "Glace Volatile";
     public float quantityTons = 5f;
@@ -21,15 +28,31 @@ public class MineableResource : MonoBehaviour, IInteractable
     {
         if (GameManager.Instance != null)
         {
-            bool success = GameManager.Instance.AddCargo(resourceId, resourceName, quantityTons, basePrice);
-            if (success)
+            if (resourceItem != null)
             {
-                Debug.Log($"[MineableResource] Miné avec succès : {quantityTons}t de {resourceName}");
-                Destroy(gameObject);
+                bool success = GameManager.Instance.AddPlayerItem(resourceItem, dropAmount);
+                if (success)
+                {
+                    Debug.Log($"[MineableResource] Miné avec succès : {dropAmount}x {resourceItem.itemName}");
+                    Destroy(gameObject);
+                }
+                else
+                {
+                    Debug.LogWarning($"[MineableResource] Impossible de miner {resourceItem.itemName}, inventaire plein.");
+                }
             }
             else
             {
-                Debug.LogWarning($"[MineableResource] Impossible de miner {resourceName}, soute pleine.");
+                bool success = GameManager.Instance.AddCargo(resourceId, resourceName, quantityTons, basePrice);
+                if (success)
+                {
+                    Debug.Log($"[MineableResource] Miné avec succès : {quantityTons}t de {resourceName} (Ajouté au cargo)");
+                    Destroy(gameObject);
+                }
+                else
+                {
+                    Debug.LogWarning($"[MineableResource] Impossible de miner {resourceName}, soute pleine.");
+                }
             }
         }
         else

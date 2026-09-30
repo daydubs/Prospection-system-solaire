@@ -1,0 +1,13 @@
+--- Assets/Scripts/GameManager.cs
++++ Assets/Scripts/GameManager.cs
+@@ -73,6 +73,11 @@
+         Instance = this;
+         DontDestroyOnLoad(gameObject);
+
++        if (playerInventory == null)
++        {
++            playerInventory = FindAnyObjectByType<Inventory>();
++        }
++
+         InitializeDefaultTechTree();
+     }

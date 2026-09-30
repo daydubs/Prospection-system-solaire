@@ -1,0 +1,13 @@
+--- Assets/Scripts/GameManager.cs
++++ Assets/Scripts/GameManager.cs
+@@ -99,6 +99,10 @@
+         }
+
+         InitNewGame(); // Only used for defaults if not loading save data yet
++        if (playerInventory == null)
++        {
++            playerInventory = FindAnyObjectByType<Inventory>();
++        }
+     }
+
+     private void Update()

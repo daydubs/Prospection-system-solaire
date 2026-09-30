@@ -200,7 +200,7 @@ public class GameManager : MonoBehaviour
             // Base starter tech tree
             allTechnologies.Add(new TechnologyData("tech_propulsion_1", "Propulseur Ionique Standard", TechCategory.Propulsion, "Augmente la vitesse de croisière de 20% et réduit la consommation de carburant de 15%.", 15000, 3f, true));
             allTechnologies.Add(new TechnologyData("tech_propulsion_2", "Moteur Warp Sub-Luminique", TechCategory.Propulsion, "Double la vitesse de déplacement rapide entre les planètes.", 45000, 7f, false));
-            
+
             allTechnologies.Add(new TechnologyData("tech_scan_1", "Scanner Spectrométrique Basique", TechCategory.Scanning, "Permet d'analyser la composition des astéroïdes à moyenne portée.", 8000, 2f, true));
             allTechnologies.Add(new TechnologyData("tech_scan_2", "Radar Géologique Terahertz", TechCategory.Scanning, "Détecte les filons de métaux rares (Or, Platine) et les poches d'Hélium-3.", 28000, 5f, false));
 
@@ -209,7 +209,7 @@ public class GameManager : MonoBehaviour
 
             allTechnologies.Add(new TechnologyData("tech_hull_1", "Blindage Composite Titane", TechCategory.HullAndShield, "Renforce la coque du vaisseau de +50 PV max.", 18000, 4f, false));
             allTechnologies.Add(new TechnologyData("tech_shield_1", "Déflecteur Électrostatique", TechCategory.HullAndShield, "Génère un bouclier capable d'absorber les micro-météorites.", 22000, 4f, false));
-            
+
             allTechnologies.Add(new TechnologyData("tech_cargo_1", "Soutes Compactes Modulaires", TechCategory.Science, "Augmente la capacité de fret de +50 tonnes.", 20000, 4f, false));
         }
 
@@ -407,7 +407,15 @@ public class GameManager : MonoBehaviour
     {
         if (playerInventory != null)
         {
-            return playerInventory.AddItem(item, amount);
+            bool added = playerInventory.AddItem(item, amount);
+            if (added)
+            {
+                InventoryUI inventoryUI = FindAnyObjectByType<InventoryUI>();
+                if (inventoryUI != null) inventoryUI.RefreshUI();
+                HotbarUI hotbarUI = FindAnyObjectByType<HotbarUI>();
+                if (hotbarUI != null) hotbarUI.RefreshUI();
+            }
+            return added;
         }
         else
         {

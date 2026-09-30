@@ -1193,7 +1193,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb6818760ffe70b4280e92e9f4f78d7c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MineableResource
-  resourceItem: {fileID: 0}
+  resourceItem: {fileID: 11400000, guid: 24f70559d8f007b4c964681d996ae13e, type: 2}
   dropAmount: 1
   resourceId: 2
   resourceName: IceResource

@@ -30,7 +30,18 @@ public class MineableResource : MonoBehaviour, IInteractable
         {
             if (resourceItem != null)
             {
-                bool success = GameManager.Instance.AddPlayerItem(resourceItem, dropAmount);
+                ItemPickupHandler pickupHandler = FindAnyObjectByType<ItemPickupHandler>();
+                bool success = false;
+                if(pickupHandler != null)
+                {
+                    pickupHandler.PickupItem(resourceItem, dropAmount);
+                    success = true;
+                }
+                else
+                {
+                    success = GameManager.Instance.AddPlayerItem(resourceItem, dropAmount);
+                }
+
                 if (success)
                 {
                     Debug.Log($"[MineableResource] Miné avec succès : {dropAmount}x {resourceItem.itemName}");

@@ -1,0 +1,19 @@
+--- Assets/Scripts/GameManager.cs
++++ Assets/Scripts/GameManager.cs
+@@ -402,7 +402,15 @@
+     {
+         if (playerInventory != null)
+         {
+-            return playerInventory.AddItem(item, amount);
++            bool added = playerInventory.AddItem(item, amount);
++            if (added)
++            {
++                InventoryUI inventoryUI = FindAnyObjectByType<InventoryUI>();
++                if (inventoryUI != null) inventoryUI.RefreshUI();
++                HotbarUI hotbarUI = FindAnyObjectByType<HotbarUI>();
++                if (hotbarUI != null) hotbarUI.RefreshUI();
++            }
++            return added;
+         }
+         else
+         {

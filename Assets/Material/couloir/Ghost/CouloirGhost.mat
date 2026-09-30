@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: PrincipalGhost
+  m_Name: CouloirGhost
   m_Shader: {fileID: 4800000, guid: 933532a4fcc9baf4fa0491de14d08ed7, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
@@ -33,11 +33,11 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _BaseMap:
-        m_Texture: {fileID: 2800000, guid: 23448fab8d06c7b43882a4377e6bae81, type: 3}
+        m_Texture: {fileID: 2800000, guid: bf3c3498074f1b240ae5b9a25e780f4e, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BumpMap:
-        m_Texture: {fileID: 2800000, guid: 68bf3e605b495bd4f9654bacc7b76677, type: 3}
+        m_Texture: {fileID: 2800000, guid: 799726f1050b5c74f8cebcfe6bf1c586, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _DetailAlbedoMap:
@@ -53,15 +53,15 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _EmissionMap:
-        m_Texture: {fileID: 2800000, guid: 9cbfa37b723947f4091d3e162ddc338f, type: 3}
+        m_Texture: {fileID: 2800000, guid: 22355ff45dada324aa470ec4fa5c503b, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 23448fab8d06c7b43882a4377e6bae81, type: 3}
+        m_Texture: {fileID: 2800000, guid: bf3c3498074f1b240ae5b9a25e780f4e, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
-        m_Texture: {fileID: 2800000, guid: fa7ed44758a4f1147aa7d47a5138b40f, type: 3}
+        m_Texture: {fileID: 2800000, guid: b9b2209ad957e7d4880b3c82812ae4cc, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _OcclusionMap:
@@ -129,7 +129,7 @@ Material:
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
---- !u!114 &4723162087168882573
+--- !u!114 &6495331755516060450
 MonoBehaviour:
   m_ObjectHideFlags: 11
   m_CorrespondingSourceObject: {fileID: 0}

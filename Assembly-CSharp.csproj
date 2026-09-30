@@ -85,6 +85,7 @@
     <Compile Include="Assets\Jinxish\Drag &amp; Drop Inventory &amp; Hotbar Framework\Scripts\FPSController.cs" />
     <Compile Include="Assets\Scripts\IInteractable.cs" />
     <Compile Include="Assets\Scripts\SolarSystemManager.cs" />
+    <Compile Include="Assets\Scripts\MineableResource.cs" />
     <Compile Include="Assets\Jinxish\Drag &amp; Drop Inventory &amp; Hotbar Framework\Scripts\InventoryTester.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark01_UGUI.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\SimpleScript.cs" />

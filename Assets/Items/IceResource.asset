@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: de710cc37b178ac41bdc90fbef7a5c3b, type: 3}
-  m_Name: Ice
+  m_Name: IceResource
   m_EditorClassIdentifier: Assembly-CSharp::InventoryFramework.Item
-  id: 0
-  itemName: 
-  description: 
-  icon: {fileID: 0}
-  maxStack: 1
-  model: {fileID: 919132149155446097, guid: 459a962e97a81aa44926012fef5068e1, type: 3}
+  id: 2
+  itemName: IceResources
+  description: Glace Prelever sur des formation glaciare des poles
+  icon: {fileID: 21300000, guid: b5725f891ab4c7d45a609e69f5789ae4, type: 3}
+  maxStack: 10000
+  model: {fileID: 7852528794392818955, guid: d654460e0402419479368eaa182e6a73, type: 3}

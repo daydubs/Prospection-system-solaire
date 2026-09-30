@@ -16,9 +16,9 @@ MonoBehaviour:
   description: 'couloir qui peut relier deux batiment
 
 '
-  ghostPrefab: {fileID: 0}
-  finalPrefab: {fileID: 0}
-  baseConstructionTime: 5
+  ghostPrefab: {fileID: 5310163595960713822, guid: 2c9cb83e626371a43af1a51a43dd2949, type: 3}
+  finalPrefab: {fileID: 7241535324743649572, guid: d825750e62273e64ebf48002af8bc864, type: 3}
+  baseConstructionTime: 10
   resourceCosts:
-  - resourceId: 
-    amount: 0
+  - resourceId: 2
+    amount: 2

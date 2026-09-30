@@ -190,6 +190,15 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Construction"",
+                    ""type"": ""Button"",
+                    ""id"": ""6fb3cc7f-d9b7-4ea6-b801-cace0e54b404"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -685,6 +694,17 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Hotbar"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f3e256dd-9920-42ab-93d2-46b06df5b897"",
+                    ""path"": ""<Keyboard>/g"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Construction"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1607,6 +1627,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         m_Player_Sprint = m_Player.FindAction("Sprint", throwIfNotFound: true);
         m_Player_Inventory = m_Player.FindAction("Inventory", throwIfNotFound: true);
         m_Player_Hotbar = m_Player.FindAction("Hotbar", throwIfNotFound: true);
+        m_Player_Construction = m_Player.FindAction("Construction", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -1721,6 +1742,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Sprint;
     private readonly InputAction m_Player_Inventory;
     private readonly InputAction m_Player_Hotbar;
+    private readonly InputAction m_Player_Construction;
     /// <summary>
     /// Provides access to input actions defined in input action map "Player".
     /// </summary>
@@ -1776,6 +1798,10 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Player/Hotbar".
         /// </summary>
         public InputAction @Hotbar => m_Wrapper.m_Player_Hotbar;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/Construction".
+        /// </summary>
+        public InputAction @Construction => m_Wrapper.m_Player_Construction;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -1835,6 +1861,9 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             @Hotbar.started += instance.OnHotbar;
             @Hotbar.performed += instance.OnHotbar;
             @Hotbar.canceled += instance.OnHotbar;
+            @Construction.started += instance.OnConstruction;
+            @Construction.performed += instance.OnConstruction;
+            @Construction.canceled += instance.OnConstruction;
         }
 
         /// <summary>
@@ -1879,6 +1908,9 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             @Hotbar.started -= instance.OnHotbar;
             @Hotbar.performed -= instance.OnHotbar;
             @Hotbar.canceled -= instance.OnHotbar;
+            @Construction.started -= instance.OnConstruction;
+            @Construction.performed -= instance.OnConstruction;
+            @Construction.canceled -= instance.OnConstruction;
         }
 
         /// <summary>
@@ -2418,6 +2450,13 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnHotbar(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Construction" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnConstruction(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "UI" which allows adding and removing callbacks.

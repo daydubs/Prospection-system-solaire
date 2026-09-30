@@ -104,6 +104,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "Construction",
+                    "type": "Button",
+                    "id": "6fb3cc7f-d9b7-4ea6-b801-cace0e54b404",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -599,6 +608,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "Hotbar",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "f3e256dd-9920-42ab-93d2-46b06df5b897",
+                    "path": "<Keyboard>/g",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Construction",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

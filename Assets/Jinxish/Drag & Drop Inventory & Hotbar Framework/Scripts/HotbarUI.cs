@@ -121,6 +121,12 @@ namespace InventoryFramework
 
             Instantiate(slot.item.model, toolsParent);
         }
+
+        public Item GetSelectedItem()
+        {
+            InventorySlot slot = slotUIs[selectedIndex].GetComponent<InventorySlotUI>().GetSlot();
+            return slot?.item;
+        }
     }
 
 

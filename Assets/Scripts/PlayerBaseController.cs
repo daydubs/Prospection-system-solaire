@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using InventoryFramework; // Access HotbarUI, Item
 
 public class PlayerBaseController : MonoBehaviour
 {
@@ -32,6 +33,7 @@ public class PlayerBaseController : MonoBehaviour
     private float cameraPitch = 0f;
     private Vector3 defaultCameraLocalPos = new Vector3(0f, 0.75f, 0f);
     private IInteractable currentInteractable;
+    private MineableResource currentMineable;
 
     public float CameraPitch
     {
@@ -196,11 +198,13 @@ public class PlayerBaseController : MonoBehaviour
     {
         // 1. Raycast for IInteractable
         currentInteractable = null;
+        currentMineable = null;
         if (cameraTransform != null)
         {
             if (Physics.Raycast(cameraTransform.position, cameraTransform.forward, out RaycastHit hit, interactRange))
             {
                 currentInteractable = hit.collider.GetComponent<IInteractable>();
+                currentMineable = hit.collider.GetComponent<MineableResource>();
             }
         }
 
@@ -225,6 +229,22 @@ public class PlayerBaseController : MonoBehaviour
             if (currentInteractable != null)
             {
                 currentInteractable.Interact();
+            }
+        }
+
+        if (inputActions.Player.Attack.WasPressedThisFrame())
+        {
+            if (currentMineable != null)
+            {
+                HotbarUI hotbarUI = FindAnyObjectByType<HotbarUI>();
+                if (hotbarUI != null)
+                {
+                    Item selectedItem = hotbarUI.GetSelectedItem();
+                    if (selectedItem != null && selectedItem.itemName == currentMineable.requiredToolName)
+                    {
+                        currentMineable.Mine();
+                    }
+                }
             }
         }
     }

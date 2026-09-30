@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using InventoryFramework;
 
 [DefaultExecutionOrder(-50)]
 public class GameManager : MonoBehaviour
@@ -26,6 +27,10 @@ public class GameManager : MonoBehaviour
     [Tooltip("How many in-game seconds pass per real second at 1x simulation scale. (e.g. 720 = 1 day per 2 real minutes at 1x)")]
     public float inGameSecondsPerRealSecond = 720f;
     public bool isTimePaused = false;
+
+    [Header("Inventory")]
+    [Tooltip("Référence globale à l'inventaire du joueur (Drag & Drop)")]
+    public Inventory playerInventory;
 
     [Header("Economy & Credits")]
     [SerializeField] private double credits = 25000.0; // Starting capital in Credits (CR)
@@ -391,6 +396,19 @@ public class GameManager : MonoBehaviour
         shipStats.currentFuel -= amount;
         OnShipStatsChanged?.Invoke(shipStats);
         return true;
+    }
+
+    public bool AddPlayerItem(Item item, int amount)
+    {
+        if (playerInventory != null)
+        {
+            return playerInventory.AddItem(item, amount);
+        }
+        else
+        {
+            Debug.LogWarning("[GameManager] playerInventory non assigné. Impossible d'ajouter l'item.");
+            return false;
+        }
     }
 
     public bool AddCargo(string resourceId, string resourceName, float quantityTons, double basePrice)

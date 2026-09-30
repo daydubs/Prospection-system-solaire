@@ -29,6 +29,7 @@ namespace InventoryFramework
             descriptionText.text = item.description;
             icon.sprite = item.icon;
 
+            transform.SetAsLastSibling();
             gameObject.SetActive(true);
             UpdatePosition(screenPos);
         }

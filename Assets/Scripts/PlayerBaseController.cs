@@ -23,12 +23,15 @@ public class PlayerBaseController : MonoBehaviour
     [Header("UI & Inventory")]
     public GameObject inventoryUI;
     public bool isInventoryOpen = false;
+    public GameObject blueprintUI;
+    public bool isBlueprintOpen = false;
 
     [Header("State")]
     public bool canMove = true;
     public bool isFirstPerson = true;
 
     private CharacterController characterController;
+    private BuilderController builderController;
     private float verticalVelocity = 0f;
     private float cameraPitch = 0f;
     private Vector3 defaultCameraLocalPos = new Vector3(0f, 0.75f, 0f);
@@ -52,6 +55,7 @@ public class PlayerBaseController : MonoBehaviour
     {
         Debug.Log($"[PlayerBaseController] Awake() - Position initiale du joueur : {transform.position}");
         characterController = GetComponent<CharacterController>();
+        builderController = GetComponent<BuilderController>();
         inputActions = new InputSystem_Actions();
         if (cameraTransform == null)
         {
@@ -88,6 +92,10 @@ public class PlayerBaseController : MonoBehaviour
         {
             inventoryUI.SetActive(false);
         }
+        if (blueprintUI != null)
+        {
+            blueprintUI.SetActive(false);
+        }
         if(mainMenuUI != null)
         {
             mainMenuUI.SetActive(false);
@@ -98,6 +106,7 @@ public class PlayerBaseController : MonoBehaviour
     {
         
         HandleInventoryInput();
+        HandleBlueprintInput();
 
         // Don't process player movement when main menu, pause, or Hub UI/Inventory is open
         if (MainMenuController.Instance != null && MainMenuController.Instance.isMenuOpen)
@@ -112,7 +121,7 @@ public class PlayerBaseController : MonoBehaviour
             return;
         }
 
-        if (isInventoryOpen)
+        if (isInventoryOpen || isBlueprintOpen)
         {
             verticalVelocity = 0f;
             return;
@@ -123,8 +132,41 @@ public class PlayerBaseController : MonoBehaviour
         HandleLook();
         HandleMovement();
         CheckInteraction();
+        HandleBuildMode();
         HandleInteractionInput();
         HandleMainMenu();
+    }
+
+    private void HandleBuildMode()
+    {
+        if (builderController == null) return;
+
+        HotbarUI hotbarUI = FindAnyObjectByType<HotbarUI>();
+        if (hotbarUI != null)
+        {
+            Item selectedItem = hotbarUI.GetSelectedItem();
+            if (selectedItem != null && selectedItem is BuildingSystem.BlueprintItem blueprintItem)
+            {
+                if (builderController.currentModuleToBuild != blueprintItem.moduleData)
+                {
+                    builderController.EnterBuildMode(blueprintItem.moduleData);
+                }
+            }
+            else
+            {
+                if (builderController.isBuildModeActive)
+                {
+                    builderController.ExitBuildMode();
+                }
+            }
+        }
+        else
+        {
+             if (builderController.isBuildModeActive)
+             {
+                 builderController.ExitBuildMode();
+             }
+        }
     }
 
     private void HandleInventoryInput()
@@ -142,7 +184,35 @@ public class PlayerBaseController : MonoBehaviour
                 inventoryUI.SetActive(isInventoryOpen);
             }
 
-            if (isInventoryOpen)
+            if (isInventoryOpen || isBlueprintOpen)
+            {
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
+            }
+            else
+            {
+                Cursor.lockState = CursorLockMode.Locked;
+                Cursor.visible = false;
+            }
+        }
+    }
+
+    private void HandleBlueprintInput()
+    {
+        if (inputActions.Player.Construction.WasPressedThisFrame())
+        {
+            // Do not toggle blueprint UI if we are in other UI modes
+            if (MainMenuController.Instance != null && MainMenuController.Instance.isMenuOpen) return;
+            if (EarthBaseController.Instance != null && EarthBaseController.Instance.isHubUIOpen) return;
+
+            isBlueprintOpen = !isBlueprintOpen;
+
+            if (blueprintUI != null)
+            {
+                blueprintUI.SetActive(isBlueprintOpen);
+            }
+
+            if (isInventoryOpen || isBlueprintOpen)
             {
                 Cursor.lockState = CursorLockMode.None;
                 Cursor.visible = true;
@@ -243,6 +313,9 @@ public class PlayerBaseController : MonoBehaviour
 
         if (inputActions.Player.Attack.WasPressedThisFrame())
         {
+            // Bypass mining logic if builder mode is active to prevent conflicts with building input
+            if (builderController != null && builderController.isBuildModeActive) return;
+
             if (currentMineable != null)
             {
                 HotbarUI hotbarUI = FindAnyObjectByType<HotbarUI>();

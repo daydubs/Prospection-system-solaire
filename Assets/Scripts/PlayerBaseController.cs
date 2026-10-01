@@ -32,6 +32,7 @@ public class PlayerBaseController : MonoBehaviour
 
     private CharacterController characterController;
     private BuilderController builderController;
+    private HotbarUI hotbarUI;
     private float verticalVelocity = 0f;
     private float cameraPitch = 0f;
     private Vector3 defaultCameraLocalPos = new Vector3(0f, 0.75f, 0f);
@@ -87,6 +88,8 @@ public class PlayerBaseController : MonoBehaviour
         Physics.SyncTransforms();
         verticalVelocity = 0f;
 
+        hotbarUI = FindAnyObjectByType<HotbarUI>();
+
         // Ensure inventory is closed at start
         if (inventoryUI != null)
         {
@@ -141,13 +144,15 @@ public class PlayerBaseController : MonoBehaviour
     {
         if (builderController == null) return;
 
-        HotbarUI hotbarUI = FindAnyObjectByType<HotbarUI>();
+        if (hotbarUI == null)
+            hotbarUI = FindAnyObjectByType<HotbarUI>(); // Fallback if destroyed/reloaded
+
         if (hotbarUI != null)
         {
             Item selectedItem = hotbarUI.GetSelectedItem();
             if (selectedItem != null && selectedItem is BuildingSystem.BlueprintItem blueprintItem)
             {
-                if (builderController.currentModuleToBuild != blueprintItem.moduleData)
+                if (!builderController.isBuildModeActive || builderController.currentModuleToBuild != blueprintItem.moduleData)
                 {
                     builderController.EnterBuildMode(blueprintItem.moduleData);
                 }
@@ -318,7 +323,9 @@ public class PlayerBaseController : MonoBehaviour
 
             if (currentMineable != null)
             {
-                HotbarUI hotbarUI = FindAnyObjectByType<HotbarUI>();
+                if (hotbarUI == null)
+                    hotbarUI = FindAnyObjectByType<HotbarUI>();
+
                 if (hotbarUI != null)
                 {
                     Item selectedItem = hotbarUI.GetSelectedItem();

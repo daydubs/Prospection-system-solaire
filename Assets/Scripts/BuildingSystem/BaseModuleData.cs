@@ -11,6 +11,7 @@ public class BaseModuleData : ScriptableObject
     public string moduleName = "New Module";
     [TextArea]
     public string description = "A constructible base module.";
+    public Sprite icon;
 
     [Header("Prefabs")]
     [Tooltip("The transparent, non-colliding 'ghost' version for placement.")]

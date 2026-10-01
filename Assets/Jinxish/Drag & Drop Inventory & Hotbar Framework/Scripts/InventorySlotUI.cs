@@ -82,7 +82,16 @@ namespace InventoryFramework
 
         public InventorySlot GetSlot()
         {
-            return owner == SlotOwner.Inventory ? inventory.slots[index] : hotbar.slots[index];
+            if (owner == SlotOwner.Inventory)
+            {
+                if (inventory == null || inventory.slots == null || index < 0 || index >= inventory.slots.Count) return null;
+                return inventory.slots[index];
+            }
+            else
+            {
+                if (hotbar == null || hotbar.slots == null || index < 0 || index >= hotbar.slots.Count) return null;
+                return hotbar.slots[index];
+            }
         }
 
         void RefreshParentUI()
@@ -110,7 +119,7 @@ namespace InventoryFramework
         public void OnBeginDrag(PointerEventData eventData)
         {
             var s = GetSlot();
-            if (s.IsEmpty) return;
+            if (s == null || s.IsEmpty) return;
 
             // How Many To Drag
             int amount;
@@ -220,7 +229,7 @@ namespace InventoryFramework
             if (DragContext.draggedItem == null || DragContext.draggedCount <= 0) return;
 
             var targetSlot = GetSlot();
-
+            if (targetSlot == null) return;
 
             // Empty Slot -> Move
             if (targetSlot.IsEmpty)
@@ -302,7 +311,7 @@ namespace InventoryFramework
         public void OnPointerEnter(PointerEventData eventData)
         {
             var slot = GetSlot();
-            if (slot != null && !slot.IsEmpty)
+            if (slot != null && !slot.IsEmpty && tooltip != null)
             {
                 tooltip.Show(slot.item, eventData.position);
             }
@@ -310,7 +319,10 @@ namespace InventoryFramework
 
         public void OnPointerExit(PointerEventData eventData)
         {
-            tooltip.Hide();
+            if (tooltip != null)
+            {
+                tooltip.Hide();
+            }
         }
     }
 

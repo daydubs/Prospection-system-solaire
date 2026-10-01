@@ -9,13 +9,13 @@ namespace InventoryFramework
 
         public void PickupItem(Item item, int amount = 1)
         {
-            bool addedToHotbar = hotbar.AddItem(item, amount);
+            bool addedToInventory = inventory.AddItem(item, amount);
 
-            if (!addedToHotbar)
+            if (!addedToInventory)
             {
-                bool addedToInventory = inventory.AddItem(item, amount);
+                bool addedToHotbar = hotbar.AddItem(item, amount);
 
-                if (!addedToInventory)
+                if (!addedToHotbar)
                 {
                     Debug.Log("Both hotbar and inventory full! Dropping item...");
                 }

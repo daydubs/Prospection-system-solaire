@@ -260,7 +260,9 @@ public class PlayerBaseController : MonoBehaviour
 
     private void HandleMainMenu()
     {
-        if (inputActions.Player.Menu.WasPressedThisFrame() || (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame))
+        // Only process the new Input System "Menu" action (e.g. gamepad start button).
+        // Escape key logic is handled centrally in MainMenuController.cs
+        if (inputActions.Player.Menu.WasPressedThisFrame())
         {
             if (MainMenuController.Instance != null)
             {

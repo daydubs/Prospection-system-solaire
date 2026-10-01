@@ -56,26 +56,7 @@ public class SceneTransitionManager : MonoBehaviour
 
     private void Update()
     {
-        // Universal Pause Menu Toggle on Escape in gameplay scenes
-        string currentScene = SceneManager.GetActiveScene().name;
-        if (currentScene != SCENE_MAIN_MENU)
-        {
-            if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
-            {
-                // If EarthBase Hub UI is open, let EarthBase handle closing its modal first
-                if (EarthBaseController.Instance != null && EarthBaseController.Instance.isHubUIOpen)
-                {
-                    // EarthBaseController closes its own modal
-                    return;
-                }
-
-                // If MainMenuController exists as a pause overlay
-                if (MainMenuController.Instance != null)
-                {
-                    MainMenuController.Instance.ToggleMenu();
-                }
-            }
-        }
+        // Universal Pause Menu Toggle on Escape is now handled centrally by MainMenuController.cs
     }
 
     public void LoadScene(string sceneName, Action onComplete = null)

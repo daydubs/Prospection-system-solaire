@@ -212,6 +212,12 @@ public class MainMenuController : MonoBehaviour
                 string currentScene = SceneManager.GetActiveScene().name;
                 if (currentScene != SceneTransitionManager.SCENE_MAIN_MENU)
                 {
+                    // If EarthBase Hub UI is open, let EarthBase handle closing its modal first
+                    if (EarthBaseController.Instance != null && EarthBaseController.Instance.isHubUIOpen)
+                    {
+                        return;
+                    }
+
                     ToggleMenu();
                 }
             }

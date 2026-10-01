@@ -85,7 +85,7 @@
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_TextInfoDebugTool.cs" />
     <Compile Include="Assets\Scripts\BuildingSystem\ConstructibleGhost.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\VertexShakeA.cs" />
-    <Compile Include="Assets\Scripts\BuildingSystem\PlayerInventory.cs" />
+
     <Compile Include="Assets\Jinxish\Drag &amp; Drop Inventory &amp; Hotbar Framework\Scripts\FPSController.cs" />
     <Compile Include="Assets\Scripts\IInteractable.cs" />
     <Compile Include="Assets\Scripts\SolarSystemManager.cs" />

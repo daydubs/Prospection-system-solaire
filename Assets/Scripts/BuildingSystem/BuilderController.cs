@@ -19,6 +19,7 @@ public class BuilderController : MonoBehaviour
     [Header("Current Build State")]
     public BaseModuleData currentModuleToBuild;
     public bool isBuildModeActive = false;
+    public bool isGhostPlaced = false;
 
     private GameObject currentGhost;
     private ConstructibleGhost ghostScript;
@@ -54,6 +55,7 @@ public class BuilderController : MonoBehaviour
     {
         currentModuleToBuild = moduleData;
         isBuildModeActive = true;
+        isGhostPlaced = false;
     }
 
     public void ExitBuildMode()
@@ -86,6 +88,7 @@ public class BuilderController : MonoBehaviour
             currentGhost = null;
             ghostScript = null;
             currentSnappedSocket = null;
+            isGhostPlaced = false;
         }
     }
 
@@ -93,16 +96,18 @@ public class BuilderController : MonoBehaviour
     {
         if (currentGhost == null || ghostScript.IsConstructing) return;
 
-        // Cast a ray from the center of the screen
-        Ray ray = playerCamera.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2, 0));
-
-        if (Physics.Raycast(ray, out RaycastHit hit, buildRange))
+        if (!isGhostPlaced)
         {
-            // First, check if we hit near an existing unoccupied socket
-            ModuleSocket closestSocket = FindClosestUnoccupiedSocket(hit.point);
+            // Cast a ray from the center of the screen
+            Ray ray = playerCamera.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2, 0));
 
-            if (closestSocket != null)
+            if (Physics.Raycast(ray, out RaycastHit hit, buildRange))
             {
+                // First, check if we hit near an existing unoccupied socket
+                ModuleSocket closestSocket = FindClosestUnoccupiedSocket(hit.point);
+
+                if (closestSocket != null)
+                {
                 currentSnappedSocket = closestSocket;
 
                 // Find a matching socket on the ghost to align with
@@ -155,17 +160,18 @@ public class BuilderController : MonoBehaviour
                     currentGhost.transform.rotation = Quaternion.identity;
                 }
 
-                // Check if placement is valid (e.g. slope not too steep, not intersecting)
-                // For now, we assume simple validity on terrain
-                ghostScript.SetPlacementValidity(hit.normal.y > 0.8f);
+                    // Check if placement is valid (e.g. slope not too steep, not intersecting)
+                    // For now, we assume simple validity on terrain
+                    ghostScript.SetPlacementValidity(hit.normal.y > 0.8f);
+                }
             }
-        }
-        else
-        {
-            // Looking at the sky, hide ghost or place at max range
-            currentGhost.transform.position = ray.origin + ray.direction * buildRange;
-            currentSnappedSocket = null;
-            ghostScript.SetPlacementValidity(false);
+            else
+            {
+                // Looking at the sky, hide ghost or place at max range
+                currentGhost.transform.position = ray.origin + ray.direction * buildRange;
+                currentSnappedSocket = null;
+                ghostScript.SetPlacementValidity(false);
+            }
         }
     }
 
@@ -180,6 +186,8 @@ public class BuilderController : MonoBehaviour
             ModuleSocket socket = col.GetComponent<ModuleSocket>();
             if (socket != null && !socket.isOccupied)
             {
+                if (currentGhost != null && socket.transform.IsChildOf(currentGhost.transform)) continue;
+
                 float dist = Vector3.Distance(point, socket.transform.position);
                 if (dist < minDistance)
                 {
@@ -199,15 +207,39 @@ public class BuilderController : MonoBehaviour
         var mouse = Mouse.current;
         if (mouse != null)
         {
-            if (mouse.leftButton.isPressed)
+            if (mouse.leftButton.wasPressedThisFrame)
             {
-                // Begin or continue construction
-                ghostScript.ConstructProgress(Time.deltaTime);
+                if (!isGhostPlaced && ghostScript.CanBePlaced)
+                {
+                    isGhostPlaced = true;
+                }
+            }
+            else if (mouse.leftButton.isPressed)
+            {
+                if (isGhostPlaced)
+                {
+                    ghostScript.ConstructProgress(Time.deltaTime);
+                }
             }
             else if (mouse.leftButton.wasReleasedThisFrame)
             {
-                // Stop construction progress (if not finished)
-                ghostScript.ResetProgress();
+                if (isGhostPlaced)
+                {
+                    ghostScript.ResetProgress();
+                }
+            }
+
+            if (mouse.rightButton.wasPressedThisFrame)
+            {
+                if (isGhostPlaced)
+                {
+                    isGhostPlaced = false;
+                    ghostScript.ResetProgress();
+                }
+                else
+                {
+                    ExitBuildMode();
+                }
             }
         }
     }

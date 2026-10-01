@@ -35,6 +35,9 @@ public class PlayerBaseController : MonoBehaviour
     private IInteractable currentInteractable;
     private MineableResource currentMineable;
 
+    [Header ("Main Menu")]
+    public GameObject mainMenuUI;
+
     public float CameraPitch
     {
         get => cameraPitch;
@@ -85,10 +88,15 @@ public class PlayerBaseController : MonoBehaviour
         {
             inventoryUI.SetActive(false);
         }
+        if(mainMenuUI != null)
+        {
+            mainMenuUI.SetActive(false);
+        }
     }
 
     private void Update()
     {
+        
         HandleInventoryInput();
 
         // Don't process player movement when main menu, pause, or Hub UI/Inventory is open
@@ -116,6 +124,7 @@ public class PlayerBaseController : MonoBehaviour
         HandleMovement();
         CheckInteraction();
         HandleInteractionInput();
+        HandleMainMenu();
     }
 
     private void HandleInventoryInput()
@@ -245,6 +254,17 @@ public class PlayerBaseController : MonoBehaviour
                         currentMineable.Mine();
                     }
                 }
+            }
+        }
+    }
+
+    private void HandleMainMenu()
+    {
+        if (inputActions.Player.Menu.WasPressedThisFrame() || (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame))
+        {
+            if (MainMenuController.Instance != null)
+            {
+                MainMenuController.Instance.ToggleMenu();
             }
         }
     }

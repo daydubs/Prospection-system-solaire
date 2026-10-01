@@ -15,6 +15,6 @@ MonoBehaviour:
   id: 0
   itemName: FoodPill
   description: pilule qui restore 50% de la vie
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 2eeb6b5b7c120764b8bae3bb35417b3c, type: 3}
   maxStack: 1
-  model: {fileID: 919132149155446097, guid: 459a962e97a81aa44926012fef5068e1, type: 3}
+  model: {fileID: 919132149155446097, guid: da5aa6ed87e31ca4cbb405f2b70e8577, type: 3}

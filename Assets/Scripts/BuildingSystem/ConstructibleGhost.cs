@@ -44,8 +44,10 @@ public class ConstructibleGhost : MonoBehaviour
         }
     }
 
-    // Store remaining resource costs needed to finish this building
-    private Dictionary<string, float> remainingCosts = new Dictionary<string, float>();
+    // Track fractional required progress
+    private Dictionary<InventoryFramework.Item, float> exactDrainAccumulator = new Dictionary<InventoryFramework.Item, float>();
+    // Store remaining integer resource costs needed to finish this building
+    private Dictionary<InventoryFramework.Item, int> remainingCosts = new Dictionary<InventoryFramework.Item, int>();
     private float progressThreshold = 0f;
 
     public void Initialize(BaseModuleData data, BuilderController controller)
@@ -59,7 +61,11 @@ public class ConstructibleGhost : MonoBehaviour
         {
             foreach (var cost in moduleData.resourceCosts)
             {
-                remainingCosts[cost.resourceId] = cost.amount;
+                if (cost.item != null)
+                {
+                    remainingCosts[cost.item] = cost.amount;
+                    exactDrainAccumulator[cost.item] = 0f;
+                }
             }
         }
     }
@@ -80,36 +86,64 @@ public class ConstructibleGhost : MonoBehaviour
 
         // Calculate progress percentage
         float progressDelta = deltaTime / moduleData.baseConstructionTime;
-        float expectedProgress = (currentConstructionTime + deltaTime) / moduleData.baseConstructionTime;
 
-        // Drain resources progressively based on expected progress
+        // Drain resources progressively by integers
         if (builder.inventory != null && moduleData.resourceCosts != null)
         {
             bool hasAllResourcesForTick = true;
 
             foreach (var cost in moduleData.resourceCosts)
             {
+                if (cost.item == null || remainingCosts[cost.item] <= 0) continue;
+
                 float totalCost = cost.amount;
-                float expectedDrain = totalCost * progressDelta;
+                float expectedFractionalDrain = totalCost * progressDelta;
 
-                // Don't drain more than what's remaining
-                if (expectedDrain > remainingCosts[cost.resourceId])
+                exactDrainAccumulator[cost.item] += expectedFractionalDrain;
+
+                // If accumulated drain goes above 1, we need to consume an integer amount
+                if (exactDrainAccumulator[cost.item] >= 1f)
                 {
-                    expectedDrain = remainingCosts[cost.resourceId];
+                    int unitsToConsume = Mathf.FloorToInt(exactDrainAccumulator[cost.item]);
+                    // Don't consume more than remaining
+                    unitsToConsume = Mathf.Min(unitsToConsume, remainingCosts[cost.item]);
+
+                    if (unitsToConsume > 0)
+                    {
+                        if (builder.inventory.HasItem(cost.item, unitsToConsume))
+                        {
+                            builder.inventory.ConsumeItem(cost.item, unitsToConsume);
+                            remainingCosts[cost.item] -= unitsToConsume;
+                            exactDrainAccumulator[cost.item] -= unitsToConsume;
+                        }
+                        else
+                        {
+                            // Player ran out of this resource
+                            hasAllResourcesForTick = false;
+                            exactDrainAccumulator[cost.item] -= expectedFractionalDrain; // Revert accumulator
+                            Debug.LogWarning($"[Building] Insufficient {cost.item.itemName} to continue construction!");
+                            break;
+                        }
+                    }
                 }
 
-                // Try to consume the resource
-                if (builder.inventory.HasResource(cost.resourceId, expectedDrain))
+                // If it's the very last tick and there is still some remaining cost, we must consume it
+                float expectedProgress = (currentConstructionTime + deltaTime) / moduleData.baseConstructionTime;
+                if (expectedProgress >= 0.999f && hasAllResourcesForTick && remainingCosts[cost.item] > 0)
                 {
-                    builder.inventory.ConsumeResource(cost.resourceId, expectedDrain);
-                    remainingCosts[cost.resourceId] -= expectedDrain;
-                }
-                else
-                {
-                    // Player ran out of this resource
-                    hasAllResourcesForTick = false;
-                    Debug.LogWarning($"[Building] Insufficient {cost.resourceId} to continue construction!");
-                    break;
+                    int finalUnits = remainingCosts[cost.item];
+                    if (builder.inventory.HasItem(cost.item, finalUnits))
+                    {
+                        builder.inventory.ConsumeItem(cost.item, finalUnits);
+                        remainingCosts[cost.item] -= finalUnits;
+                    }
+                    else
+                    {
+                        hasAllResourcesForTick = false;
+                        exactDrainAccumulator[cost.item] -= expectedFractionalDrain;
+                        Debug.LogWarning($"[Building] Insufficient {cost.item.itemName} to finish construction!");
+                        break;
+                    }
                 }
             }
 

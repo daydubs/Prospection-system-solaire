@@ -10,7 +10,7 @@ public class BuilderController : MonoBehaviour
 {
     [Header("References")]
     public Camera playerCamera;
-    public PlayerInventory inventory;
+    public InventoryFramework.Inventory inventory;
 
     [Header("Build Settings")]
     public float buildRange = 10f;
@@ -29,8 +29,8 @@ public class BuilderController : MonoBehaviour
         if (playerCamera == null)
             playerCamera = GetComponentInChildren<Camera>();
 
-        if (inventory == null)
-            inventory = GetComponent<PlayerInventory>();
+        if (inventory == null && GameManager.Instance != null)
+            inventory = GameManager.Instance.playerInventory;
     }
 
     private void Update()

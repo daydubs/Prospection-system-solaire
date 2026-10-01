@@ -28,6 +28,6 @@ public class BaseModuleData : ScriptableObject
 [System.Serializable]
 public class ResourceCost
 {
-    public string resourceId;
-    public float amount;
+    public InventoryFramework.Item item;
+    public int amount;
 }

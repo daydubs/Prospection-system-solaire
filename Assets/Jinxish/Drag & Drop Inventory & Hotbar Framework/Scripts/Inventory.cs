@@ -48,6 +48,46 @@ namespace InventoryFramework
             return false; // Inventory is full
         }
 
+        public bool HasItem(Item item, int amount)
+        {
+            int found = 0;
+            foreach (var slot in slots)
+            {
+                if (!slot.IsEmpty && slot.item == item)
+                {
+                    found += slot.count;
+                    if (found >= amount) return true;
+                }
+            }
+            return false;
+        }
+
+        public bool ConsumeItem(Item item, int amount)
+        {
+            if (!HasItem(item, amount)) return false;
+
+            int remainingToConsume = amount;
+            foreach (var slot in slots)
+            {
+                if (!slot.IsEmpty && slot.item == item)
+                {
+                    if (slot.count >= remainingToConsume)
+                    {
+                        slot.count -= remainingToConsume;
+                        if (slot.count == 0) slot.item = null; // Clear slot if empty
+                        return true;
+                    }
+                    else
+                    {
+                        remainingToConsume -= slot.count;
+                        slot.count = 0;
+                        slot.item = null;
+                    }
+                }
+            }
+            return true;
+        }
+
         public void MoveOrSwap(int from, int to)
         {
             if (from == to) return;

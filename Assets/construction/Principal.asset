@@ -12,9 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a99fff7af65f5b4ebd7acf4b740013a, type: 3}
   m_Name: Principal
   m_EditorClassIdentifier: Assembly-CSharp::BaseModuleData
-  moduleName: New Module
+  moduleName: Principal
   description: A constructible base module.
-  ghostPrefab: {fileID: 0}
-  finalPrefab: {fileID: 0}
+  ghostPrefab: {fileID: 1579568059309882377, guid: 348e4fd500301644298ccccb0d4a3757, type: 3}
+  finalPrefab: {fileID: 7694828613837055628, guid: d1664338670aaed4f950a87dd936dd0a, type: 3}
   baseConstructionTime: 5
-  resourceCosts: []
+  resourceCosts:
+  - resourceId: 2
+    amount: 10

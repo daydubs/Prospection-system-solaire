@@ -11,7 +11,7 @@ showStatusBar = false
 scopes = {
 	"picker_window_position_offset.00000000" = "214;104;320;550"
 	"picker_visibility_flags.00000000" = "0"
-	"picker_item_size.00000000" = "1"
+	"picker_item_size.00000000" = "32"
 	"picker_inspector.00000000" = "0"
 }
 providers = {
@@ -78,6 +78,31 @@ providers = {
 	log = {
 		active = false
 		priority = 210
+		defaultAction = null
+	}
+	lightmaps = {
+		active = true
+		priority = 100
+		defaultAction = null
+	}
+	uiengine = {
+		active = true
+		priority = 100
+		defaultAction = null
+	}
+	uicustom = {
+		active = true
+		priority = 100
+		defaultAction = null
+	}
+	"project-auditor-issues" = {
+		active = true
+		priority = 100
+		defaultAction = null
+	}
+	uiuxml = {
+		active = true
+		priority = 200
 		defaultAction = null
 	}
 }

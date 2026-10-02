@@ -407,7 +407,15 @@ public class GameManager : MonoBehaviour
     {
         if (playerInventory != null)
         {
-            return playerInventory.AddItem(item, amount);
+            bool added = playerInventory.AddItem(item, amount);
+            if (added)
+            {
+                InventoryUI inventoryUI = FindAnyObjectByType<InventoryUI>();
+                if (inventoryUI != null) inventoryUI.RefreshUI();
+                HotbarUI hotbarUI = FindAnyObjectByType<HotbarUI>();
+                if (hotbarUI != null) hotbarUI.RefreshUI();
+            }
+            return added;
         }
         else
         {

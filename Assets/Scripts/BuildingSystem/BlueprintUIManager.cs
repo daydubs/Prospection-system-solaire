@@ -21,6 +21,18 @@ namespace BuildingSystem
 
         public void PopulateUI()
         {
+            if (contentPanel == null)
+            {
+                Debug.LogError("BlueprintUIManager: 'contentPanel' is not assigned! Blueprints cannot be displayed. Please assign the Content panel (usually a Layout Group inside a Scroll View) to this field in the Inspector.");
+                return;
+            }
+
+            if (blueprintButtonPrefab == null)
+            {
+                Debug.LogError("BlueprintUIManager: 'blueprintButtonPrefab' is not assigned! Blueprints cannot be displayed. Please assign a UI Button prefab to this field in the Inspector.");
+                return;
+            }
+
             // Clear existing elements in case this is called multiple times
             foreach (Transform child in contentPanel)
             {

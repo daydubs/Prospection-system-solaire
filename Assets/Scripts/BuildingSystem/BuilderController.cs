@@ -21,9 +21,30 @@ public class BuilderController : MonoBehaviour
     public bool isBuildModeActive = false;
     public bool isGhostPlaced = false;
 
+    [Header("Ghost Rotation")]
+    public float ghostRotationX = 0f;
+    public float targetGhostRotationX = 0f;
+    public float rotationSpeed = 15f;
+
     private GameObject currentGhost;
     private ConstructibleGhost ghostScript;
     private ModuleSocket currentSnappedSocket;
+    private InputSystem_Actions inputActions;
+
+    private void Awake()
+    {
+        inputActions = new InputSystem_Actions();
+    }
+
+    private void OnEnable()
+    {
+        inputActions.Player.Enable();
+    }
+
+    private void OnDisable()
+    {
+        inputActions.Player.Disable();
+    }
 
     private void Start()
     {
@@ -56,6 +77,8 @@ public class BuilderController : MonoBehaviour
         currentModuleToBuild = moduleData;
         isBuildModeActive = true;
         isGhostPlaced = false;
+        ghostRotationX = 0f; // Reset rotation
+        targetGhostRotationX = 0f;
     }
 
     public void ExitBuildMode()
@@ -141,6 +164,9 @@ public class BuilderController : MonoBehaviour
                     currentGhost.transform.rotation = Quaternion.LookRotation(closestSocket.OutwardDirection, closestSocket.transform.up);
                 }
 
+                // Apply manual X-axis rotation on top of snapped rotation
+                currentGhost.transform.Rotate(Vector3.right, ghostRotationX, Space.Self);
+
                 ghostScript.SetPlacementValidity(true);
             }
             else
@@ -159,6 +185,9 @@ public class BuilderController : MonoBehaviour
                 {
                     currentGhost.transform.rotation = Quaternion.identity;
                 }
+
+                // Apply manual X-axis rotation on top of free placement rotation
+                currentGhost.transform.Rotate(Vector3.right, ghostRotationX, Space.Self);
 
                     // Check if placement is valid (e.g. slope not too steep, not intersecting)
                     // For now, we assume simple validity on terrain
@@ -202,7 +231,23 @@ public class BuilderController : MonoBehaviour
 
     private void HandleBuildingInput()
     {
-        if (currentGhost == null || !ghostScript.CanBePlaced) return;
+        if (currentGhost == null) return;
+
+        // Handle rotation input using InputSystem's Action Map (Rotation)
+        // Read the continuous 1D axis value
+        var rotationInput = inputActions.Player.Rotation.ReadValue<float>();
+        if (Mathf.Abs(rotationInput) > 0.01f)
+        {
+            // Normalize the scroll value to make the rotation speed manageable.
+            // We use the actual value scaled down, so smooth scroll devices aren't too fast.
+            // Typical notch is 120, so dividing by 120 normalizes a notch to 1.
+            targetGhostRotationX += (rotationInput / 120f) * rotationSpeed;
+        }
+
+        // Smoothly interpolate the actual rotation towards the target
+        ghostRotationX = Mathf.Lerp(ghostRotationX, targetGhostRotationX, Time.deltaTime * 10f);
+
+        if (!ghostScript.CanBePlaced) return;
 
         var mouse = Mouse.current;
         if (mouse != null)

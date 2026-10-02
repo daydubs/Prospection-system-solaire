@@ -21,9 +21,32 @@ public class BuilderController : MonoBehaviour
     public bool isBuildModeActive = false;
     public bool isGhostPlaced = false;
 
+    [Header("Rotation Settings")]
+    public float rotationSensitivity = 10f; // Degrees per scroll tick
+    public float rotationLerpSpeed = 15f;
+
+    private float targetXRotation = 0f;
+    private float currentXRotation = 0f;
+
     private GameObject currentGhost;
     private ConstructibleGhost ghostScript;
     private ModuleSocket currentSnappedSocket;
+    private InputSystem_Actions inputActions;
+
+    private void Awake()
+    {
+        inputActions = new InputSystem_Actions();
+    }
+
+    private void OnEnable()
+    {
+        inputActions?.Player.Enable();
+    }
+
+    private void OnDisable()
+    {
+        inputActions?.Player.Disable();
+    }
 
     private void Start()
     {
@@ -98,6 +121,17 @@ public class BuilderController : MonoBehaviour
 
         if (!isGhostPlaced)
         {
+            // Handle X rotation input
+            float scroll = inputActions.Player.Rotation.ReadValue<float>();
+            // Scroll usually gives values like 120 or -120 per tick, normalize it
+            if (scroll != 0)
+            {
+                targetXRotation += Mathf.Sign(scroll) * rotationSensitivity;
+            }
+
+            // Smoothly interpolate current rotation
+            currentXRotation = Mathf.Lerp(currentXRotation, targetXRotation, Time.deltaTime * rotationLerpSpeed);
+
             // Cast a ray from the center of the screen
             Ray ray = playerCamera.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2, 0));
 
@@ -128,7 +162,10 @@ public class BuilderController : MonoBehaviour
 
                     // We need to figure out the rotation offset between the ghost's root and its connecting socket
                     Quaternion rotationOffset = Quaternion.Inverse(ghostConnectingSocket.transform.localRotation);
-                    currentGhost.transform.rotation = targetRotation * rotationOffset;
+
+                    // Apply the accumulated X rotation locally (spinning around its own X axis)
+                    Quaternion finalRotation = targetRotation * rotationOffset * Quaternion.Euler(currentXRotation, 0, 0);
+                    currentGhost.transform.rotation = finalRotation;
 
                     // Position the ghost so its socket exactly overlaps the base's socket
                     Vector3 positionOffset = currentGhost.transform.position - ghostConnectingSocket.transform.position;
@@ -138,7 +175,7 @@ public class BuilderController : MonoBehaviour
                 {
                     // Fallback if ghost has no sockets defined (should not happen normally)
                     currentGhost.transform.position = closestSocket.transform.position;
-                    currentGhost.transform.rotation = Quaternion.LookRotation(closestSocket.OutwardDirection, closestSocket.transform.up);
+                    currentGhost.transform.rotation = Quaternion.LookRotation(closestSocket.OutwardDirection, closestSocket.transform.up) * Quaternion.Euler(currentXRotation, 0, 0);
                 }
 
                 ghostScript.SetPlacementValidity(true);
@@ -153,11 +190,11 @@ public class BuilderController : MonoBehaviour
                 playerForward.y = 0; // Keep horizontal
                 if (playerForward.sqrMagnitude > 0.01f)
                 {
-                    currentGhost.transform.rotation = Quaternion.LookRotation(playerForward, Vector3.up);
+                    currentGhost.transform.rotation = Quaternion.LookRotation(playerForward, Vector3.up) * Quaternion.Euler(currentXRotation, 0, 0);
                 }
                 else
                 {
-                    currentGhost.transform.rotation = Quaternion.identity;
+                    currentGhost.transform.rotation = Quaternion.Euler(currentXRotation, 0, 0);
                 }
 
                     // Check if placement is valid (e.g. slope not too steep, not intersecting)

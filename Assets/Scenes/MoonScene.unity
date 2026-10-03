@@ -119,6 +119,119 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1001 &66001677
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: 5e824373657d27149b5b5c3dd7be741d, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 660.97644
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 5e824373657d27149b5b5c3dd7be741d, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 11.39
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 5e824373657d27149b5b5c3dd7be741d, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 370.41873
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 5e824373657d27149b5b5c3dd7be741d, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.7071067
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 5e824373657d27149b5b5c3dd7be741d, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 5e824373657d27149b5b5c3dd7be741d, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 5e824373657d27149b5b5c3dd7be741d, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 5e824373657d27149b5b5c3dd7be741d, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 5e824373657d27149b5b5c3dd7be741d, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 5e824373657d27149b5b5c3dd7be741d, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -7511558181221131132, guid: 5e824373657d27149b5b5c3dd7be741d, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 86047c4d34e87c749ba91311081d9819, type: 2}
+    - target: {fileID: 919132149155446097, guid: 5e824373657d27149b5b5c3dd7be741d, type: 3}
+      propertyPath: m_Name
+      value: regolite
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 5e824373657d27149b5b5c3dd7be741d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 66001680}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 5e824373657d27149b5b5c3dd7be741d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 66001679}
+  m_SourcePrefab: {fileID: 100100000, guid: 5e824373657d27149b5b5c3dd7be741d, type: 3}
+--- !u!1 &66001678 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 5e824373657d27149b5b5c3dd7be741d, type: 3}
+  m_PrefabInstance: {fileID: 66001677}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &66001679
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 66001678}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb6818760ffe70b4280e92e9f4f78d7c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MineableResource
+  resourceItem: {fileID: 0}
+  dropAmount: 1
+  resourceId: res_water_ice
+  resourceName: Glace Volatile
+  quantityTons: 5
+  basePrice: 180
+  requiredToolName: Sonic Fracturer
+--- !u!64 &66001680
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 66001678}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -6538904251477633467, guid: 5e824373657d27149b5b5c3dd7be741d, type: 3}
 --- !u!1 &102167581
 GameObject:
   m_ObjectHideFlags: 0
@@ -598,14 +711,18 @@ PrefabInstance:
       propertyPath: m_VertexColorAlwaysGammaSpace
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 4238116309577587722, guid: b0fb549f8a9981046b156cd01730f369, type: 3}
+      propertyPath: m_Name
+      value: InventoryCanvas
+      objectReference: {fileID: 0}
     - target: {fileID: 4264935020658722563, guid: b0fb549f8a9981046b156cd01730f369, type: 3}
       propertyPath: mainMenuUI
       value: 
-      objectReference: {fileID: 1496366337}
+      objectReference: {fileID: 0}
     - target: {fileID: 4264935020658722563, guid: b0fb549f8a9981046b156cd01730f369, type: 3}
       propertyPath: blueprintUI
       value: 
-      objectReference: {fileID: 329619490}
+      objectReference: {fileID: 275613966}
     - target: {fileID: 5925235191578451076, guid: b0fb549f8a9981046b156cd01730f369, type: 3}
       propertyPath: inventory
       value: 
@@ -667,7 +784,6 @@ GameObject:
   - component: {fileID: 275613970}
   - component: {fileID: 275613969}
   - component: {fileID: 275613968}
-  - component: {fileID: 275613971}
   m_Layer: 5
   m_Name: BlueprintUI
   m_TagString: Untagged
@@ -756,23 +872,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 275613966}
   m_CullTransparentMesh: 1
---- !u!114 &275613971
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 275613966}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e782840269d27424d94c815c22417614, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::BuildingSystem.BlueprintUIManager
-  availableBlueprints:
-  - {fileID: 11400000, guid: 5bd78f82b2f84204e8ce1204559c487e, type: 2}
-  - {fileID: 11400000, guid: dc930d4534574b04d894e4522b930c4a, type: 2}
-  contentPanel: {fileID: 275613967}
-  blueprintButtonPrefab: {fileID: 4561499546480776890, guid: 109b977292cee61418439438a04e23c1, type: 3}
 --- !u!1 &328735933
 GameObject:
   m_ObjectHideFlags: 0
@@ -883,7 +982,7 @@ GameObject:
   m_Component:
   - component: {fileID: 329619491}
   m_Layer: 0
-  m_Name: BlueprintUI
+  m_Name: BlueprintUICanvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1138,7 +1237,7 @@ MonoBehaviour:
   dropAmount: 500
   resourceId: 2
   resourceName: IceResource
-  quantityTons: 5
+  quantityTons: 500
   basePrice: 180
   requiredToolName: Sonic Fracturer
 --- !u!1001 &580499633
@@ -1212,6 +1311,26 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1327695179840291515, guid: 0daed915f88831744860ff428fcfe29e, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1327695179840291515, guid: 0daed915f88831744860ff428fcfe29e, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1327695179840291515, guid: 0daed915f88831744860ff428fcfe29e, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1327695179840291515, guid: 0daed915f88831744860ff428fcfe29e, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1327695179840291515, guid: 0daed915f88831744860ff428fcfe29e, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1875725679163069104, guid: 0daed915f88831744860ff428fcfe29e, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -1292,9 +1411,93 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2054509706935148453, guid: 0daed915f88831744860ff428fcfe29e, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2054509706935148453, guid: 0daed915f88831744860ff428fcfe29e, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2054509706935148453, guid: 0daed915f88831744860ff428fcfe29e, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2054509706935148453, guid: 0daed915f88831744860ff428fcfe29e, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2054509706935148453, guid: 0daed915f88831744860ff428fcfe29e, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3963839390458974382, guid: 0daed915f88831744860ff428fcfe29e, type: 3}
       propertyPath: m_Name
       value: MainMenu_Canvas
+      objectReference: {fileID: 0}
+    - target: {fileID: 3963839390458974382, guid: 0daed915f88831744860ff428fcfe29e, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4271904570899587957, guid: 0daed915f88831744860ff428fcfe29e, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4271904570899587957, guid: 0daed915f88831744860ff428fcfe29e, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4271904570899587957, guid: 0daed915f88831744860ff428fcfe29e, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4271904570899587957, guid: 0daed915f88831744860ff428fcfe29e, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4271904570899587957, guid: 0daed915f88831744860ff428fcfe29e, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4537162783708540020, guid: 0daed915f88831744860ff428fcfe29e, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4537162783708540020, guid: 0daed915f88831744860ff428fcfe29e, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4537162783708540020, guid: 0daed915f88831744860ff428fcfe29e, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4537162783708540020, guid: 0daed915f88831744860ff428fcfe29e, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4537162783708540020, guid: 0daed915f88831744860ff428fcfe29e, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8693796728478968183, guid: 0daed915f88831744860ff428fcfe29e, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8693796728478968183, guid: 0daed915f88831744860ff428fcfe29e, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8693796728478968183, guid: 0daed915f88831744860ff428fcfe29e, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8693796728478968183, guid: 0daed915f88831744860ff428fcfe29e, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8693796728478968183, guid: 0daed915f88831744860ff428fcfe29e, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1433,11 +1636,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::InventoryFramework.PickupItem
   item: {fileID: 11400000, guid: a8c2c8804e0418b448fd06eaf1f36ba7, type: 2}
   amount: 1
---- !u!1 &1496366337 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 3963839390458974382, guid: 0daed915f88831744860ff428fcfe29e, type: 3}
-  m_PrefabInstance: {fileID: 619699652}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1666866196
 GameObject:
   m_ObjectHideFlags: 0
@@ -1548,6 +1746,8 @@ GameObject:
   - component: {fileID: 1708485918}
   - component: {fileID: 1708485917}
   - component: {fileID: 1708485916}
+  - component: {fileID: 1708485924}
+  - component: {fileID: 1708485923}
   m_Layer: 5
   m_Name: BlueprintInventory
   m_TagString: Untagged
@@ -1707,6 +1907,35 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
+--- !u!114 &1708485923
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1708485914}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d4903f58b63429e409e74c47e9087115, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingSystem.BlueprintUIFixer
+--- !u!114 &1708485924
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1708485914}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e782840269d27424d94c815c22417614, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingSystem.BlueprintUIManager
+  availableBlueprints:
+  - {fileID: 11400000, guid: 5bd78f82b2f84204e8ce1204559c487e, type: 2}
+  - {fileID: 11400000, guid: dc930d4534574b04d894e4522b930c4a, type: 2}
+  contentPanel: {fileID: 275613967}
+  blueprintButtonPrefab: {fileID: 4561499546480776890, guid: 109b977292cee61418439438a04e23c1, type: 3}
 --- !u!1 &1768430595
 GameObject:
   m_ObjectHideFlags: 0
@@ -2443,3 +2672,4 @@ SceneRoots:
   - {fileID: 6871267954145060502}
   - {fileID: 130199190}
   - {fileID: 580499633}
+  - {fileID: 66001677}

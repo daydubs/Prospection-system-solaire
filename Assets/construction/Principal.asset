@@ -17,7 +17,7 @@ MonoBehaviour:
   icon: {fileID: 21300000, guid: 0a86d7f58b2c1b045bcbdbb6d44eb419, type: 3}
   ghostPrefab: {fileID: 7694828613837055628, guid: d1664338670aaed4f950a87dd936dd0a, type: 3}
   finalPrefab: {fileID: 6798103080028206832, guid: 32286a38116aa8640adf2ffe9aef327b, type: 3}
-  baseConstructionTime: 5
+  baseConstructionTime: 10
   resourceCosts:
   - item: {fileID: 11400000, guid: 24f70559d8f007b4c964681d996ae13e, type: 2}
     amount: 5

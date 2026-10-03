@@ -11,6 +11,9 @@ namespace InventoryFramework
         public Sprite icon;
         public int maxStack = 1;
         public GameObject model;
+
+        [Tooltip("Couleur représentant cet item, par exemple pour le rendu des objets physiques récoltés.")]
+        public Color itemColor = Color.white;
     }
 }
 

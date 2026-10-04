@@ -3,7 +3,17 @@ guid: 9317283e3d00e814398a199cd00d3322
 ModelImporter:
   serializedVersion: 24600
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Vial
+    second: {fileID: 2100000, guid: 6d9b1df7f189812489c5df3cd15d4bcd, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: VialCVap
+    second: {fileID: 2100000, guid: 1749703e2e5bd4a42aaa80db85d561c7, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0

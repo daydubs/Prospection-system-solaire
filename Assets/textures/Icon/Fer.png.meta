@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: f2755e793180cb344b231aba711e9584
+guid: 4d1dd7a1266bbc841b3a259962c64b30
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 4852919179960173308
-    second: Sodium_0
+      213: -9106165563400203513
+    second: Fer_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -102,13 +102,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Sodium_0
+      name: Fer_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 472
-        height: 428
+        width: 585
+        height: 441
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -117,8 +117,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: cf2c4354848095340800000000000000
-      internalID: 4852919179960173308
+      spriteID: 703d2a7aaa660a180800000000000000
+      internalID: -9106165563400203513
       vertices: []
       indices: 
       edges: []

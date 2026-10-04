@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: de710cc37b178ac41bdc90fbef7a5c3b, type: 3}
+  m_Name: TiO2
+  m_EditorClassIdentifier: Assembly-CSharp::InventoryFramework.Item
+  id: 15
+  itemName: TiO2
+  description: Dioxyde De Titane
+  icon: {fileID: 21300000, guid: b3a131a659779e64090e176d09642f54, type: 3}
+  maxStack: 100
+  model: {fileID: 919132149155446097, guid: 9317283e3d00e814398a199cd00d3322, type: 3}
+  itemColor: {r: 1, g: 1, b: 1, a: 1}

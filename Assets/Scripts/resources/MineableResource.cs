@@ -19,6 +19,14 @@ public class MineableResource : MonoBehaviour, IInteractable
     [Tooltip("Quantité totale maximale d'items récoltés")]
     public int maxTotalYield = 15;
 
+    [Header("Legacy Settings (Fallback)")]
+    public Item resourceItem;
+    public int dropAmount = 1;
+    public string resourceId;
+    public string resourceName;
+    public float quantityTons;
+    public double basePrice;
+
     [Header("Mining Requirements")]
     public string requiredToolName = "Sonic Fracturer";
 
@@ -34,17 +42,26 @@ public class MineableResource : MonoBehaviour, IInteractable
         {
             ItemPickupHandler pickupHandler = FindAnyObjectByType<ItemPickupHandler>();
 
+            bool anyAttempted = false;
+
             if (multipleDrops != null && multipleDrops.Count > 0)
             {
                 int totalYield = Random.Range(minTotalYield, maxTotalYield + 1);
-                bool anyAttempted = false;
 
                 foreach (ResourceDrop drop in multipleDrops)
                 {
-                    if (drop.item == null || drop.percentage <= 0f) continue;
+                    if (drop.item == null || drop.percentage <= 0f)
+                    {
+                        Debug.LogWarning($"[MineableResource] Invalid drop configuration: item={drop.item}, percentage={drop.percentage}");
+                        continue;
+                    }
 
                     int specificAmount = Mathf.RoundToInt(totalYield * (drop.percentage / 100f));
-                    if (specificAmount <= 0) continue;
+                    if (specificAmount <= 0)
+                    {
+                        Debug.LogWarning($"[MineableResource] Calculated drop amount is <= 0 for {drop.item.itemName}");
+                        continue;
+                    }
 
                     anyAttempted = true;
                     bool success = false;
@@ -68,15 +85,39 @@ public class MineableResource : MonoBehaviour, IInteractable
                         SpawnPhysicalItem(drop.item, specificAmount);
                     }
                 }
-
-                if (anyAttempted)
+            }
+            else if (resourceItem != null)
+            {
+                // Fallback to legacy fields
+                anyAttempted = true;
+                bool success = false;
+                if (pickupHandler != null)
                 {
-                    Destroy(gameObject);
+                    success = pickupHandler.PickupItem(resourceItem, dropAmount);
+                }
+                else
+                {
+                    success = GameManager.Instance.AddPlayerItem(resourceItem, dropAmount);
+                }
+
+                if (success)
+                {
+                    Debug.Log($"[MineableResource] Miné avec succès (Legacy) : {dropAmount}x {resourceItem.itemName}");
+                }
+                else
+                {
+                    Debug.LogWarning($"[MineableResource] Inventaire plein (Legacy) pour {resourceItem.itemName}. Item instancié au sol.");
+                    SpawnPhysicalItem(resourceItem, dropAmount);
                 }
             }
             else
             {
-                Debug.LogWarning("[MineableResource] multipleDrops est vide. Impossible de miner cette ressource.");
+                Debug.LogWarning("[MineableResource] multipleDrops est vide et resourceItem est nul. Impossible de miner cette ressource.");
+            }
+
+            if (anyAttempted)
+            {
+                Destroy(gameObject);
             }
         }
         else

@@ -7,13 +7,14 @@ namespace InventoryFramework
         public Hotbar hotbar;
         public Inventory inventory;
 
-        public void PickupItem(Item item, int amount = 1)
+        public bool PickupItem(Item item, int amount = 1)
         {
             bool addedToInventory = inventory.AddItem(item, amount);
+            bool addedToHotbar = false;
 
             if (!addedToInventory)
             {
-                bool addedToHotbar = hotbar.AddItem(item, amount);
+                addedToHotbar = hotbar.AddItem(item, amount);
 
                 if (!addedToHotbar)
                 {
@@ -23,8 +24,8 @@ namespace InventoryFramework
 
             FindAnyObjectByType<HotbarUI>().RefreshUI();
             FindAnyObjectByType<InventoryUI>().RefreshUI();
+
+            return addedToInventory || addedToHotbar;
         }
     }
 }
-
-

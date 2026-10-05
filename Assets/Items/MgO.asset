@@ -12,10 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: de710cc37b178ac41bdc90fbef7a5c3b, type: 3}
   m_Name: MgO
   m_EditorClassIdentifier: Assembly-CSharp::InventoryFramework.Item
-  id: 0
-  itemName: 
-  description: 
-  icon: {fileID: 0}
-  maxStack: 1
-  model: {fileID: 919132149155446097, guid: 459a962e97a81aa44926012fef5068e1, type: 3}
+  id: 14
+  itemName: MgO
+  description: Oxyde De Magnesuim
+  icon: {fileID: 21300000, guid: 37dba200ae5ff9946a25cd1fa4d6387a, type: 3}
+  maxStack: 100
+  model: {fileID: 919132149155446097, guid: 9317283e3d00e814398a199cd00d3322, type: 3}
+  basePrice: 200
   itemColor: {r: 1, g: 1, b: 1, a: 1}

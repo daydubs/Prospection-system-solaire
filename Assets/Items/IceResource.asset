@@ -18,3 +18,5 @@ MonoBehaviour:
   icon: {fileID: 21300000, guid: b5725f891ab4c7d45a609e69f5789ae4, type: 3}
   maxStack: 10000
   model: {fileID: 7852528794392818955, guid: d654460e0402419479368eaa182e6a73, type: 3}
+  basePrice: 600
+  itemColor: {r: 1, g: 1, b: 1, a: 1}

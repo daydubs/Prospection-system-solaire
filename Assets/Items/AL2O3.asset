@@ -17,5 +17,6 @@ MonoBehaviour:
   description: oxyde d'aluminium
   icon: {fileID: 21300000, guid: aa796525d15e36a4784c93edb67e69f9, type: 3}
   maxStack: 100
-  model: {fileID: 919132149155446097, guid: 459a962e97a81aa44926012fef5068e1, type: 3}
+  model: {fileID: 919132149155446097, guid: 9317283e3d00e814398a199cd00d3322, type: 3}
+  basePrice: 100
   itemColor: {r: 0.8207547, g: 0.8207547, b: 0.8207547, a: 0.2901961}

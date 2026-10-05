@@ -110,9 +110,9 @@ public class ConstructibleGhost : MonoBehaviour
 
                     if (unitsToConsume > 0)
                     {
-                        if (builder.inventory.HasItem(cost.item, unitsToConsume))
+                        if (GameManager.Instance.HasPlayerItem(cost.item, unitsToConsume))
                         {
-                            builder.inventory.ConsumeItem(cost.item, unitsToConsume);
+                            GameManager.Instance.ConsumePlayerItem(cost.item, unitsToConsume);
                             remainingCosts[cost.item] -= unitsToConsume;
                             exactDrainAccumulator[cost.item] -= unitsToConsume;
                         }
@@ -132,9 +132,9 @@ public class ConstructibleGhost : MonoBehaviour
                 if (expectedProgress >= 0.999f && hasAllResourcesForTick && remainingCosts[cost.item] > 0)
                 {
                     int finalUnits = remainingCosts[cost.item];
-                    if (builder.inventory.HasItem(cost.item, finalUnits))
+                    if (GameManager.Instance.HasPlayerItem(cost.item, finalUnits))
                     {
-                        builder.inventory.ConsumeItem(cost.item, finalUnits);
+                        GameManager.Instance.ConsumePlayerItem(cost.item, finalUnits);
                         remainingCosts[cost.item] -= finalUnits;
                     }
                     else

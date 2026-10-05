@@ -35,8 +35,11 @@ namespace InventoryFramework
 
         public void RefreshUI()
         {
+            if (slotUIs == null) return;
+
             for (int i = 0; i < inventory.size; i++)
             {
+                if (slotUIs[i] == null) continue;
                 slotUIs[i].SetSlot(inventory.slots[i]);
             }
         }

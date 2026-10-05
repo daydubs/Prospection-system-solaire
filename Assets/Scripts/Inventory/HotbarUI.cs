@@ -98,14 +98,18 @@ namespace InventoryFramework
 
         public void RefreshUI()
         {
+            if (slotUIs == null) return;
+
             for (int i = 0; i < hotbar.size; i++)
             {
+                if (slotUIs[i] == null) continue;
                 slotUIs[i].SetSlot(hotbar.slots[i]);
 
                 var bg = slotUIs[i].transform.GetChild(0).GetComponent<Image>();
                 bg.color = (i == selectedIndex) ? Color.yellow : Color.white;
             }
 
+            if (slotUIs[selectedIndex] == null) return;
             InventorySlot slot = slotUIs[selectedIndex].GetComponent<InventorySlotUI>().GetSlot();
 
             for (int x = 0; x < toolsParent.childCount; x++)

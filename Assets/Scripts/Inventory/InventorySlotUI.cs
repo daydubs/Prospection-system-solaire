@@ -102,6 +102,8 @@ namespace InventoryFramework
 
         public void SetSlot(InventorySlot slot)
         {
+            if (this == null || icon == null) return;
+
             if (slot == null || slot.IsEmpty)
             {
                 icon.enabled = false;

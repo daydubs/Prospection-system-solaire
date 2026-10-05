@@ -318,12 +318,14 @@ public class PlayerBaseController : MonoBehaviour
 
             if (currentMineable != null)
             {
+                Debug.Log("mining clicked on resource: " + currentMineable.resourceName);
                 HotbarUI hotbarUI = FindAnyObjectByType<HotbarUI>();
                 if (hotbarUI != null)
                 {
                     Item selectedItem = hotbarUI.GetSelectedItem();
                     if (selectedItem != null && selectedItem.itemName == currentMineable.requiredToolName)
                     {
+                        Debug.Log("mining resource: " + currentMineable.resourceName);  
                         currentMineable.Mine();
                     }
                 }

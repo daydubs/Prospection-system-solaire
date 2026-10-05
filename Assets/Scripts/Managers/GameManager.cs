@@ -403,6 +403,81 @@ public class GameManager : MonoBehaviour
         return true;
     }
 
+    // Cached UI references to avoid FindAnyObjectByType in hot paths
+    private HotbarUI cachedHotbarUI;
+    private InventoryUI cachedInventoryUI;
+
+    private void TryCacheUI()
+    {
+        if (cachedHotbarUI == null) cachedHotbarUI = FindAnyObjectByType<HotbarUI>();
+        if (cachedInventoryUI == null) cachedInventoryUI = FindAnyObjectByType<InventoryUI>();
+    }
+
+    public bool HasPlayerItem(Item item, int amount)
+    {
+        int found = 0;
+
+        if (playerInventory != null)
+        {
+            foreach (var slot in playerInventory.slots)
+            {
+                if (!slot.IsEmpty && slot.item == item) found += slot.count;
+            }
+        }
+
+        TryCacheUI();
+        if (cachedHotbarUI != null && cachedHotbarUI.hotbar != null)
+        {
+            foreach (var slot in cachedHotbarUI.hotbar.slots)
+            {
+                if (!slot.IsEmpty && slot.item == item) found += slot.count;
+            }
+        }
+
+        return found >= amount;
+    }
+
+    public bool ConsumePlayerItem(Item item, int amount)
+    {
+        if (!HasPlayerItem(item, amount)) return false;
+
+        int remainingToConsume = amount;
+
+        // First consume from inventory
+        if (playerInventory != null)
+        {
+            int inventoryCount = 0;
+            foreach (var slot in playerInventory.slots)
+            {
+                if (!slot.IsEmpty && slot.item == item) inventoryCount += slot.count;
+            }
+
+            if (inventoryCount > 0)
+            {
+                int consumeFromInv = Mathf.Min(inventoryCount, remainingToConsume);
+                playerInventory.ConsumeItem(item, consumeFromInv);
+                remainingToConsume -= consumeFromInv;
+            }
+        }
+
+        // Then consume from hotbar if needed
+        if (remainingToConsume > 0)
+        {
+            TryCacheUI();
+            if (cachedHotbarUI != null && cachedHotbarUI.hotbar != null)
+            {
+                cachedHotbarUI.hotbar.ConsumeItem(item, remainingToConsume);
+            }
+        }
+
+        // Refresh UIs
+        TryCacheUI();
+        if (cachedInventoryUI != null) cachedInventoryUI.RefreshUI();
+        if (cachedHotbarUI != null) cachedHotbarUI.RefreshUI();
+
+        return true;
+    }
+
     public bool AddPlayerItem(Item item, int amount)
     {
         if (playerInventory != null)

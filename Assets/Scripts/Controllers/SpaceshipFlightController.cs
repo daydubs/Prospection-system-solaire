@@ -50,12 +50,25 @@ public class SpaceshipFlightController : MonoBehaviour
     public float currentSpeed = 0f;
     public float distanceToDestination = 0f;
     public bool isNearDestination = false;
+    public CelestialBody currentReferenceBody { get; private set; }
 
     private Vector3 velocity = Vector3.zero;
     private float targetSpeed = 0f;
     private float orbitAngleX = 20f;
     private float orbitAngleY = 0f;
     private float currentOrbitDist = 20f;
+
+    private void Awake()
+    {
+        // Ensure responsive flight controls even if old low values were serialized
+        if (normalSpeed < 1f)
+        {
+            normalSpeed = 4.0f;
+            boostMultiplier = 3.5f;
+            acceleration = 6.0f;
+            deceleration = 8.0f;
+        }
+    }
 
     private float GetSimulationDeltaTime()
     {
@@ -91,6 +104,7 @@ public class SpaceshipFlightController : MonoBehaviour
     private void LateUpdate()
     {
         UpdateDestinationDistance();
+        UpdateReferenceBody();
 
         switch (currentMode)
         {
@@ -108,14 +122,50 @@ public class SpaceshipFlightController : MonoBehaviour
         UpdateCameraPosition();
     }
 
+    private void UpdateReferenceBody()
+    {
+        CelestialBody newRef = null;
+        if (currentMode == FlightMode.OrbitInspect && SolarSystemManager.Instance != null && SolarSystemManager.Instance.currentDestination != null)
+        {
+            newRef = SolarSystemManager.Instance.currentDestination;
+        }
+        else if (SolarSystemManager.Instance != null)
+        {
+            newRef = SolarSystemManager.Instance.GetDominantCelestialBody(transform.position);
+        }
+
+        if (newRef != currentReferenceBody)
+        {
+            Vector3 prevHostVel = currentReferenceBody != null ? currentReferenceBody.GetVelocity() : Vector3.zero;
+            Vector3 newHostVel = newRef != null ? newRef.GetVelocity() : Vector3.zero;
+
+            // Conserve world velocity across SOI transition
+            Vector3 worldVel = velocity + prevHostVel;
+            velocity = worldVel - newHostVel;
+
+            float maxV = normalSpeed * boostMultiplier * techSpeedMultiplier * 1.5f;
+            if (velocity.magnitude > maxV && maxV > 0.1f)
+            {
+                velocity = velocity.normalized * maxV;
+            }
+
+            currentReferenceBody = newRef;
+            if (currentReferenceBody != null)
+            {
+                Debug.Log($"[Spaceship] Entré dans le référentiel relatif de : {currentReferenceBody.bodyName}");
+            }
+        }
+    }
+
     private void UpdateDestinationDistance()
     {
         if (SolarSystemManager.Instance != null && SolarSystemManager.Instance.currentDestination != null)
         {
             CelestialBody dest = SolarSystemManager.Instance.currentDestination;
             distanceToDestination = Vector3.Distance(transform.position, dest.transform.position);
-            float safeDist = Mathf.Max(dest.bodyRadius * arriveDistanceOffset, 5f);
-            isNearDestination = distanceToDestination <= safeDist * 1.5f;
+            float scaledRadius = dest.bodyRadius * (dest.transform != null ? dest.transform.lossyScale.x : 1f);
+            float safeDist = Mathf.Max(scaledRadius * arriveDistanceOffset, 8f);
+            isNearDestination = distanceToDestination <= safeDist * 1.8f;
         }
         else
         {
@@ -139,6 +189,12 @@ public class SpaceshipFlightController : MonoBehaviour
         if (keyboard.tKey.wasPressedThisFrame)
         {
             EngageAutopilot();
+        }
+
+        // O key: Toggle Orbit Stabilization
+        if (keyboard.oKey.wasPressedThisFrame)
+        {
+            ToggleOrbitMode();
         }
 
         // J key: Instant Warp (Requires Tech)
@@ -165,6 +221,44 @@ public class SpaceshipFlightController : MonoBehaviour
         }
     }
 
+    public void ToggleOrbitMode()
+    {
+        if (currentMode == FlightMode.OrbitInspect)
+        {
+            SetFlightMode(FlightMode.FreeFlight);
+            velocity = Vector3.zero;
+            currentSpeed = 0f;
+            Debug.Log("[Spaceship] Désengagement de l'orbite -> Vol libre relatif.");
+        }
+        else
+        {
+            CelestialBody target = (SolarSystemManager.Instance != null && SolarSystemManager.Instance.currentDestination != null)
+                ? SolarSystemManager.Instance.currentDestination
+                : currentReferenceBody;
+
+            if (target != null && target.bodyType != CelestialBodyType.Star)
+            {
+                float dist = Vector3.Distance(transform.position, target.transform.position);
+                float scaledRadius = target.bodyRadius * (target.transform != null ? target.transform.lossyScale.x : 1f);
+                float maxCatchDist = Mathf.Max(scaledRadius * 6f, target.GetEffectiveSOIRadius());
+
+                if (dist <= maxCatchDist)
+                {
+                    if (SolarSystemManager.Instance != null)
+                    {
+                        SolarSystemManager.Instance.SetDestination(target);
+                    }
+                    SetFlightMode(FlightMode.OrbitInspect);
+                    Debug.Log($"[Spaceship] Stabilisé en orbite de {target.bodyName} !");
+                }
+                else
+                {
+                    Debug.Log($"[Spaceship] Trop éloigné de {target.bodyName} ({dist:F1} u > {maxCatchDist:F1} u) pour se satelliser. Rapprochez-vous d'abord.");
+                }
+            }
+        }
+    }
+
     public void SetFlightMode(FlightMode mode)
     {
         currentMode = mode;
@@ -173,8 +267,22 @@ public class SpaceshipFlightController : MonoBehaviour
             if (SolarSystemManager.Instance != null && SolarSystemManager.Instance.currentDestination != null)
             {
                 CelestialBody dest = SolarSystemManager.Instance.currentDestination;
+                currentReferenceBody = dest;
                 float scaledRadius = dest.bodyRadius * dest.transform.lossyScale.x;
-                currentOrbitDist = Mathf.Max(scaledRadius * orbitDistanceMultiplier, 5f);
+                Vector3 relPos = transform.position - dest.transform.position;
+                float dist = relPos.magnitude;
+                currentOrbitDist = Mathf.Clamp(dist, Mathf.Max(scaledRadius * 1.3f, minOrbitDist), maxOrbitDist);
+
+                if (relPos.sqrMagnitude > 0.01f)
+                {
+                    orbitAngleY = Mathf.Atan2(relPos.x, -relPos.z) * Mathf.Rad2Deg;
+                    float horizontalDist = new Vector2(relPos.x, relPos.z).magnitude;
+                    orbitAngleX = Mathf.Atan2(relPos.y, horizontalDist) * Mathf.Rad2Deg;
+                    orbitAngleX = Mathf.Clamp(orbitAngleX, -85f, 85f);
+                }
+
+                velocity = Vector3.zero;
+                currentSpeed = 0f;
             }
         }
     }
@@ -247,7 +355,9 @@ public class SpaceshipFlightController : MonoBehaviour
             velocity = Vector3.MoveTowards(velocity, Vector3.zero, deceleration * (simDt > 0f ? simDt : Time.deltaTime));
         }
 
-        transform.position += velocity * simDt;
+        // Relative motion: relative ship velocity + velocity of the host celestial body
+        Vector3 hostVelocity = currentReferenceBody != null ? currentReferenceBody.GetVelocity() : Vector3.zero;
+        transform.position += (velocity + hostVelocity) * simDt;
         currentSpeed = velocity.magnitude;
 
         // Rotation (Right mouse button drag or Q/E roll) - responsive with real time
@@ -280,68 +390,55 @@ public class SpaceshipFlightController : MonoBehaviour
 
         CelestialBody dest = SolarSystemManager.Instance.currentDestination;
         float scaledRadius = dest.bodyRadius * dest.transform.lossyScale.x;
-        float targetDistFromCenter = Mathf.Max(scaledRadius * arriveDistanceOffset, 6f);
+        float targetOrbitDist = Mathf.Max(scaledRadius * arriveDistanceOffset, 6f);
         Vector3 targetPos = dest.transform.position;
+        Vector3 targetVelocity = dest.GetVelocity();
 
         Vector3 toTarget = targetPos - transform.position;
         float distToCenter = toTarget.magnitude;
-        float distToOrbit = Mathf.Max(0f, distToCenter - targetDistFromCenter);
+        float distToOrbit = Mathf.Max(0f, distToCenter - targetOrbitDist);
 
-        if (distToOrbit < 2f)
+        // Arrival at destination orbit
+        if (distToCenter <= targetOrbitDist * 1.15f || distToOrbit < 1.5f)
         {
-            // Arrived at destination orbit
             currentSpeed = 0f;
             velocity = Vector3.zero;
             SetFlightMode(FlightMode.OrbitInspect);
-            Debug.Log($"[Autopilot] Arrived in orbit of {dest.bodyName}!");
+            Debug.Log($"[Autopilot] Arrivé en orbite stabilisée de {dest.bodyName} !");
             return;
         }
 
-        // Get target velocity
-        Vector3 targetVelocity = dest.GetVelocity();
-        float targetSpeedMagnitude = targetVelocity.magnitude;
-
-        // Speed calculation based on distance and tech, dynamically adjusting to target speed
         float maxAllowedSpeed = baseAutoMaxSpeed * techSpeedMultiplier;
-
-        // Boost max speed and acceleration if the target is extremely fast
-        if (targetSpeedMagnitude > maxAllowedSpeed * 0.5f)
-        {
-            maxAllowedSpeed = targetSpeedMagnitude * 2.0f + maxAllowedSpeed;
-        }
-
         float currentAcceleration = baseAutoAcceleration * techSpeedMultiplier;
-        if (targetSpeedMagnitude > currentAcceleration * 0.5f)
-        {
-            currentAcceleration = targetSpeedMagnitude + currentAcceleration * 2f;
-        }
 
-        // Distance-based braking curve, ensuring we stay faster than target until close
-        float brakingDist = maxAllowedSpeed * 2f;
-        float desiredSpeed = maxAllowedSpeed;
+        // Distance-based kinematic deceleration
+        float brakingDist = (maxAllowedSpeed * maxAllowedSpeed) / (2f * Mathf.Max(currentAcceleration, 0.1f)) + 6f;
+        float desiredRelSpeed;
 
         if (distToOrbit < brakingDist)
         {
             float t = distToOrbit / brakingDist;
-            desiredSpeed = Mathf.Max(targetSpeedMagnitude + 5f, maxAllowedSpeed * t);
+            desiredRelSpeed = Mathf.Max(1.0f, maxAllowedSpeed * Mathf.Sqrt(Mathf.Clamp01(t)));
+        }
+        else
+        {
+            desiredRelSpeed = maxAllowedSpeed;
         }
 
-        currentSpeed = Mathf.MoveTowards(currentSpeed, desiredSpeed, currentAcceleration * simDt);
+        currentSpeed = Mathf.MoveTowards(currentSpeed, desiredRelSpeed, currentAcceleration * simDt);
 
-        // Movement with interception offset based on target velocity
-        float timeToIntercept = distToCenter / Mathf.Max(currentSpeed, 0.1f);
-        // Clamp interception prediction to avoid aiming too far into the future when far away
-        timeToIntercept = Mathf.Clamp(timeToIntercept, 0f, 10f);
+        // Interception prediction taking target velocity into account
+        float timeToIntercept = Mathf.Clamp(distToCenter / Mathf.Max(currentSpeed, 0.5f), 0f, 8f);
         Vector3 interceptPos = targetPos + targetVelocity * timeToIntercept;
-
         Vector3 interceptDir = (interceptPos - transform.position).normalized;
         if (interceptDir.sqrMagnitude < 0.001f) interceptDir = toTarget.normalized;
 
-        // Rotate smoothly towards interception point
         Quaternion targetRot = Quaternion.LookRotation(interceptDir);
         transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, 5f * Time.deltaTime);
 
-        transform.position += interceptDir * currentSpeed * simDt;
+        // Absolute movement: relative approach vector + target host velocity
+        Vector3 movement = (interceptDir * currentSpeed + targetVelocity) * simDt;
+        transform.position += movement;
     }
 
     private void UpdateOrbitInspect()

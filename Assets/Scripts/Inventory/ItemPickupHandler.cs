@@ -9,10 +9,13 @@ namespace InventoryFramework
 
         public bool PickupItem(Item item, int amount = 1)
         {
-            bool addedToInventory = inventory.AddItem(item, amount);
+            if (inventory == null) inventory = FindAnyObjectByType<Inventory>();
+            if (hotbar == null) hotbar = FindAnyObjectByType<Hotbar>();
+
+            bool addedToInventory = inventory != null && inventory.AddItem(item, amount);
             bool addedToHotbar = false;
 
-            if (!addedToInventory)
+            if (!addedToInventory && hotbar != null)
             {
                 addedToHotbar = hotbar.AddItem(item, amount);
 
@@ -22,8 +25,11 @@ namespace InventoryFramework
                 }
             }
 
-            FindAnyObjectByType<HotbarUI>().RefreshUI();
-            FindAnyObjectByType<InventoryUI>().RefreshUI();
+            var hotbarUI = FindAnyObjectByType<HotbarUI>();
+            if (hotbarUI != null) hotbarUI.RefreshUI();
+
+            var invUI = FindAnyObjectByType<InventoryUI>();
+            if (invUI != null) invUI.RefreshUI();
 
             return addedToInventory || addedToHotbar;
         }

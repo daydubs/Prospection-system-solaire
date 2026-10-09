@@ -59,6 +59,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 7f51a9de4ae5adb4b8103f617348f563, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1981014032277415570}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 7f51a9de4ae5adb4b8103f617348f563, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1558516632479231315}
   m_SourcePrefab: {fileID: 100100000, guid: 7f51a9de4ae5adb4b8103f617348f563, type: 3}
 --- !u!1 &7852528794392818955 stripped
 GameObject:
@@ -87,3 +90,27 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: -5190459799586031429, guid: 7f51a9de4ae5adb4b8103f617348f563, type: 3}
+--- !u!114 &1558516632479231315
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7852528794392818955}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb6818760ffe70b4280e92e9f4f78d7c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MineableResource
+  multipleDrops:
+  - item: {fileID: 11400000, guid: 24f70559d8f007b4c964681d996ae13e, type: 2}
+    percentage: 100
+  minTotalYield: 100
+  maxTotalYield: 500
+  resourceItem: {fileID: 0}
+  dropAmount: 1
+  resourceId: 
+  resourceName: 
+  quantityTons: 0
+  basePrice: 0
+  requiredToolName: Sonic Fracturer

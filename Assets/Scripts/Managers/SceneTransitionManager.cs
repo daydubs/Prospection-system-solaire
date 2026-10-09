@@ -28,6 +28,7 @@ public class SceneTransitionManager : MonoBehaviour
     public const string SCENE_MAIN_MENU = "MainMenuScene";
     public const string SCENE_EARTH_BASE = "EarthBaseScene";
     public const string SCENE_SOLAR_SYSTEM = "SolarSystemScene";
+    public const string SCENE_MOON = "MoonScene";
 
     [Header("Transition State")]
     public bool isTransitioning = false;
@@ -81,6 +82,12 @@ public class SceneTransitionManager : MonoBehaviour
     {
         SetPauseState(false);
         LoadScene(SCENE_SOLAR_SYSTEM);
+    }
+
+    public void LoadMoon()
+    {
+        SetPauseState(false);
+        LoadScene(SCENE_MOON);
     }
 
     private IEnumerator TransitionRoutine(string sceneName, Action onComplete)
@@ -141,7 +148,7 @@ public class SceneTransitionManager : MonoBehaviour
         else
         {
             string curScene = SceneManager.GetActiveScene().name;
-            if (curScene == SCENE_EARTH_BASE)
+            if (curScene == SCENE_EARTH_BASE || curScene == SCENE_MOON)
             {
                 Cursor.lockState = CursorLockMode.Locked;
                 Cursor.visible = false;

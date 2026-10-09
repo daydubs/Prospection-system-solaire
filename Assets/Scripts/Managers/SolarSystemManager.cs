@@ -18,6 +18,7 @@ public class SolarSystemManager : MonoBehaviour
     public List<CelestialBody> allBodies = new List<CelestialBody>();
 
     [Header("Current Targets")]
+    public static string initialDestinationName = null;
     public CelestialBody currentDestination;
     public CelestialBody currentFocusBody;
 
@@ -41,9 +42,21 @@ public class SolarSystemManager : MonoBehaviour
 
     private void Start()
     {
+        CelestialBody targetBody = null;
+        if (!string.IsNullOrEmpty(initialDestinationName))
+        {
+            targetBody = allBodies.Find(b => b.bodyName.Equals(initialDestinationName, StringComparison.OrdinalIgnoreCase) ||
+                                            b.bodyName.IndexOf(initialDestinationName, StringComparison.OrdinalIgnoreCase) >= 0);
+            initialDestinationName = null; // consume
+        }
+
         CelestialBody earth = allBodies.Find(b => b.bodyName.Equals("Terre", StringComparison.OrdinalIgnoreCase) || b.bodyName.Equals("Earth", StringComparison.OrdinalIgnoreCase));
 
-        if (centralStar != null && currentDestination == null)
+        if (targetBody != null)
+        {
+            SetDestination(targetBody);
+        }
+        else if (centralStar != null && currentDestination == null)
         {
             // Default select Earth if available, else central star
             CelestialBody dest = earth != null ? earth : centralStar;
@@ -78,10 +91,16 @@ public class SolarSystemManager : MonoBehaviour
             }
         }
 
+        if (playerShip == null)
+        {
+            playerShip = FindAnyObjectByType<SpaceshipFlightController>();
+        }
+
         // Force spaceship to start in orbit of the destination
         if (playerShip != null && currentDestination != null)
         {
             playerShip.WarpToDestination();
+            playerShip.SetFlightMode(FlightMode.OrbitInspect);
         }
     }
 
@@ -184,5 +203,49 @@ public class SolarSystemManager : MonoBehaviour
             }
         }
         return moons;
+    }
+
+    public CelestialBody GetDominantCelestialBody(Vector3 worldPos)
+    {
+        // 1. Check Moons and Asteroids / small bodies first (nested SOIs)
+        float closestMoonDist = float.MaxValue;
+        CelestialBody closestMoon = null;
+
+        for (int i = 0; i < allBodies.Count; i++)
+        {
+            var b = allBodies[i];
+            if (b != null && (b.bodyType == CelestialBodyType.Moon || b.bodyType == CelestialBodyType.Asteroid))
+            {
+                float dist = Vector3.Distance(b.transform.position, worldPos);
+                if (dist <= b.GetEffectiveSOIRadius() && dist < closestMoonDist)
+                {
+                    closestMoonDist = dist;
+                    closestMoon = b;
+                }
+            }
+        }
+        if (closestMoon != null) return closestMoon;
+
+        // 2. Check Planets
+        float closestPlanetDist = float.MaxValue;
+        CelestialBody closestPlanet = null;
+
+        for (int i = 0; i < allBodies.Count; i++)
+        {
+            var b = allBodies[i];
+            if (b != null && (b.bodyType == CelestialBodyType.Planet || b.bodyType == CelestialBodyType.DwarfPlanet))
+            {
+                float dist = Vector3.Distance(b.transform.position, worldPos);
+                if (dist <= b.GetEffectiveSOIRadius() && dist < closestPlanetDist)
+                {
+                    closestPlanetDist = dist;
+                    closestPlanet = b;
+                }
+            }
+        }
+        if (closestPlanet != null) return closestPlanet;
+
+        // 3. Fallback to Central Star (heliocentric reference frame)
+        return centralStar;
     }
 }

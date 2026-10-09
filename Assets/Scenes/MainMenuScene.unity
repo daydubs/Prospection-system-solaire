@@ -919,6 +919,7 @@ MonoBehaviour:
     secondFraction: 0
   inGameSecondsPerRealSecond: 720
   isTimePaused: 0
+  playerInventory: {fileID: 0}
   credits: 25000
   playerStats:
     pilotName: Commandant Dany
@@ -970,8 +971,7 @@ MonoBehaviour:
   - id: tech_propulsion_1
     displayName: Propulseur Ionique Standard
     category: 0
-    description: "Augmente la vitesse de croisi\xE8re de 20% et r\xE9duit la consommation
-      de carburant de 15%."
+    description: "Augmente la vitesse de croisi\xE8re de 20% et r\xE9duit la consommation de carburant de 15%."
     researchCost: 15000
     researchDurationDays: 3
     isUnlocked: 1
@@ -987,8 +987,7 @@ MonoBehaviour:
   - id: tech_scan_1
     displayName: "Scanner Spectrom\xE9trique Basique"
     category: 2
-    description: "Permet d'analyser la composition des ast\xE9ro\xEFdes \xE0 moyenne
-      port\xE9e."
+    description: "Permet d'analyser la composition des ast\xE9ro\xEFdes \xE0 moyenne port\xE9e."
     researchCost: 8000
     researchDurationDays: 2
     isUnlocked: 1
@@ -996,8 +995,7 @@ MonoBehaviour:
   - id: tech_scan_2
     displayName: "Radar G\xE9ologique Terahertz"
     category: 2
-    description: "D\xE9tecte les filons de m\xE9taux rares (Or, Platine) et les poches
-      d'H\xE9lium-3."
+    description: "D\xE9tecte les filons de m\xE9taux rares (Or, Platine) et les poches d'H\xE9lium-3."
     researchCost: 28000
     researchDurationDays: 5
     isUnlocked: 0
@@ -1005,8 +1003,7 @@ MonoBehaviour:
   - id: tech_mining_1
     displayName: Laser Minier Impulsionnel
     category: 1
-    description: "Foreuse laser d'entr\xE9e de gamme pour fragmenter les ast\xE9ro\xEFdes
-      rocheux."
+    description: "Foreuse laser d'entr\xE9e de gamme pour fragmenter les ast\xE9ro\xEFdes rocheux."
     researchCost: 12000
     researchDurationDays: 2
     isUnlocked: 1
@@ -1269,6 +1266,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: MainMenu_Canvas
       objectReference: {fileID: 0}
+    - target: {fileID: 3963839390458974382, guid: 0daed915f88831744860ff428fcfe29e, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4271904570899587957, guid: 0daed915f88831744860ff428fcfe29e, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -1309,6 +1310,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4745723715064702991, guid: 0daed915f88831744860ff428fcfe29e, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 1368519161191829812, guid: 4360e153f3db40142b0acdb1462c4e9f, type: 3}
     - target: {fileID: 7473666620732759585, guid: 0daed915f88831744860ff428fcfe29e, type: 3}
       propertyPath: m_fontMaterial
       value: 

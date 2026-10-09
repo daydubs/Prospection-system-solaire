@@ -27,18 +27,22 @@ public class ConstructibleGhost : MonoBehaviour
         CanBePlaced = isValid;
         Color targetColor = isValid ? validColor : invalidColor;
 
+        if (renderers == null) return;
         foreach (var r in renderers)
         {
-            if (r.material != null)
+            if (r == null) continue;
+            var mats = Application.isPlaying ? r.materials : r.sharedMaterials;
+            if (mats == null) continue;
+            foreach (var mat in mats)
             {
-                // Simple tint, assuming the material supports it
-                if (r.material.HasProperty("_Color"))
+                if (mat == null) continue;
+                if (mat.HasProperty("_BaseColor"))
                 {
-                    r.material.color = targetColor;
+                    mat.SetColor("_BaseColor", targetColor);
                 }
-                else if (r.material.HasProperty("_BaseColor")) // For URP/HDRP
+                else if (mat.HasProperty("_Color"))
                 {
-                    r.material.SetColor("_BaseColor", targetColor);
+                    mat.color = targetColor;
                 }
             }
         }
@@ -54,7 +58,7 @@ public class ConstructibleGhost : MonoBehaviour
     {
         moduleData = data;
         builder = controller;
-        renderers = GetComponentsInChildren<Renderer>();
+        renderers = GetComponentsInChildren<Renderer>(true);
         SetPlacementValidity(false);
 
         if (moduleData.resourceCosts != null)
@@ -74,14 +78,32 @@ public class ConstructibleGhost : MonoBehaviour
     {
         if (!CanBePlaced) return;
 
+        if (builder != null && !builder.HasEquippedWelder())
+        {
+            builder.NotifyWelderMissing();
+            IsConstructing = false;
+            SetPlacementValidity(false);
+            return;
+        }
+
         // Lock the position by setting IsConstructing to true
         IsConstructing = true;
 
         // Update visuals to show construction is happening
-        foreach (var r in renderers)
+        if (renderers != null)
         {
-             if (r.material.HasProperty("_Color")) r.material.color = constructingColor;
-             else if (r.material.HasProperty("_BaseColor")) r.material.SetColor("_BaseColor", constructingColor);
+            foreach (var r in renderers)
+            {
+                if (r == null) continue;
+                var mats = Application.isPlaying ? r.materials : r.sharedMaterials;
+                if (mats == null) continue;
+                foreach (var mat in mats)
+                {
+                    if (mat == null) continue;
+                    if (mat.HasProperty("_BaseColor")) mat.SetColor("_BaseColor", constructingColor);
+                    else if (mat.HasProperty("_Color")) mat.color = constructingColor;
+                }
+            }
         }
 
         // Calculate progress percentage

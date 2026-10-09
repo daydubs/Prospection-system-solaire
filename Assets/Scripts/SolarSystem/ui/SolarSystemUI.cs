@@ -54,12 +54,35 @@ public class SolarSystemUI : MonoBehaviour
 
     private void Update()
     {
-        if (Keyboard.current != null && Keyboard.current.pKey.wasPressedThisFrame)
+        if (Keyboard.current != null)
         {
-            // Do not open if main menu is open
-            if (MainMenuController.Instance == null || !MainMenuController.Instance.isMenuOpen)
+            if (Keyboard.current.pKey.wasPressedThisFrame)
             {
-                ToggleProspectorConsole();
+                // Do not open if main menu is open
+                if (MainMenuController.Instance == null || !MainMenuController.Instance.isMenuOpen)
+                {
+                    ToggleProspectorConsole();
+                }
+            }
+
+            // Shortcut [L]: Land on the Moon if in orbit
+            if (Keyboard.current.lKey.wasPressedThisFrame)
+            {
+                if (systemManager != null && systemManager.currentDestination != null)
+                {
+                    CelestialBody dest = systemManager.currentDestination;
+                    bool isMoon = dest.bodyName.Equals("Lune", StringComparison.OrdinalIgnoreCase) ||
+                                  dest.bodyName.Equals("Moon", StringComparison.OrdinalIgnoreCase);
+                    bool isRefMoon = playerShip != null && playerShip.currentReferenceBody != null &&
+                                     (playerShip.currentReferenceBody.bodyName.Equals("Lune", StringComparison.OrdinalIgnoreCase) ||
+                                      playerShip.currentReferenceBody.bodyName.Equals("Moon", StringComparison.OrdinalIgnoreCase));
+                    bool isInOrbit = playerShip != null && (playerShip.currentMode == FlightMode.OrbitInspect || playerShip.isNearDestination || isRefMoon);
+
+                    if ((isMoon || isRefMoon) && isInOrbit)
+                    {
+                        LandOnMoon();
+                    }
+                }
             }
         }
     }
@@ -458,7 +481,11 @@ public class SolarSystemUI : MonoBehaviour
             // Label
             float dist = Vector3.Distance(playerShip != null ? playerShip.transform.position : mainCam.transform.position, dest.transform.position);
             string distText = dist < 50f ? $"{(dist * 15376f):N0} km" : $"{(dist / 600f):F2} UA";
-            string labelText = $"▶ {dest.bodyName.ToUpper()} [{distText}]";
+            bool isMoonTarget = dest.bodyName.Equals("Lune", StringComparison.OrdinalIgnoreCase) || dest.bodyName.Equals("Moon", StringComparison.OrdinalIgnoreCase);
+            bool isInMoonOrbit = isMoonTarget && playerShip != null && (playerShip.currentMode == FlightMode.OrbitInspect || playerShip.isNearDestination);
+            string labelText = isInMoonOrbit
+                ? $"▶ {dest.bodyName.ToUpper()} [EN ORBITE - Prêt pour atterrissage [L]]"
+                : $"▶ {dest.bodyName.ToUpper()} [{distText}]";
 
             GUIStyle markerStyle = new GUIStyle(bodyStyle);
             markerStyle.fontSize = 13;
@@ -579,6 +606,14 @@ public class SolarSystemUI : MonoBehaviour
         {
             if (playerShip != null) playerShip.EngageAutopilot();
         }
+
+        bool isInOrbitMode = playerShip != null && playerShip.currentMode == FlightMode.OrbitInspect;
+        string orbitBtnText = isInOrbitMode ? "🛰 Quitter Orbite [O]" : "🛰 Orbiter [O]";
+        if (GUILayout.Button(orbitBtnText, buttonStyle, GUILayout.Height(32)))
+        {
+            if (playerShip != null) playerShip.ToggleOrbitMode();
+        }
+
         if (GUILayout.Button("⚡ Warp [J]", buttonStyle, GUILayout.Height(32)))
         {
             if (playerShip != null) playerShip.WarpToDestination();
@@ -589,7 +624,53 @@ public class SolarSystemUI : MonoBehaviour
         }
         GUILayout.EndHorizontal();
 
+        // Moon landing button
+        bool isMoon = dest.bodyName.Equals("Lune", StringComparison.OrdinalIgnoreCase) ||
+                      dest.bodyName.Equals("Moon", StringComparison.OrdinalIgnoreCase);
+        bool isRefMoon = playerShip != null && playerShip.currentReferenceBody != null &&
+                         (playerShip.currentReferenceBody.bodyName.Equals("Lune", StringComparison.OrdinalIgnoreCase) ||
+                          playerShip.currentReferenceBody.bodyName.Equals("Moon", StringComparison.OrdinalIgnoreCase));
+
+        if (isMoon || isRefMoon)
+        {
+            GUILayout.Space(6);
+            bool isInOrbit = playerShip != null && (playerShip.currentMode == FlightMode.OrbitInspect || playerShip.isNearDestination || isRefMoon);
+            if (isInOrbit)
+            {
+                GUIStyle landBtnStyle = new GUIStyle(buttonStyle);
+                landBtnStyle.fontSize = 13;
+                landBtnStyle.fontStyle = FontStyle.Bold;
+                landBtnStyle.normal.background = activeBtnTex;
+                landBtnStyle.normal.textColor = Color.white;
+                landBtnStyle.hover.textColor = accentColor;
+
+                if (GUILayout.Button("🛬 ATTERRIR SUR LA LUNE (LANDER) [L]", landBtnStyle, GUILayout.Height(36)))
+                {
+                    LandOnMoon();
+                }
+            }
+            else
+            {
+                GUI.enabled = false;
+                GUILayout.Button("🛬 Atterrir (Mettez-vous d'abord en orbite)", buttonStyle, GUILayout.Height(32));
+                GUI.enabled = true;
+            }
+        }
+
         GUILayout.EndArea();
+    }
+
+    public void LandOnMoon()
+    {
+        Debug.Log("[SolarSystemUI] Descente vers la surface lunaire via le module Lander...");
+        if (SceneTransitionManager.Instance != null)
+        {
+            SceneTransitionManager.Instance.LoadMoon();
+        }
+        else
+        {
+            UnityEngine.SceneManagement.SceneManager.LoadScene(SceneTransitionManager.SCENE_MOON);
+        }
     }
 
     private void DrawTopSimulationControlBar()
@@ -672,28 +753,55 @@ public class SolarSystemUI : MonoBehaviour
     {
         if (playerShip == null) return;
 
-        float hudW = 660f;
-        float hudH = 55f;
+        float hudW = 760f;
+        float hudH = 58f;
         Rect hudRect = new Rect((Screen.width - hudW) * 0.5f, Screen.height - hudH - 15, hudW, hudH);
 
         GUI.Box(hudRect, GUIContent.none, panelStyle);
         GUILayout.BeginArea(hudRect);
         GUILayout.BeginHorizontal();
-        GUILayout.Space(10);
+        GUILayout.Space(12);
 
         string modeStr = playerShip.currentMode switch
         {
             FlightMode.Autopilot => "<color=#00ffff>PILOTE AUTOMATIQUE</color>",
-            FlightMode.OrbitInspect => "<color=#ffd700>ORBITE & INSPECTION</color>",
-            _ => "<color=#ffffff>VOL LIBRE</color>"
+            FlightMode.OrbitInspect => "<color=#ffd700>ORBITE STABLE SYNCHRONISÉE</color>",
+            _ => "<color=#aaccff>VOL LIBRE RELATIF</color>"
         };
 
-        // Realistic speed conversion: base cruise speed 0.08 units/s = 1.78 km/s (~6,400 km/h, transit Terre-Lune ~2.5 jours)
+        string refName = playerShip.currentReferenceBody != null 
+            ? playerShip.currentReferenceBody.bodyName.ToUpper() 
+            : "ESPACE PROFOND (SOLEIL)";
+
         float speedDisplayKmS = playerShip.currentSpeed * 22.25f;
 
+        bool isMoonDest = systemManager != null && systemManager.currentDestination != null &&
+                          (systemManager.currentDestination.bodyName.Equals("Lune", StringComparison.OrdinalIgnoreCase) ||
+                           systemManager.currentDestination.bodyName.Equals("Moon", StringComparison.OrdinalIgnoreCase));
+        bool isRefMoon = playerShip.currentReferenceBody != null &&
+                         (playerShip.currentReferenceBody.bodyName.Equals("Lune", StringComparison.OrdinalIgnoreCase) ||
+                          playerShip.currentReferenceBody.bodyName.Equals("Moon", StringComparison.OrdinalIgnoreCase));
+        bool isReadyToLand = (isMoonDest || isRefMoon) && (playerShip.currentMode == FlightMode.OrbitInspect || playerShip.isNearDestination || isRefMoon);
+
         GUILayout.BeginVertical();
-        GUILayout.Label($"<b>MODE DE VOL :</b> {modeStr}  |  <b>VITESSE DE PROPULSION :</b> {speedDisplayKmS:F1} km/s  (Terre-Lune : ~2.5 jours)", bodyStyle);
-        GUILayout.Label("Contrôles: [Z/Q/S/D] ou [W/A/S/D] Déplacer | [Shift] Boost | [T] Pilote Auto | [J] Warp | [P] Console | [Esc] Menu", bodyStyle);
+        GUILayout.Label($"<b>RÉFÉRENTIEL :</b> <color=#00ffcc>{refName}</color>  |  <b>MODE :</b> {modeStr}  |  <b>VITESSE RELATIVE :</b> {speedDisplayKmS:F1} km/s", bodyStyle);
+
+        if (isReadyToLand)
+        {
+            GUILayout.Label("<color=#00ffaa><b>🛬 ORBITE LUNAIRE ATTEINTE — [L] Atterrir en surface (Lander) | [O] Sortir d'orbite</b></color>", bodyStyle);
+        }
+        else if (playerShip.currentMode == FlightMode.OrbitInspect)
+        {
+            GUILayout.Label($"<color=#ffd700><b>🛰 Orbite synchronisée avec {refName} — [O] Sortir en vol libre | Clic droit souris : pivoter | Molette : zoom</b></color>", bodyStyle);
+        }
+        else if (playerShip.isNearDestination && systemManager != null && systemManager.currentDestination != null)
+        {
+            GUILayout.Label($"<color=#00ffff><b>🛰 Proximité de {systemManager.currentDestination.bodyName} — Appuyez sur [O] pour stabiliser l'orbite</b></color>", bodyStyle);
+        }
+        else
+        {
+            GUILayout.Label("Contrôles : [Z/Q/S/D] ou [W/A/S/D] Poussée relative | [Shift] Boost | [T] Pilote Auto | [O] Orbiter | [J] Warp | [Esc] Menu", bodyStyle);
+        }
         GUILayout.EndVertical();
 
         GUILayout.EndHorizontal();

@@ -39,6 +39,10 @@ public class CelestialBody : MonoBehaviour
     public LineRenderer orbitLine;
     public int orbitResolution = 100;
 
+    [Header("Sphere of Influence (SOI)")]
+    [Tooltip("Radius of gravitational and orbital influence in Unity units. If 0, auto-calculated.")]
+    public float soiRadius = 0f;
+
     [Header("Satellites")]
     public List<CelestialBody> satellites = new List<CelestialBody>();
 
@@ -151,6 +155,49 @@ public class CelestialBody : MonoBehaviour
         }
     }
 
+    public float GetEffectiveSOIRadius()
+    {
+        if (soiRadius > 0.01f)
+            return soiRadius;
+
+        float scaledRadius = bodyRadius * (transform != null ? transform.lossyScale.x : 1f);
+
+        switch (bodyType)
+        {
+            case CelestialBodyType.Star:
+                return float.MaxValue;
+            case CelestialBodyType.Planet:
+                float maxSatDist = 0f;
+                if (satellites != null && satellites.Count > 0)
+                {
+                    for (int i = 0; i < satellites.Count; i++)
+                    {
+                        var sat = satellites[i];
+                        if (sat != null)
+                        {
+                            float satDist = sat.orbitRadius * (transform != null ? transform.lossyScale.x : 1f);
+                            if (satDist > maxSatDist) maxSatDist = satDist;
+                        }
+                    }
+                }
+                float defaultPlanetSOI = Mathf.Max(scaledRadius * 20f, 80f);
+                return maxSatDist > 0f ? (maxSatDist * 1.3f) : defaultPlanetSOI;
+            case CelestialBodyType.Moon:
+                return Mathf.Max(scaledRadius * 15f, 25f);
+            case CelestialBodyType.DwarfPlanet:
+                return Mathf.Max(scaledRadius * 15f, 30f);
+            case CelestialBodyType.Asteroid:
+            default:
+                return Mathf.Max(scaledRadius * 10f, 15f);
+        }
+    }
+
+    public bool IsPositionInSOI(Vector3 worldPos)
+    {
+        if (bodyType == CelestialBodyType.Star) return true;
+        float dist = Vector3.Distance(transform.position, worldPos);
+        return dist <= GetEffectiveSOIRadius();
+    }
 
     public Vector3 GetVelocity()
     {

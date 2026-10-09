@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 73db9203e5cc1a547b31f72c14a2ab2a, type: 3}
+  m_Name: Recipe_Circuit
+  m_EditorClassIdentifier: Assembly-CSharp::CraftingSystem.CraftingRecipe
+  recipeName: "Composant \xC9lectronique"
+  category: "\xC9lectronique"
+  description: "Gravure nanom\xE9trique de semi-conducteurs sur matrice d'aluminium."
+  outputItem: {fileID: 11400000, guid: 6a014030dd0ff3b4da63667f5189b964, type: 2}
+  outputAmount: 1
+  ingredients:
+  - item: {fileID: 11400000, guid: 735caacdd35c483458b5bd34e02d51cb, type: 2}
+    amount: 2
+  - item: {fileID: 11400000, guid: 6cd653e60f5e944479473194ad0b2134, type: 2}
+    amount: 1

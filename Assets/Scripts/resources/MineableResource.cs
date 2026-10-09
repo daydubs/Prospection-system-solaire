@@ -78,6 +78,10 @@ public class MineableResource : MonoBehaviour, IInteractable
                     if (success)
                     {
                         Debug.Log($"[MineableResource] Miné avec succès : {specificAmount}x {drop.item.itemName}");
+                        if (MainMenuController.Instance != null)
+                        {
+                            MainMenuController.Instance.ShowNotification($"+{specificAmount}x {drop.item.itemName}");
+                        }
                     }
                     else
                     {
@@ -103,6 +107,10 @@ public class MineableResource : MonoBehaviour, IInteractable
                 if (success)
                 {
                     Debug.Log($"[MineableResource] Miné avec succès (Legacy) : {dropAmount}x {resourceItem.itemName}");
+                    if (MainMenuController.Instance != null)
+                    {
+                        MainMenuController.Instance.ShowNotification($"+{dropAmount}x {resourceItem.itemName}");
+                    }
                 }
                 else
                 {

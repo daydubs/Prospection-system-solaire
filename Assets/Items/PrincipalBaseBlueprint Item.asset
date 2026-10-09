@@ -17,5 +17,7 @@ MonoBehaviour:
   description: 
   icon: {fileID: 21300000, guid: 0a86d7f58b2c1b045bcbdbb6d44eb419, type: 3}
   maxStack: 1
-  model: {fileID: 6798103080028206832, guid: 32286a38116aa8640adf2ffe9aef327b, type: 3}
+  model: {fileID: 0}
+  basePrice: 0
+  itemColor: {r: 1, g: 1, b: 1, a: 1}
   moduleData: {fileID: 11400000, guid: dcd7e310df8cceb4083148f752482ef5, type: 2}

@@ -12,8 +12,11 @@ public class BuilderController : MonoBehaviour
     public Camera playerCamera;
     public InventoryFramework.Inventory inventory;
 
+    [Header("Welder Requirement")]
+    public InventoryFramework.Item welderItem;
+
     [Header("Build Settings")]
-    public float buildRange = 10f;
+    public float buildRange = 20f;
     public float snapDistance = 2f; // Distance from raycast point to socket to trigger a snap
 
     [Header("Current Build State")]
@@ -25,8 +28,8 @@ public class BuilderController : MonoBehaviour
     public float rotationSensitivity = 10f; // Degrees per scroll tick
     public float rotationLerpSpeed = 15f;
 
-    private float targetXRotation = 0f;
-    private float currentXRotation = 0f;
+    private float targetYRotation = 0f;
+    private float currentYRotation = 0f;
 
     private GameObject currentGhost;
     private ConstructibleGhost ghostScript;
@@ -53,15 +56,28 @@ public class BuilderController : MonoBehaviour
         if (playerCamera == null)
             playerCamera = GetComponentInChildren<Camera>();
 
+        if (playerCamera == null)
+            playerCamera = Camera.main;
+
         if (inventory == null && GameManager.Instance != null)
             inventory = GameManager.Instance.playerInventory;
+
+        if (welderItem == null)
+        {
+            #if UNITY_EDITOR
+            welderItem = UnityEditor.AssetDatabase.LoadAssetAtPath<InventoryFramework.Item>("Assets/Items/Welder.asset");
+            #endif
+        }
     }
 
     private void Update()
     {
         if (!isBuildModeActive || currentModuleToBuild == null)
         {
-            if (currentGhost != null) DestroyGhost();
+            if (currentGhost != null)
+            {
+                DestroyGhost();
+            }
             return;
         }
 
@@ -74,25 +90,130 @@ public class BuilderController : MonoBehaviour
         HandleBuildingInput();
     }
 
+    public bool IsWelder(InventoryFramework.Item item)
+    {
+        if (item == null) return false;
+        if (welderItem != null && item == welderItem) return true;
+        if (string.Equals(item.itemName?.Trim(), "Welder", System.StringComparison.OrdinalIgnoreCase)) return true;
+        if (item.id == 5) return true;
+        return false;
+    }
+
+    public bool HasEquippedWelder()
+    {
+        var hotbarUI = FindAnyObjectByType<InventoryFramework.HotbarUI>();
+        var hotbar = hotbarUI != null ? hotbarUI.hotbar : FindAnyObjectByType<InventoryFramework.Hotbar>();
+
+        if (hotbar != null && hotbar.slots != null)
+        {
+            foreach (var slot in hotbar.slots)
+            {
+                if (slot != null && !slot.IsEmpty && IsWelder(slot.item))
+                {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    public bool HasWelderInInventory()
+    {
+        if (inventory != null && inventory.slots != null)
+        {
+            foreach (var slot in inventory.slots)
+            {
+                if (slot != null && !slot.IsEmpty && IsWelder(slot.item))
+                    return true;
+            }
+        }
+        else if (GameManager.Instance != null && GameManager.Instance.playerInventory != null && GameManager.Instance.playerInventory.slots != null)
+        {
+            foreach (var slot in GameManager.Instance.playerInventory.slots)
+            {
+                if (slot != null && !slot.IsEmpty && IsWelder(slot.item))
+                    return true;
+            }
+        }
+        return false;
+    }
+
+    private float lastNotificationTime = 0f;
+    public void NotifyWelderMissing()
+    {
+        if (Time.time - lastNotificationTime < 2f) return;
+        lastNotificationTime = Time.time;
+
+        string msg = HasWelderInInventory()
+            ? "Équipement requis : Vous devez équiper le Welder dans votre barre rapide pour construire !"
+            : "Équipement requis : Welder (Soudeur) manquant ! Nécessaire pour toute construction.";
+
+        Debug.LogWarning($"[Building] {msg}");
+        if (MainMenuController.Instance != null)
+        {
+            MainMenuController.Instance.ShowNotification(msg);
+        }
+    }
+
     public void EnterBuildMode(BaseModuleData moduleData)
     {
-        currentModuleToBuild = moduleData;
-        isBuildModeActive = true;
-        isGhostPlaced = false;
+        if (moduleData == null) return;
+
+        if (currentModuleToBuild != moduleData || currentGhost == null)
+        {
+            DestroyGhost();
+            currentModuleToBuild = moduleData;
+            isBuildModeActive = true;
+            isGhostPlaced = false;
+            targetYRotation = 0f;
+            currentYRotation = 0f;
+            CreateGhost();
+        }
+        else
+        {
+            isBuildModeActive = true;
+        }
+
+        if (!HasEquippedWelder())
+        {
+            NotifyWelderMissing();
+        }
     }
 
     public void ExitBuildMode()
     {
         isBuildModeActive = false;
         currentModuleToBuild = null;
+        isGhostPlaced = false;
         DestroyGhost();
     }
 
     private void CreateGhost()
     {
-        if (currentModuleToBuild.ghostPrefab == null) return;
+        if (currentModuleToBuild == null || currentModuleToBuild.ghostPrefab == null) return;
 
         currentGhost = Instantiate(currentModuleToBuild.ghostPrefab);
+
+        // Put ghost on Ignore Raycast layer so placement raycast never hits it
+        int ignoreRaycastLayer = LayerMask.NameToLayer("Ignore Raycast");
+        SetLayerRecursively(currentGhost, ignoreRaycastLayer);
+
+        // Ensure non-socket colliders (like leftover MeshColliders) do not block anything
+        foreach (var col in currentGhost.GetComponentsInChildren<Collider>())
+        {
+            if (col.GetComponent<ModuleSocket>() == null)
+            {
+                col.enabled = false;
+                if (Application.isPlaying) Destroy(col);
+                else DestroyImmediate(col);
+            }
+            else
+            {
+                col.isTrigger = true;
+            }
+        }
+
         ghostScript = currentGhost.GetComponent<ConstructibleGhost>();
 
         if (ghostScript == null)
@@ -103,11 +224,22 @@ public class BuilderController : MonoBehaviour
         ghostScript.Initialize(currentModuleToBuild, this);
     }
 
+    private void SetLayerRecursively(GameObject obj, int newLayer)
+    {
+        if (obj == null) return;
+        obj.layer = newLayer;
+        foreach (Transform child in obj.transform)
+        {
+            SetLayerRecursively(child.gameObject, newLayer);
+        }
+    }
+
     private void DestroyGhost()
     {
         if (currentGhost != null)
         {
-            Destroy(currentGhost);
+            if (Application.isPlaying) Destroy(currentGhost);
+            else DestroyImmediate(currentGhost);
             currentGhost = null;
             ghostScript = null;
             currentSnappedSocket = null;
@@ -117,89 +249,135 @@ public class BuilderController : MonoBehaviour
 
     private void UpdateGhostPlacement()
     {
-        if (currentGhost == null || ghostScript.IsConstructing) return;
+        if (currentGhost == null || ghostScript == null || ghostScript.IsConstructing) return;
+
+        if (playerCamera == null)
+        {
+            playerCamera = Camera.main;
+            if (playerCamera == null)
+                playerCamera = GetComponentInChildren<Camera>();
+        }
+        if (playerCamera == null) return;
+
+        bool hasWelder = HasEquippedWelder();
 
         if (!isGhostPlaced)
         {
-            // Handle X rotation input
-            float scroll = inputActions.Player.Rotation.ReadValue<float>();
+            // Handle Y rotation input (horizontal yaw rotation around vertical axis)
+            float scroll = 0f;
+            if (inputActions != null && inputActions.Player.Rotation.enabled)
+            {
+                scroll = inputActions.Player.Rotation.ReadValue<float>();
+            }
+            if (scroll == 0f && Mouse.current != null)
+            {
+                scroll = Mouse.current.scroll.ReadValue().y;
+            }
+
             // Scroll usually gives values like 120 or -120 per tick, normalize it
             if (scroll != 0)
             {
-                targetXRotation += Mathf.Sign(scroll) * rotationSensitivity;
+                targetYRotation += Mathf.Sign(scroll) * rotationSensitivity;
             }
 
             // Smoothly interpolate current rotation
-            currentXRotation = Mathf.Lerp(currentXRotation, targetXRotation, Time.deltaTime * rotationLerpSpeed);
+            currentYRotation = Mathf.Lerp(currentYRotation, targetYRotation, Time.deltaTime * rotationLerpSpeed);
 
-            // Cast a ray from the center of the screen
-            Ray ray = playerCamera.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2, 0));
+            // Cast a ray from the center of the screen, ignoring triggers and the ghost
+            Ray ray = playerCamera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
+            int layerMask = ~LayerMask.GetMask("Ignore Raycast");
 
-            if (Physics.Raycast(ray, out RaycastHit hit, buildRange))
+            if (Physics.Raycast(ray, out RaycastHit hit, buildRange, layerMask, QueryTriggerInteraction.Ignore))
             {
                 // First, check if we hit near an existing unoccupied socket
                 ModuleSocket closestSocket = FindClosestUnoccupiedSocket(hit.point);
 
                 if (closestSocket != null)
                 {
-                currentSnappedSocket = closestSocket;
+                    currentSnappedSocket = closestSocket;
 
-                // Find a matching socket on the ghost to align with
-                ModuleSocket[] ghostSockets = currentGhost.GetComponentsInChildren<ModuleSocket>();
-                ModuleSocket ghostConnectingSocket = null;
+                    // Find a matching socket on the ghost to align with
+                    ModuleSocket[] ghostSockets = currentGhost.GetComponentsInChildren<ModuleSocket>();
+                    ModuleSocket ghostConnectingSocket = null;
 
-                // For simplicity, just grab the first one.
-                // A more advanced system would let the player cycle through available sockets on the ghost.
-                if (ghostSockets.Length > 0)
-                {
-                    ghostConnectingSocket = ghostSockets[0];
-                }
+                    if (ghostSockets.Length > 0)
+                    {
+                        // Calculate player's intended facing direction from current rotation
+                        Vector3 playerFacing = transform.forward;
+                        playerFacing.y = 0;
+                        if (playerFacing.sqrMagnitude < 0.01f) playerFacing = Vector3.forward;
+                        Quaternion initialPrefabRot = currentModuleToBuild.ghostPrefab != null ? currentModuleToBuild.ghostPrefab.transform.rotation : Quaternion.identity;
+                        Quaternion intendedGhostRot = Quaternion.LookRotation(playerFacing.normalized, Vector3.up) * Quaternion.Euler(0, currentYRotation, 0) * initialPrefabRot;
 
-                if (ghostConnectingSocket != null)
-                {
-                    // Rotate the ghost so its socket's outward direction is exactly opposite to the base's socket
-                    Quaternion targetRotation = Quaternion.LookRotation(-closestSocket.OutwardDirection, closestSocket.transform.up);
+                        // Pick ghost socket whose outward direction under intendedGhostRot best matches -closestSocket.OutwardDirection
+                        float bestDot = -float.MaxValue;
+                        foreach (var gs in ghostSockets)
+                        {
+                            Vector3 gsOutward = intendedGhostRot * (gs.transform.localRotation * Vector3.forward);
+                            float dot = Vector3.Dot(gsOutward, -closestSocket.OutwardDirection);
+                            if (dot > bestDot)
+                            {
+                                bestDot = dot;
+                                ghostConnectingSocket = gs;
+                            }
+                        }
+                        if (ghostConnectingSocket == null) ghostConnectingSocket = ghostSockets[0];
+                    }
 
-                    // We need to figure out the rotation offset between the ghost's root and its connecting socket
-                    Quaternion rotationOffset = Quaternion.Inverse(ghostConnectingSocket.transform.localRotation);
+                    if (ghostConnectingSocket != null)
+                    {
+                        // Keep vertical alignment upright for wall/door sockets
+                        Vector3 socketUp = Vector3.up;
+                        if (Mathf.Abs(Vector3.Dot(closestSocket.OutwardDirection, Vector3.up)) > 0.8f)
+                        {
+                            socketUp = closestSocket.transform.up;
+                            if (Vector3.Cross(closestSocket.OutwardDirection, socketUp).sqrMagnitude < 0.01f)
+                            {
+                                socketUp = Vector3.forward;
+                            }
+                        }
 
-                    // Apply the accumulated X rotation locally (spinning around its own X axis)
-                    Quaternion finalRotation = targetRotation * rotationOffset * Quaternion.Euler(currentXRotation, 0, 0);
-                    currentGhost.transform.rotation = finalRotation;
+                        // Rotate the ghost so its socket's outward direction is exactly opposite to the base's socket
+                        Quaternion targetRotation = Quaternion.LookRotation(-closestSocket.OutwardDirection, socketUp);
 
-                    // Position the ghost so its socket exactly overlaps the base's socket
-                    Vector3 positionOffset = currentGhost.transform.position - ghostConnectingSocket.transform.position;
-                    currentGhost.transform.position = closestSocket.transform.position + positionOffset;
+                        // Rotation offset between the ghost's root and its connecting socket
+                        Quaternion rotationOffset = Quaternion.Inverse(ghostConnectingSocket.transform.localRotation);
+                        currentGhost.transform.rotation = targetRotation * rotationOffset;
+
+                        // Position the ghost so its socket exactly overlaps the base's socket
+                        Vector3 positionOffset = currentGhost.transform.position - ghostConnectingSocket.transform.position;
+                        currentGhost.transform.position = closestSocket.transform.position + positionOffset;
+                    }
+                    else
+                    {
+                        // Fallback if ghost has no sockets defined
+                        currentGhost.transform.position = closestSocket.transform.position;
+                        currentGhost.transform.rotation = Quaternion.LookRotation(closestSocket.OutwardDirection, Vector3.up);
+                    }
+
+                    ghostScript.SetPlacementValidity(hasWelder);
                 }
                 else
                 {
-                    // Fallback if ghost has no sockets defined (should not happen normally)
-                    currentGhost.transform.position = closestSocket.transform.position;
-                    currentGhost.transform.rotation = Quaternion.LookRotation(closestSocket.OutwardDirection, closestSocket.transform.up) * Quaternion.Euler(currentXRotation, 0, 0);
-                }
+                    // Free placement on terrain/surface
+                    currentSnappedSocket = null;
+                    currentGhost.transform.position = hit.point;
 
-                ghostScript.SetPlacementValidity(true);
-            }
-            else
-            {
-                // Free placement on terrain/surface
-                currentSnappedSocket = null;
-                currentGhost.transform.position = hit.point;
-                // Keep the module upright, optionally orient it based on player facing
-                Vector3 playerForward = transform.forward;
-                playerForward.y = 0; // Keep horizontal
-                if (playerForward.sqrMagnitude > 0.01f)
-                {
-                    currentGhost.transform.rotation = Quaternion.LookRotation(playerForward, Vector3.up) * Quaternion.Euler(currentXRotation, 0, 0);
-                }
-                else
-                {
-                    currentGhost.transform.rotation = Quaternion.Euler(currentXRotation, 0, 0);
-                }
+                    // Keep the module upright, orient it based on player facing + Y rotation, while preserving the prefab's native mesh orientation
+                    Quaternion initialPrefabRot = currentModuleToBuild.ghostPrefab != null ? currentModuleToBuild.ghostPrefab.transform.rotation : Quaternion.identity;
+                    Vector3 playerForward = transform.forward;
+                    playerForward.y = 0; // Keep horizontal
+                    if (playerForward.sqrMagnitude > 0.01f)
+                    {
+                        currentGhost.transform.rotation = Quaternion.LookRotation(playerForward.normalized, Vector3.up) * Quaternion.Euler(0, currentYRotation, 0) * initialPrefabRot;
+                    }
+                    else
+                    {
+                        currentGhost.transform.rotation = Quaternion.Euler(0, currentYRotation, 0) * initialPrefabRot;
+                    }
 
-                    // Check if placement is valid (e.g. slope not too steep, not intersecting)
-                    // For now, we assume simple validity on terrain
-                    ghostScript.SetPlacementValidity(hit.normal.y > 0.8f);
+                    // Check if placement is valid (e.g. slope not too steep) and welder is equipped
+                    ghostScript.SetPlacementValidity(hasWelder && hit.normal.y > 0.7f);
                 }
             }
             else
@@ -239,13 +417,21 @@ public class BuilderController : MonoBehaviour
 
     private void HandleBuildingInput()
     {
-        if (currentGhost == null || !ghostScript.CanBePlaced) return;
+        if (currentGhost == null) return;
 
+        bool hasWelder = HasEquippedWelder();
         var mouse = Mouse.current;
+
         if (mouse != null)
         {
             if (mouse.leftButton.wasPressedThisFrame)
             {
+                if (!hasWelder)
+                {
+                    NotifyWelderMissing();
+                    return;
+                }
+
                 if (!isGhostPlaced && ghostScript.CanBePlaced)
                 {
                     isGhostPlaced = true;
@@ -253,6 +439,16 @@ public class BuilderController : MonoBehaviour
             }
             else if (mouse.leftButton.isPressed)
             {
+                if (!hasWelder)
+                {
+                    NotifyWelderMissing();
+                    if (isGhostPlaced)
+                    {
+                        ghostScript.ResetProgress();
+                    }
+                    return;
+                }
+
                 if (isGhostPlaced)
                 {
                     ghostScript.ConstructProgress(Time.deltaTime);

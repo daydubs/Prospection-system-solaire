@@ -114,6 +114,27 @@ namespace BuildingSystem
                     Debug.LogWarning($"Failed to add {item.itemName} to inventory (inventory might be full).");
                 }
             }
+
+            BuilderController builder = FindAnyObjectByType<BuilderController>();
+            if (builder != null)
+            {
+                if (builder.HasEquippedWelder())
+                {
+                    builder.EnterBuildMode(item.moduleData);
+                    PlayerBaseController player = FindAnyObjectByType<PlayerBaseController>();
+                    if (player != null && player.isBlueprintOpen)
+                    {
+                        if (player.blueprintUI != null) player.blueprintUI.SetActive(false);
+                        player.isBlueprintOpen = false;
+                        Cursor.lockState = CursorLockMode.Locked;
+                        Cursor.visible = false;
+                    }
+                }
+                else
+                {
+                    builder.NotifyWelderMissing();
+                }
+            }
         }
     }
 }

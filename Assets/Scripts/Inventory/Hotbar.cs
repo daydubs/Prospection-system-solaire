@@ -24,6 +24,20 @@ namespace InventoryFramework
             return slots[index];
         }
 
+        public int GetItemCount(Item item)
+        {
+            if (item == null) return 0;
+            int found = 0;
+            foreach (var slot in slots)
+            {
+                if (!slot.IsEmpty && (slot.item == item || (item.id != 0 && slot.item.id == item.id)))
+                {
+                    found += slot.count;
+                }
+            }
+            return found;
+        }
+
         public bool HasItem(Item item, int amount)
         {
             int found = 0;
@@ -66,25 +80,36 @@ namespace InventoryFramework
 
         public bool AddItem(Item newItem, int amount = 1)
         {
-            foreach (var slot in slots)
+            if (newItem == null || amount <= 0) return false;
+            if (slots == null) return false;
+
+            int maxStack = newItem.maxStack > 0 ? newItem.maxStack : 1;
+
+            if (maxStack > 1)
             {
-                if (!slot.IsEmpty && slot.item == newItem && slot.count < newItem.maxStack)
+                foreach (var slot in slots)
                 {
-                    int space = newItem.maxStack - slot.count;
-                    int add = Mathf.Min(space, amount);
-                    slot.count += add;
-                    amount -= add;
-                    if (amount <= 0) return true;
+                    if (slot != null && !slot.IsEmpty && (slot.item == newItem || (newItem.id != 0 && slot.item != null && slot.item.id == newItem.id)) && slot.count < maxStack)
+                    {
+                        int space = maxStack - slot.count;
+                        int add = Mathf.Min(space, amount);
+                        slot.count += add;
+                        amount -= add;
+                        if (amount <= 0) return true;
+                    }
                 }
             }
 
             foreach (var slot in slots)
             {
-                if (slot.IsEmpty)
+                if (slot != null && slot.IsEmpty)
                 {
+                    int add = Mathf.Min(maxStack, amount);
                     slot.item = newItem;
-                    slot.count = amount;
-                    return true;
+                    slot.count = add;
+                    slot.currentOxygen = 100f;
+                    amount -= add;
+                    if (amount <= 0) return true;
                 }
             }
 

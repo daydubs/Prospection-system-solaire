@@ -98,38 +98,100 @@ namespace InventoryFramework
 
         public void RefreshUI()
         {
-            if (slotUIs == null) return;
+            if (slotUIs == null || hotbar == null || hotbar.slots == null) return;
 
             for (int i = 0; i < hotbar.size; i++)
             {
-                if (slotUIs[i] == null) continue;
-                slotUIs[i].SetSlot(hotbar.slots[i]);
+                if (i >= slotUIs.Count || slotUIs[i] == null) continue;
+                if (i < hotbar.slots.Count)
+                {
+                    slotUIs[i].SetSlot(hotbar.slots[i]);
+                }
 
                 var bg = slotUIs[i].transform.GetChild(0).GetComponent<Image>();
-                bg.color = (i == selectedIndex) ? Color.yellow : Color.white;
+                if (bg != null)
+                {
+                    bg.color = (i == selectedIndex) ? Color.yellow : Color.white;
+                }
             }
 
-            if (slotUIs[selectedIndex] == null) return;
-            InventorySlot slot = slotUIs[selectedIndex].GetComponent<InventorySlotUI>().GetSlot();
-
-            for (int x = 0; x < toolsParent.childCount; x++)
+            if (toolsParent != null)
             {
-                Destroy(toolsParent.GetChild(x).gameObject);
+                for (int x = 0; x < toolsParent.childCount; x++)
+                {
+                    Destroy(toolsParent.GetChild(x).gameObject);
+                }
             }
 
-            if (slot == null) return;
+            InventorySlot slot = null;
+            if (selectedIndex >= 0 && selectedIndex < hotbar.slots.Count)
+            {
+                slot = hotbar.slots[selectedIndex];
+            }
 
-            if (slot.IsEmpty) return;
+            if (slot == null || slot.IsEmpty) return;
 
-            if (slot.item.model == null) return;
+            if (slot.item is BuildingSystem.BlueprintItem)
+            {
+                // If a blueprint is selected, visually show the equipped Welder model in hand so the player holds their welding tool
+                Item welder = GetEquippedWelder();
+                if (welder != null && welder.model != null && toolsParent != null)
+                {
+                    Instantiate(welder.model, toolsParent);
+                }
+                return;
+            }
+
+            if (slot.item.model == null || toolsParent == null) return;
 
             Instantiate(slot.item.model, toolsParent);
         }
 
+        public Item GetEquippedWelder()
+        {
+            if (hotbar == null || hotbar.slots == null) return null;
+            foreach (var s in hotbar.slots)
+            {
+                if (s != null && !s.IsEmpty && s.item != null)
+                {
+                    if (string.Equals(s.item.itemName?.Trim(), "Welder", System.StringComparison.OrdinalIgnoreCase) || s.item.id == 5)
+                    {
+                        return s.item;
+                    }
+                }
+            }
+            return null;
+        }
+
+        public void SelectSlot(int index)
+        {
+            if (hotbar != null && index >= 0 && index < hotbar.size)
+            {
+                selectedIndex = index;
+                RefreshUI();
+            }
+        }
+
+        public int SelectedIndex => selectedIndex;
+
         public Item GetSelectedItem()
         {
-            InventorySlot slot = slotUIs[selectedIndex].GetComponent<InventorySlotUI>().GetSlot();
-            return slot?.item;
+            if (hotbar != null && selectedIndex >= 0 && selectedIndex < hotbar.size)
+            {
+                var slot = hotbar.GetSlot(selectedIndex);
+                if (slot != null && !slot.IsEmpty)
+                {
+                    return slot.item;
+                }
+            }
+
+            if (slotUIs != null && selectedIndex >= 0 && selectedIndex < slotUIs.Count && slotUIs[selectedIndex] != null)
+            {
+                InventorySlot slot = slotUIs[selectedIndex].GetComponent<InventorySlotUI>()?.GetSlot();
+                return slot?.item;
+            }
+
+            return null;
         }
     }
 

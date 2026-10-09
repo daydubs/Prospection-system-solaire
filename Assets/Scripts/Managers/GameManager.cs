@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using InventoryFramework;
 
 [DefaultExecutionOrder(-50)]
@@ -60,6 +61,24 @@ public class GameManager : MonoBehaviour
     public event Action<string, float, float> OnCargoChanged; // resId, currentQty, delta
     public event Action<string> OnBodyDiscovered;
 
+    private void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        cachedHotbarUI = null;
+        cachedInventoryUI = null;
+        EnsurePlayerInventory();
+        TryCacheUI();
+    }
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -71,11 +90,7 @@ public class GameManager : MonoBehaviour
         Instance = this;
         DontDestroyOnLoad(gameObject);
 
-        if (playerInventory == null)
-        {
-            playerInventory = FindAnyObjectByType<Inventory>();
-        }
-
+        EnsurePlayerInventory();
         InitializeDefaultTechTree();
     }
 
@@ -407,6 +422,15 @@ public class GameManager : MonoBehaviour
     private HotbarUI cachedHotbarUI;
     private InventoryUI cachedInventoryUI;
 
+    public Inventory EnsurePlayerInventory()
+    {
+        if (playerInventory == null)
+        {
+            playerInventory = Inventory.Instance != null ? Inventory.Instance : FindAnyObjectByType<Inventory>();
+        }
+        return playerInventory;
+    }
+
     private void TryCacheUI()
     {
         if (cachedHotbarUI == null) cachedHotbarUI = FindAnyObjectByType<HotbarUI>();
@@ -415,22 +439,31 @@ public class GameManager : MonoBehaviour
 
     public bool HasPlayerItem(Item item, int amount)
     {
+        if (item == null || amount <= 0) return true;
+        EnsurePlayerInventory();
         int found = 0;
 
-        if (playerInventory != null)
+        if (playerInventory != null && playerInventory.slots != null)
         {
             foreach (var slot in playerInventory.slots)
             {
-                if (!slot.IsEmpty && slot.item == item) found += slot.count;
+                if (slot != null && !slot.IsEmpty && (slot.item == item || (item.id != 0 && slot.item != null && slot.item.id == item.id)))
+                {
+                    found += slot.count;
+                }
             }
         }
 
         TryCacheUI();
-        if (cachedHotbarUI != null && cachedHotbarUI.hotbar != null)
+        Hotbar hotbar = cachedHotbarUI != null ? cachedHotbarUI.hotbar : FindAnyObjectByType<Hotbar>();
+        if (hotbar != null && hotbar.slots != null)
         {
-            foreach (var slot in cachedHotbarUI.hotbar.slots)
+            foreach (var slot in hotbar.slots)
             {
-                if (!slot.IsEmpty && slot.item == item) found += slot.count;
+                if (slot != null && !slot.IsEmpty && (slot.item == item || (item.id != 0 && slot.item != null && slot.item.id == item.id)))
+                {
+                    found += slot.count;
+                }
             }
         }
 
@@ -439,17 +472,22 @@ public class GameManager : MonoBehaviour
 
     public bool ConsumePlayerItem(Item item, int amount)
     {
+        if (item == null || amount <= 0) return true;
         if (!HasPlayerItem(item, amount)) return false;
 
+        EnsurePlayerInventory();
         int remainingToConsume = amount;
 
         // First consume from inventory
-        if (playerInventory != null)
+        if (playerInventory != null && playerInventory.slots != null)
         {
             int inventoryCount = 0;
             foreach (var slot in playerInventory.slots)
             {
-                if (!slot.IsEmpty && slot.item == item) inventoryCount += slot.count;
+                if (slot != null && !slot.IsEmpty && (slot.item == item || (item.id != 0 && slot.item != null && slot.item.id == item.id)))
+                {
+                    inventoryCount += slot.count;
+                }
             }
 
             if (inventoryCount > 0)
@@ -464,9 +502,10 @@ public class GameManager : MonoBehaviour
         if (remainingToConsume > 0)
         {
             TryCacheUI();
-            if (cachedHotbarUI != null && cachedHotbarUI.hotbar != null)
+            Hotbar hotbar = cachedHotbarUI != null ? cachedHotbarUI.hotbar : FindAnyObjectByType<Hotbar>();
+            if (hotbar != null)
             {
-                cachedHotbarUI.hotbar.ConsumeItem(item, remainingToConsume);
+                hotbar.ConsumeItem(item, remainingToConsume);
             }
         }
 
@@ -480,21 +519,48 @@ public class GameManager : MonoBehaviour
 
     public bool AddPlayerItem(Item item, int amount)
     {
+        if (item == null || amount <= 0) return false;
+
+        EnsurePlayerInventory();
+        bool added = false;
+
         if (playerInventory != null)
         {
-            bool added = playerInventory.AddItem(item, amount);
-            if (added)
+            added = playerInventory.AddItem(item, amount);
+        }
+
+        // If not fully added (or inventory full/unavailable), try adding to hotbar
+        if (!added)
+        {
+            TryCacheUI();
+            Hotbar hotbar = cachedHotbarUI != null ? cachedHotbarUI.hotbar : FindAnyObjectByType<Hotbar>();
+            if (hotbar != null)
             {
-                InventoryUI inventoryUI = FindAnyObjectByType<InventoryUI>();
-                if (inventoryUI != null) inventoryUI.RefreshUI();
-                HotbarUI hotbarUI = FindAnyObjectByType<HotbarUI>();
-                if (hotbarUI != null) hotbarUI.RefreshUI();
+                added = hotbar.AddItem(item, amount);
             }
-            return added;
+        }
+
+        if (added)
+        {
+            TryCacheUI();
+            if (cachedInventoryUI != null) cachedInventoryUI.RefreshUI();
+            if (cachedHotbarUI != null) cachedHotbarUI.RefreshUI();
+            return true;
         }
         else
         {
-            Debug.LogWarning("[GameManager] playerInventory non assigné. Impossible d'ajouter l'item.");
+            if (playerInventory == null)
+            {
+                Debug.LogWarning("[GameManager] playerInventory non assigné et introuvable. Impossible d'ajouter l'item.");
+            }
+            else
+            {
+                Debug.LogWarning($"[GameManager] Inventaire et barre rapide pleins. Impossible d'ajouter {amount}x {item.itemName}.");
+                if (MainMenuController.Instance != null)
+                {
+                    MainMenuController.Instance.ShowNotification("Inventaire plein !");
+                }
+            }
             return false;
         }
     }

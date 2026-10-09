@@ -218,6 +218,12 @@ public class MainMenuController : MonoBehaviour
                         return;
                     }
 
+                    if (CraftingSystem.CraftingUIManager.Instance != null && CraftingSystem.CraftingUIManager.Instance.IsOpen)
+                    {
+                        CraftingSystem.CraftingUIManager.Instance.CloseUI();
+                        return;
+                    }
+
                     ToggleMenu();
                 }
             }
@@ -686,7 +692,7 @@ public class MainMenuController : MonoBehaviour
 
     public void ShowNotification(string message)
     {
-        if (notificationBanner == null || notificationText == null) return;
+        if (!isActiveAndEnabled || notificationBanner == null || notificationText == null) return;
 
         notificationText.text = message;
         notificationBanner.SetActive(true);

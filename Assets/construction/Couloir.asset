@@ -22,7 +22,7 @@ MonoBehaviour:
   baseConstructionTime: 10
   resourceCosts:
   - item: {fileID: 11400000, guid: a5f3afd55dedc6e44ad496b745c67e16, type: 2}
-    amount: 10
+    amount: 5
   - item: {fileID: 11400000, guid: f1fbe52adbf331e4490d82054c2113e0, type: 2}
     amount: 2
   - item: {fileID: 11400000, guid: b4695458070458f4d851ca9e14cfd39c, type: 2}

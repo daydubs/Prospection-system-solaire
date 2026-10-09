@@ -15,7 +15,7 @@ MonoBehaviour:
   id: 32
   itemName: "Composant \xC9lectronique"
   description: "Circuit int\xE9gr\xE9 \xE0 base de silicium purifi\xE9 permettant le contr\xF4le des sas et des syst\xE8mes automatis\xE9s."
-  icon: {fileID: 21300000, guid: ce43f60ebfe37674a9f040ab95662629, type: 3}
+  icon: {fileID: 21300000, guid: b09ff95e576caa247a949d229af03d61, type: 3}
   maxStack: 50
   model: {fileID: 919132149155446097, guid: 459a962e97a81aa44926012fef5068e1, type: 3}
   basePrice: 40

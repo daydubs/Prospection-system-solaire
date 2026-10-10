@@ -62,6 +62,7 @@ public class SpaceshipFlightController : MonoBehaviour
     private Vector3 lastTargetPos;
     private CelestialBody lastTargetBody;
     private int lastAutopilotFrame = -1;
+    private Vector3 positionRemainder = Vector3.zero;
 
     private void Awake()
     {
@@ -421,6 +422,7 @@ public class SpaceshipFlightController : MonoBehaviour
         {
             currentSpeed = 0f;
             velocity = Vector3.zero;
+            positionRemainder = Vector3.zero; // Clear remainder on arrival
             SetFlightMode(FlightMode.OrbitInspect);
             Debug.Log($"[Autopilot] Arrivé en orbite stabilisée de {dest.bodyName} !");
             return;
@@ -464,8 +466,21 @@ public class SpaceshipFlightController : MonoBehaviour
         transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, rotSpeed * Time.deltaTime);
 
         // Movement perfectly anchored in the moving/rotating destination reference frame
-        Vector3 movement = (approachDir * currentSpeed * simDt) + targetDeltaPosition;
-        transform.position += movement;
+        Vector3 relativeMovement = approachDir * currentSpeed * simDt;
+
+        // Fix Floating-Point Precision Loss at extreme scales
+        // Store small movements in an accumulator and only apply them when they exceed a threshold Unity can reliably process
+        positionRemainder += relativeMovement;
+
+        Vector3 appliedRelativeMovement = Vector3.zero;
+        if (positionRemainder.sqrMagnitude > 0.01f) // Apply when movement exceeds ~0.1 units
+        {
+            appliedRelativeMovement = positionRemainder;
+            positionRemainder = Vector3.zero;
+        }
+
+        Vector3 totalMovement = appliedRelativeMovement + targetDeltaPosition;
+        transform.position += totalMovement;
     }
 
     private void UpdateOrbitInspect()

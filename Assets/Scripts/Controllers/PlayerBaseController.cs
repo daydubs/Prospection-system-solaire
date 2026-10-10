@@ -273,7 +273,6 @@ public class PlayerBaseController : MonoBehaviour
         CheckInteraction();
         HandleBuildMode();
         HandleInteractionInput();
-        HandleMainMenu();
     }
 
     private void HandleBuildMode()
@@ -614,19 +613,6 @@ public class PlayerBaseController : MonoBehaviour
                 ? $"[E] {promptInteractable.GetInteractionPrompt()}"
                 : "[E] Interagir";
             GUI.Label(new Rect(centerX - 150, centerY + 18, 300, 30), prompt, style);
-        }
-    }
-
-    private void HandleMainMenu()
-    {
-        // Only process the new Input System "Menu" action (e.g. gamepad start button).
-        // Escape key logic is handled centrally in MainMenuController.cs
-        if (inputActions.Player.Menu.WasPressedThisFrame())
-        {
-            if (MainMenuController.Instance != null)
-            {
-                MainMenuController.Instance.ToggleMenu();
-            }
         }
     }
 }

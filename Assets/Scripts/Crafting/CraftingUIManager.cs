@@ -51,6 +51,7 @@ namespace CraftingSystem
         private CraftingRecipe selectedRecipe;
         private int currentCraftQuantity = 1;
         private bool isOpen = false;
+        private InputSystem_Actions inputActions;
 
         public bool IsOpen => isOpen;
 
@@ -65,6 +66,8 @@ namespace CraftingSystem
                 Destroy(gameObject);
                 return;
             }
+
+            inputActions = new InputSystem_Actions();
 
             if (mainPanel != null)
             {
@@ -111,6 +114,22 @@ namespace CraftingSystem
             LoadAvailableRecipes();
         }
 
+        private void OnEnable()
+        {
+            if (inputActions != null)
+            {
+                inputActions.Player.Enable();
+            }
+        }
+
+        private void OnDisable()
+        {
+            if (inputActions != null)
+            {
+                inputActions.Player.Disable();
+            }
+        }
+
         private void OnDestroy()
         {
             if (Instance == this)
@@ -123,13 +142,28 @@ namespace CraftingSystem
         {
             if (!isOpen) return;
 
-            // Close on Escape or E or I
-            if (Keyboard.current != null)
+            // Close on Menu (Escape) or Interact (E)
+            bool closePressed = false;
+
+            if (inputActions != null)
             {
-                if (Keyboard.current.escapeKey.wasPressedThisFrame || Keyboard.current.eKey.wasPressedThisFrame)
+                if (inputActions.Player.Menu.WasPressedThisFrame() || inputActions.Player.Interact.WasPressedThisFrame())
                 {
-                    CloseUI();
+                    closePressed = true;
                 }
+            }
+            // Fallback for Keyboard E just in case
+            else if (Keyboard.current != null)
+            {
+                if (Keyboard.current.eKey.wasPressedThisFrame)
+                {
+                    closePressed = true;
+                }
+            }
+
+            if (closePressed)
+            {
+                CloseUI();
             }
         }
 

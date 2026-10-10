@@ -101,6 +101,7 @@ public class EarthBaseController : MonoBehaviour
 
     public UnityEngine.UI.Button btnLaunchMission;
 
+    private InputSystem_Actions inputActions;
 
     private void Awake()
     {
@@ -110,6 +111,23 @@ public class EarthBaseController : MonoBehaviour
             return;
         }
         instance = this;
+        inputActions = new InputSystem_Actions();
+    }
+
+    private void OnEnable()
+    {
+        if (inputActions != null)
+        {
+            inputActions.Player.Enable();
+        }
+    }
+
+    private void OnDisable()
+    {
+        if (inputActions != null)
+        {
+            inputActions.Player.Disable();
+        }
     }
 
     private void Start()
@@ -195,8 +213,11 @@ public class EarthBaseController : MonoBehaviour
             interactionPromptCanvas.SetActive(!isHubUIOpen && playerController != null && playerController.isNearHubScreen);
         }
 
-        // Toggle / interact on E or Enter
-        if (Keyboard.current != null && (Keyboard.current.eKey.wasPressedThisFrame || Keyboard.current.enterKey.wasPressedThisFrame))
+        // Toggle / interact on E (Interact action) or Enter
+        bool interactPressed = (inputActions != null && inputActions.Player.Interact.WasPressedThisFrame()) ||
+                               (Keyboard.current != null && Keyboard.current.enterKey.wasPressedThisFrame);
+
+        if (interactPressed)
         {
             if (isHubUIOpen)
             {
@@ -208,8 +229,8 @@ public class EarthBaseController : MonoBehaviour
             }
         }
 
-        // Close on Escape if open
-        if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
+        // Close on Escape / Menu action if open
+        if (inputActions != null && inputActions.Player.Menu.WasPressedThisFrame())
         {
             if (isHubUIOpen)
             {

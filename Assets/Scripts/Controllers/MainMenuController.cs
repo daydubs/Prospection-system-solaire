@@ -101,6 +101,7 @@ public class MainMenuController : MonoBehaviour
     public AudioSource menuAudioSource;
 
     private Coroutine notificationCoroutine;
+    private InputSystem_Actions inputActions;
 
     public bool IsMenuOpen => isMenuOpen;
 
@@ -112,6 +113,23 @@ public class MainMenuController : MonoBehaviour
             return;
         }
         Instance = this;
+        inputActions = new InputSystem_Actions();
+    }
+
+    private void OnEnable()
+    {
+        if (inputActions != null)
+        {
+            inputActions.Player.Enable();
+        }
+    }
+
+    private void OnDisable()
+    {
+        if (inputActions != null)
+        {
+            inputActions.Player.Disable();
+        }
     }
 
     private void Start()
@@ -191,8 +209,8 @@ public class MainMenuController : MonoBehaviour
 
     private void Update()
     {
-        // Toggle menu on Escape
-        if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
+        // Toggle menu on Menu action (Escape / Gamepad Start)
+        if (inputActions != null && inputActions.Player.Menu.WasPressedThisFrame())
         {
             if (newGamePanel != null && newGamePanel.activeSelf)
             {

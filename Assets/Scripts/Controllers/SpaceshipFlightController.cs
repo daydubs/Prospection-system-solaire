@@ -421,34 +421,71 @@ public class SpaceshipFlightController : MonoBehaviour
             return;
         }
 
-        float maxAllowedSpeed = baseAutoMaxSpeed * techSpeedMultiplier;
-        float currentAcceleration = baseAutoAcceleration * techSpeedMultiplier;
+        float targetSpeed = targetVelocity.magnitude;
+
+        // 1. Dynamically scale maximum speed to ensure overtaking fast targets
+        float maxAllowedSpeed = (baseAutoMaxSpeed * techSpeedMultiplier) + targetSpeed * 1.5f;
+        float currentAcceleration = (baseAutoAcceleration * techSpeedMultiplier) + targetSpeed * 0.5f;
 
         // Distance-based kinematic deceleration
         float brakingDist = (maxAllowedSpeed * maxAllowedSpeed) / (2f * Mathf.Max(currentAcceleration, 0.1f)) + 6f;
-        float desiredRelSpeed;
+        float desiredSpeed;
 
         if (distToOrbit < brakingDist)
         {
             float t = distToOrbit / brakingDist;
-            desiredRelSpeed = Mathf.Max(1.0f, maxAllowedSpeed * Mathf.Sqrt(Mathf.Clamp01(t)));
+            // Never brake below a speed that can catch the target
+            desiredSpeed = Mathf.Max(targetSpeed * 1.05f + 2f, maxAllowedSpeed * Mathf.Sqrt(Mathf.Clamp01(t)));
         }
         else
         {
-            desiredRelSpeed = maxAllowedSpeed;
+            desiredSpeed = maxAllowedSpeed;
         }
 
-        currentSpeed = Mathf.MoveTowards(currentSpeed, desiredRelSpeed, currentAcceleration * simDt);
+        currentSpeed = Mathf.MoveTowards(currentSpeed, desiredSpeed, currentAcceleration * simDt);
 
-        // Direct relative approach vector toward destination
-        Vector3 approachDir = toTarget.normalized;
+        // 2. Calculate future interception point
+        Vector3 D = targetPos - transform.position;
+        float vS = Mathf.Max(currentSpeed, 0.1f);
+        float vT = targetSpeed;
+
+        float a = vS * vS - vT * vT;
+        float b = -2f * Vector3.Dot(D, targetVelocity);
+        float c = -D.sqrMagnitude;
+
+        float t_intercept = 0f;
+        if (Mathf.Abs(a) > 0.001f)
+        {
+            float discriminant = b * b - 4f * a * c;
+            if (discriminant >= 0f)
+            {
+                float t1 = (-b + Mathf.Sqrt(discriminant)) / (2f * a);
+                float t2 = (-b - Mathf.Sqrt(discriminant)) / (2f * a);
+
+                if (t1 > 0f && t2 > 0f) t_intercept = Mathf.Min(t1, t2);
+                else if (t1 > 0f) t_intercept = t1;
+                else if (t2 > 0f) t_intercept = t2;
+            }
+        }
+
+        if (t_intercept <= 0f)
+        {
+            t_intercept = distToCenter / vS;
+        }
+
+        // Limit interception time to avoid aiming too far into the curve
+        t_intercept = Mathf.Min(t_intercept, 200f);
+
+        Vector3 interceptionPoint = targetPos + targetVelocity * t_intercept;
+        Vector3 approachDir = (interceptionPoint - transform.position).normalized;
         if (approachDir.sqrMagnitude < 0.001f) approachDir = transform.forward;
 
+        float rotSpeed = 5f * Mathf.Max(1f, SolarSystemManager.Instance != null ? SolarSystemManager.Instance.timeScale : 1f);
         Quaternion targetRot = Quaternion.LookRotation(approachDir);
-        transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, 5f * Time.deltaTime);
+        transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, rotSpeed * Time.deltaTime);
 
-        // Movement in destination reference frame: relative velocity + target velocity
-        Vector3 movement = (approachDir * currentSpeed + targetVelocity) * simDt;
+        // 3. Move directly in world space
+        Vector3 movement = approachDir * currentSpeed * simDt;
         transform.position += movement;
     }
 

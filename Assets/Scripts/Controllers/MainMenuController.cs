@@ -253,7 +253,20 @@ public class MainMenuController : MonoBehaviour
         isMenuOpen = visible;
         if (mainCanvasObject != null)
         {
-            mainCanvasObject.SetActive(visible);
+            if (mainCanvasObject == gameObject)
+            {
+                // Disable Canvas and GraphicRaycaster instead of the entire GameObject
+                // so the Update() loop continues to run and capture Input Actions
+                Canvas canvas = GetComponent<Canvas>();
+                if (canvas != null) canvas.enabled = visible;
+
+                UnityEngine.UI.GraphicRaycaster raycaster = GetComponent<UnityEngine.UI.GraphicRaycaster>();
+                if (raycaster != null) raycaster.enabled = visible;
+            }
+            else
+            {
+                mainCanvasObject.SetActive(visible);
+            }
         }
 
         // Control pause state via SceneTransitionManager

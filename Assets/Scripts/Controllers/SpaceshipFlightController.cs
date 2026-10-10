@@ -24,8 +24,8 @@ public class SpaceshipFlightController : MonoBehaviour
     public bool hasWarpTechnology = false;
 
     [Header("Autopilot Parameters (Calibrated: ~2 in-game days Earth->Moon)")]
-    public float baseAutoMaxSpeed = 5.2f; // 10f -> 5.2f for 2-day travel
-    public float baseAutoAcceleration = 1f; // Scaled down with max speed
+    public float baseAutoMaxSpeed = 15f;
+    public float baseAutoAcceleration = 3f;
     public float arriveDistanceOffset = 2.5f;
     public float arrivalDamping = 5f;
 
@@ -129,9 +129,22 @@ public class SpaceshipFlightController : MonoBehaviour
         {
             newRef = SolarSystemManager.Instance.currentDestination;
         }
+        else if (currentMode == FlightMode.Autopilot && SolarSystemManager.Instance != null && SolarSystemManager.Instance.currentDestination != null)
+        {
+            // During Autopilot, lock onto destination once inside its SOI
+            CelestialBody dest = SolarSystemManager.Instance.currentDestination;
+            if (dest.IsPositionInSOI(transform.position))
+            {
+                newRef = dest;
+            }
+            else
+            {
+                newRef = SolarSystemManager.Instance.GetDominantCelestialBody(transform.position, currentReferenceBody);
+            }
+        }
         else if (SolarSystemManager.Instance != null)
         {
-            newRef = SolarSystemManager.Instance.GetDominantCelestialBody(transform.position);
+            newRef = SolarSystemManager.Instance.GetDominantCelestialBody(transform.position, currentReferenceBody);
         }
 
         if (newRef != currentReferenceBody)
@@ -427,17 +440,15 @@ public class SpaceshipFlightController : MonoBehaviour
 
         currentSpeed = Mathf.MoveTowards(currentSpeed, desiredRelSpeed, currentAcceleration * simDt);
 
-        // Interception prediction taking target velocity into account
-        float timeToIntercept = Mathf.Clamp(distToCenter / Mathf.Max(currentSpeed, 0.5f), 0f, 8f);
-        Vector3 interceptPos = targetPos + targetVelocity * timeToIntercept;
-        Vector3 interceptDir = (interceptPos - transform.position).normalized;
-        if (interceptDir.sqrMagnitude < 0.001f) interceptDir = toTarget.normalized;
+        // Direct relative approach vector toward destination
+        Vector3 approachDir = toTarget.normalized;
+        if (approachDir.sqrMagnitude < 0.001f) approachDir = transform.forward;
 
-        Quaternion targetRot = Quaternion.LookRotation(interceptDir);
+        Quaternion targetRot = Quaternion.LookRotation(approachDir);
         transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, 5f * Time.deltaTime);
 
-        // Absolute movement: relative approach vector + target host velocity
-        Vector3 movement = (interceptDir * currentSpeed + targetVelocity) * simDt;
+        // Movement in destination reference frame: relative velocity + target velocity
+        Vector3 movement = (approachDir * currentSpeed + targetVelocity) * simDt;
         transform.position += movement;
     }
 

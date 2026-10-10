@@ -207,7 +207,24 @@ public class SolarSystemManager : MonoBehaviour
 
     public CelestialBody GetDominantCelestialBody(Vector3 worldPos)
     {
-        // 1. Check Moons and Asteroids / small bodies first (nested SOIs)
+        return GetDominantCelestialBody(worldPos, null);
+    }
+
+    public CelestialBody GetDominantCelestialBody(Vector3 worldPos, CelestialBody currentRef)
+    {
+        const float exitHysteresis = 1.2f;
+
+        // 1. If currently inside a Moon / small body, stay unless outside exit SOI boundary
+        if (currentRef != null && (currentRef.bodyType == CelestialBodyType.Moon || currentRef.bodyType == CelestialBodyType.Asteroid))
+        {
+            float distToCurrent = Vector3.Distance(currentRef.transform.position, worldPos);
+            if (distToCurrent <= currentRef.GetEffectiveSOIRadius() * exitHysteresis)
+            {
+                return currentRef;
+            }
+        }
+
+        // 2. Check Moons and Asteroids / small bodies first (nested SOIs)
         float closestMoonDist = float.MaxValue;
         CelestialBody closestMoon = null;
 
@@ -226,7 +243,17 @@ public class SolarSystemManager : MonoBehaviour
         }
         if (closestMoon != null) return closestMoon;
 
-        // 2. Check Planets
+        // 3. If currently inside a Planet, stay unless outside exit SOI boundary
+        if (currentRef != null && (currentRef.bodyType == CelestialBodyType.Planet || currentRef.bodyType == CelestialBodyType.DwarfPlanet))
+        {
+            float distToCurrent = Vector3.Distance(currentRef.transform.position, worldPos);
+            if (distToCurrent <= currentRef.GetEffectiveSOIRadius() * exitHysteresis)
+            {
+                return currentRef;
+            }
+        }
+
+        // 4. Check Planets
         float closestPlanetDist = float.MaxValue;
         CelestialBody closestPlanet = null;
 
@@ -245,7 +272,7 @@ public class SolarSystemManager : MonoBehaviour
         }
         if (closestPlanet != null) return closestPlanet;
 
-        // 3. Fallback to Central Star (heliocentric reference frame)
+        // 5. Fallback to Central Star (heliocentric reference frame)
         return centralStar;
     }
 }

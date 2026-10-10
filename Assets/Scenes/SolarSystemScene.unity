@@ -168,6 +168,7 @@ MonoBehaviour:
   visualModel: {fileID: 0}
   orbitLine: {fileID: 10173521}
   orbitResolution: 100
+  soiRadius: 0
   satellites: []
   currentOrbitAngle: 128.18472
 --- !u!23 &954986
@@ -12935,6 +12936,7 @@ MonoBehaviour:
   visualModel: {fileID: 0}
   orbitLine: {fileID: 81523654}
   orbitResolution: 100
+  soiRadius: 0
   satellites: []
   currentOrbitAngle: 207.54854
 --- !u!23 &325853160
@@ -16643,6 +16645,7 @@ MonoBehaviour:
   visualModel: {fileID: 0}
   orbitLine: {fileID: 1404756025}
   orbitResolution: 100
+  soiRadius: 0
   satellites: []
   currentOrbitAngle: 89.8237
 --- !u!23 &451465237
@@ -17703,22 +17706,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 458186095}
     m_Modifications:
-    - target: {fileID: 1521445817468443560, guid: 9907fa8e0d2bc3647adefa08e0e665f7, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1635949563791477434, guid: 9907fa8e0d2bc3647adefa08e0e665f7, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 0.05
-      objectReference: {fileID: 0}
-    - target: {fileID: 1635949563791477434, guid: 9907fa8e0d2bc3647adefa08e0e665f7, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 0.05
-      objectReference: {fileID: 0}
-    - target: {fileID: 1635949563791477434, guid: 9907fa8e0d2bc3647adefa08e0e665f7, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 0.05
-      objectReference: {fileID: 0}
     - target: {fileID: 1635949563791477434, guid: 9907fa8e0d2bc3647adefa08e0e665f7, type: 3}
       propertyPath: m_LocalPosition.x
       value: 548.94586
@@ -17759,26 +17746,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1635949563791477434, guid: 9907fa8e0d2bc3647adefa08e0e665f7, type: 3}
-      propertyPath: m_ConstrainProportionsScale
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 1654576545961454509, guid: 9907fa8e0d2bc3647adefa08e0e665f7, type: 3}
       propertyPath: shipCamera
       value: 
       objectReference: {fileID: 330585545}
-    - target: {fileID: 1654576545961454509, guid: 9907fa8e0d2bc3647adefa08e0e665f7, type: 3}
-      propertyPath: normalSpeed
-      value: 0.08
-      objectReference: {fileID: 0}
-    - target: {fileID: 1654576545961454509, guid: 9907fa8e0d2bc3647adefa08e0e665f7, type: 3}
-      propertyPath: maxOrbitDist
-      value: 1500
-      objectReference: {fileID: 0}
-    - target: {fileID: 3455657487070761185, guid: 9907fa8e0d2bc3647adefa08e0e665f7, type: 3}
-      propertyPath: m_Intensity
-      value: 100.76
-      objectReference: {fileID: 0}
     - target: {fileID: 5563881502381086478, guid: 9907fa8e0d2bc3647adefa08e0e665f7, type: 3}
       propertyPath: m_Name
       value: Spaceship_Explorer
@@ -17786,13 +17757,7 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 5065163648756005305, guid: 9907fa8e0d2bc3647adefa08e0e665f7, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 491591403}
-    - targetCorrespondingSourceObject: {fileID: 1521445817468443560, guid: 9907fa8e0d2bc3647adefa08e0e665f7, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 491591402}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9907fa8e0d2bc3647adefa08e0e665f7, type: 3}
 --- !u!114 &491591398 stripped
 MonoBehaviour:
@@ -17810,74 +17775,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 1635949563791477434, guid: 9907fa8e0d2bc3647adefa08e0e665f7, type: 3}
   m_PrefabInstance: {fileID: 491591397}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &491591400 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1521445817468443560, guid: 9907fa8e0d2bc3647adefa08e0e665f7, type: 3}
-  m_PrefabInstance: {fileID: 491591397}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &491591401 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 5065163648756005305, guid: 9907fa8e0d2bc3647adefa08e0e665f7, type: 3}
-  m_PrefabInstance: {fileID: 491591397}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &491591402
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 491591400}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.UniversalAdditionalLightData
-  m_UsePipelineSettings: 1
-  m_AdditionalLightsShadowResolutionTier: 2
-  m_CustomShadowLayers: 0
-  m_LightCookieSize: {x: 1, y: 1}
-  m_LightCookieOffset: {x: 0, y: 0}
-  m_SoftShadowQuality: 0
-  m_RenderingLayersMask:
-    serializedVersion: 0
-    m_Bits: 1
-  m_ShadowRenderingLayersMask:
-    serializedVersion: 0
-    m_Bits: 1
-  m_Version: 4
-  m_LightLayerMask: 1
-  m_ShadowLayerMask: 1
-  m_RenderingLayers: 1
-  m_ShadowRenderingLayers: 1
---- !u!114 &491591403
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 491591401}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.UniversalAdditionalLightData
-  m_UsePipelineSettings: 1
-  m_AdditionalLightsShadowResolutionTier: 2
-  m_CustomShadowLayers: 0
-  m_LightCookieSize: {x: 1, y: 1}
-  m_LightCookieOffset: {x: 0, y: 0}
-  m_SoftShadowQuality: 0
-  m_RenderingLayersMask:
-    serializedVersion: 0
-    m_Bits: 1
-  m_ShadowRenderingLayersMask:
-    serializedVersion: 0
-    m_Bits: 1
-  m_Version: 4
-  m_LightLayerMask: 1
-  m_ShadowLayerMask: 1
-  m_RenderingLayers: 1
-  m_ShadowRenderingLayers: 1
 --- !u!1 &491841250
 GameObject:
   m_ObjectHideFlags: 0
@@ -21479,6 +21376,7 @@ MonoBehaviour:
   visualModel: {fileID: 0}
   orbitLine: {fileID: 176150109}
   orbitResolution: 100
+  soiRadius: 0
   satellites: []
   currentOrbitAngle: 280.60184
 --- !u!23 &568282360
@@ -22251,6 +22149,7 @@ MonoBehaviour:
   visualModel: {fileID: 0}
   orbitLine: {fileID: 0}
   orbitResolution: 100
+  soiRadius: 0
   satellites: []
   currentOrbitAngle: 0
 --- !u!1 &586315889
@@ -24721,6 +24620,7 @@ MonoBehaviour:
   visualModel: {fileID: 0}
   orbitLine: {fileID: 561133653}
   orbitResolution: 100
+  soiRadius: 0
   satellites:
   - {fileID: 568282359}
   - {fileID: 1915067958}
@@ -26270,6 +26170,7 @@ MonoBehaviour:
   visualModel: {fileID: 0}
   orbitLine: {fileID: 1206745893}
   orbitResolution: 100
+  soiRadius: 0
   satellites: []
   currentOrbitAngle: 230.86154
 --- !u!23 &681414625
@@ -33358,6 +33259,7 @@ MonoBehaviour:
   visualModel: {fileID: 0}
   orbitLine: {fileID: 1106063919}
   orbitResolution: 100
+  soiRadius: 0
   satellites: []
   currentOrbitAngle: 53.718983
 --- !u!23 &918887005
@@ -37639,6 +37541,7 @@ MonoBehaviour:
   visualModel: {fileID: 0}
   orbitLine: {fileID: 1679014694}
   orbitResolution: 100
+  soiRadius: 0
   satellites:
   - {fileID: 681414624}
   - {fileID: 918887004}
@@ -39548,6 +39451,7 @@ MonoBehaviour:
   visualModel: {fileID: 0}
   orbitLine: {fileID: 966409224}
   orbitResolution: 100
+  soiRadius: 0
   satellites:
   - {fileID: 1718866262}
   - {fileID: 1715095413}
@@ -41731,6 +41635,7 @@ MonoBehaviour:
   visualModel: {fileID: 0}
   orbitLine: {fileID: 881016407}
   orbitResolution: 100
+  soiRadius: 0
   satellites:
   - {fileID: 325853159}
   - {fileID: 190646604}
@@ -44642,6 +44547,7 @@ MonoBehaviour:
   visualModel: {fileID: 0}
   orbitLine: {fileID: 1542590375}
   orbitResolution: 100
+  soiRadius: 0
   satellites:
   - {fileID: 954985}
   currentOrbitAngle: 251.04451
@@ -46161,6 +46067,7 @@ MonoBehaviour:
   visualModel: {fileID: 0}
   orbitLine: {fileID: 80990462}
   orbitResolution: 100
+  soiRadius: 0
   satellites: []
   currentOrbitAngle: 98.17724
 --- !u!23 &1235426887
@@ -47450,6 +47357,7 @@ MonoBehaviour:
   visualModel: {fileID: 0}
   orbitLine: {fileID: 971714041}
   orbitResolution: 100
+  soiRadius: 0
   satellites: []
   currentOrbitAngle: 27.871284
 --- !u!23 &1270871408
@@ -49660,6 +49568,7 @@ MonoBehaviour:
   visualModel: {fileID: 0}
   orbitLine: {fileID: 1944299569}
   orbitResolution: 100
+  soiRadius: 0
   satellites: []
   currentOrbitAngle: 144.59448
 --- !u!23 &1344019170
@@ -57151,6 +57060,7 @@ MonoBehaviour:
   visualModel: {fileID: 0}
   orbitLine: {fileID: 1469991065}
   orbitResolution: 100
+  soiRadius: 0
   satellites:
   - {fileID: 451465236}
   - {fileID: 1344019169}
@@ -61676,6 +61586,7 @@ MonoBehaviour:
   visualModel: {fileID: 0}
   orbitLine: {fileID: 1316216832}
   orbitResolution: 100
+  soiRadius: 0
   satellites: []
   currentOrbitAngle: 275.58008
 --- !u!23 &1573436475
@@ -67136,6 +67047,7 @@ MonoBehaviour:
   visualModel: {fileID: 0}
   orbitLine: {fileID: 233148062}
   orbitResolution: 100
+  soiRadius: 0
   satellites: []
   currentOrbitAngle: 350.68457
 --- !u!23 &1715095414
@@ -67280,6 +67192,7 @@ MonoBehaviour:
   visualModel: {fileID: 0}
   orbitLine: {fileID: 1037905455}
   orbitResolution: 100
+  soiRadius: 0
   satellites: []
   currentOrbitAngle: 59.845535
 --- !u!23 &1718866263
@@ -69480,6 +69393,7 @@ MonoBehaviour:
   visualModel: {fileID: 0}
   orbitLine: {fileID: 2144766356}
   orbitResolution: 100
+  soiRadius: 0
   satellites: []
   currentOrbitAngle: 309.5026
 --- !u!23 &1790734541
@@ -69624,6 +69538,7 @@ MonoBehaviour:
   visualModel: {fileID: 0}
   orbitLine: {fileID: 76914409}
   orbitResolution: 100
+  soiRadius: 0
   satellites: []
   currentOrbitAngle: 42.085663
 --- !u!23 &1794300114
@@ -70792,6 +70707,7 @@ MonoBehaviour:
   visualModel: {fileID: 0}
   orbitLine: {fileID: 975606177}
   orbitResolution: 100
+  soiRadius: 0
   satellites:
   - {fileID: 1794300113}
   currentOrbitAngle: 61.504898
@@ -73384,6 +73300,7 @@ MonoBehaviour:
   visualModel: {fileID: 0}
   orbitLine: {fileID: 1349521787}
   orbitResolution: 100
+  soiRadius: 0
   satellites: []
   currentOrbitAngle: 336.7294
 --- !u!23 &1915067959

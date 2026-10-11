@@ -70,15 +70,12 @@ public class SolarSystemUI : MonoBehaviour
             {
                 if (systemManager != null && systemManager.currentDestination != null)
                 {
-                    CelestialBody dest = systemManager.currentDestination;
-                    bool isMoon = dest.bodyName.Equals("Lune", StringComparison.OrdinalIgnoreCase) ||
-                                  dest.bodyName.Equals("Moon", StringComparison.OrdinalIgnoreCase);
                     bool isRefMoon = playerShip != null && playerShip.currentReferenceBody != null &&
                                      (playerShip.currentReferenceBody.bodyName.Equals("Lune", StringComparison.OrdinalIgnoreCase) ||
                                       playerShip.currentReferenceBody.bodyName.Equals("Moon", StringComparison.OrdinalIgnoreCase));
-                    bool isInOrbit = playerShip != null && (playerShip.currentMode == FlightMode.OrbitInspect || playerShip.isNearDestination || isRefMoon);
+                    bool isInOrbit = playerShip != null && playerShip.currentMode == FlightMode.OrbitInspect;
 
-                    if ((isMoon || isRefMoon) && isInOrbit)
+                    if (isRefMoon && isInOrbit)
                     {
                         LandOnMoon();
                     }
@@ -481,9 +478,11 @@ public class SolarSystemUI : MonoBehaviour
             // Label
             float dist = Vector3.Distance(playerShip != null ? playerShip.transform.position : mainCam.transform.position, dest.transform.position);
             string distText = dist < 50f ? $"{(dist * 15376f):N0} km" : $"{(dist / 600f):F2} UA";
-            bool isMoonTarget = dest.bodyName.Equals("Lune", StringComparison.OrdinalIgnoreCase) || dest.bodyName.Equals("Moon", StringComparison.OrdinalIgnoreCase);
-            bool isInMoonOrbit = isMoonTarget && playerShip != null && (playerShip.currentMode == FlightMode.OrbitInspect || playerShip.isNearDestination);
-            string labelText = isInMoonOrbit
+            bool isRefMoon = playerShip != null && playerShip.currentReferenceBody != null &&
+                             (playerShip.currentReferenceBody.bodyName.Equals("Lune", StringComparison.OrdinalIgnoreCase) ||
+                              playerShip.currentReferenceBody.bodyName.Equals("Moon", StringComparison.OrdinalIgnoreCase));
+            bool isInMoonOrbit = isRefMoon && playerShip != null && playerShip.currentMode == FlightMode.OrbitInspect;
+            string labelText = isInMoonOrbit && (dest.bodyName.Equals("Lune", StringComparison.OrdinalIgnoreCase) || dest.bodyName.Equals("Moon", StringComparison.OrdinalIgnoreCase))
                 ? $"▶ {dest.bodyName.ToUpper()} [EN ORBITE - Prêt pour atterrissage [L]]"
                 : $"▶ {dest.bodyName.ToUpper()} [{distText}]";
 
@@ -634,7 +633,8 @@ public class SolarSystemUI : MonoBehaviour
         if (isMoon || isRefMoon)
         {
             GUILayout.Space(6);
-            bool isInOrbit = playerShip != null && (playerShip.currentMode == FlightMode.OrbitInspect || playerShip.isNearDestination || isRefMoon);
+            bool isInOrbit = playerShip != null && playerShip.currentMode == FlightMode.OrbitInspect && isRefMoon;
+
             if (isInOrbit)
             {
                 GUIStyle landBtnStyle = new GUIStyle(buttonStyle);
@@ -781,7 +781,7 @@ public class SolarSystemUI : MonoBehaviour
         bool isRefMoon = playerShip.currentReferenceBody != null &&
                          (playerShip.currentReferenceBody.bodyName.Equals("Lune", StringComparison.OrdinalIgnoreCase) ||
                           playerShip.currentReferenceBody.bodyName.Equals("Moon", StringComparison.OrdinalIgnoreCase));
-        bool isReadyToLand = (isMoonDest || isRefMoon) && (playerShip.currentMode == FlightMode.OrbitInspect || playerShip.isNearDestination || isRefMoon);
+        bool isReadyToLand = isRefMoon && playerShip.currentMode == FlightMode.OrbitInspect;
 
         GUILayout.BeginVertical();
         GUILayout.Label($"<b>RÉFÉRENTIEL :</b> <color=#00ffcc>{refName}</color>  |  <b>MODE :</b> {modeStr}  |  <b>VITESSE RELATIVE :</b> {speedDisplayKmS:F1} km/s", bodyStyle);

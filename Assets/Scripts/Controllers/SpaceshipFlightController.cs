@@ -556,11 +556,13 @@ public class SpaceshipFlightController : MonoBehaviour
         {
             if (cameraMountPoint != null)
             {
-                // Use a higher lerp speed to ensure camera keeps up when time is accelerated
-                float lerpSpeed = 15f * Mathf.Max(1f, SolarSystemManager.Instance != null ? SolarSystemManager.Instance.timeScale : 1f);
-
-                shipCamera.transform.position = Vector3.Lerp(shipCamera.transform.position, cameraMountPoint.position, lerpSpeed * Time.deltaTime);
-                shipCamera.transform.rotation = Quaternion.Slerp(shipCamera.transform.rotation, cameraMountPoint.rotation, lerpSpeed * Time.deltaTime);
+                shipCamera.transform.position = cameraMountPoint.position;
+                shipCamera.transform.rotation = cameraMountPoint.rotation;
+            }
+            else
+            {
+                shipCamera.transform.position = transform.position;
+                shipCamera.transform.rotation = transform.rotation;
             }
         }
     }

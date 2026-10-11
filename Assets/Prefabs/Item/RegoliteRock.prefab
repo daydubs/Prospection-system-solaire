@@ -119,8 +119,8 @@ MonoBehaviour:
     percentage: 12
   - item: {fileID: 11400000, guid: 735caacdd35c483458b5bd34e02d51cb, type: 2}
     percentage: 10
-  minTotalYield: 50
-  maxTotalYield: 100
+  minTotalYield: 150
+  maxTotalYield: 300
   resourceItem: {fileID: 11400000, guid: 735caacdd35c483458b5bd34e02d51cb, type: 2}
   dropAmount: 1
   resourceId: 11

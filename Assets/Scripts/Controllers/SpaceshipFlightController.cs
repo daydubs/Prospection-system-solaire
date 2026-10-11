@@ -65,6 +65,11 @@ public class SpaceshipFlightController : MonoBehaviour
     private Vector3 positionRemainder = Vector3.zero;
     private Vector3 freeFlightPositionRemainder = Vector3.zero;
 
+    // Track current reference body's exact displacement for perfect curved relative movement
+    private Vector3 lastRefBodyPos;
+    private CelestialBody lastRefBodyFrameTracker;
+    private int lastFreeFlightFrame = -1;
+
     private void Awake()
     {
         // Ensure responsive flight controls even if old low values were serialized
@@ -384,19 +389,33 @@ public class SpaceshipFlightController : MonoBehaviour
             velocity = Vector3.MoveTowards(velocity, Vector3.zero, deceleration * (simDt > 0f ? simDt : Time.deltaTime));
         }
 
-        // Relative motion: relative ship velocity + velocity of the host celestial body
-        Vector3 hostVelocity = currentReferenceBody != null ? currentReferenceBody.GetVelocity() : Vector3.zero;
-        Vector3 desiredMovement = (velocity + hostVelocity) * simDt;
+        // Determine exact displacement of the reference body this frame
+        Vector3 hostDeltaPosition = Vector3.zero;
+        if (currentReferenceBody != null)
+        {
+            if (lastRefBodyFrameTracker == currentReferenceBody && Time.frameCount == lastFreeFlightFrame + 1)
+            {
+                hostDeltaPosition = currentReferenceBody.transform.position - lastRefBodyPos;
+            }
+            lastRefBodyPos = currentReferenceBody.transform.position;
+        }
+        lastRefBodyFrameTracker = currentReferenceBody;
+        lastFreeFlightFrame = Time.frameCount;
+
+        // Relative motion: relative ship velocity + exact host positional displacement (curve, not tangent)
+        Vector3 relativeMovement = velocity * simDt;
 
         // Fix Floating-Point Precision Loss at extreme scales for Free Flight
-        freeFlightPositionRemainder += desiredMovement;
+        freeFlightPositionRemainder += relativeMovement;
 
+        Vector3 appliedRelativeMovement = Vector3.zero;
         if (freeFlightPositionRemainder.sqrMagnitude > 0.01f)
         {
-            transform.position += freeFlightPositionRemainder;
+            appliedRelativeMovement = freeFlightPositionRemainder;
             freeFlightPositionRemainder = Vector3.zero;
         }
 
+        transform.position += appliedRelativeMovement + hostDeltaPosition;
         currentSpeed = velocity.magnitude;
 
         // Rotation (Right mouse button drag or Q/E roll) - responsive with real time

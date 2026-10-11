@@ -63,14 +63,25 @@ public class SolarSystemManager : MonoBehaviour
             SetDestination(dest);
         }
 
-        // Initialize positions of all celestial bodies first
+        // Initialize positions of all celestial bodies first (Hierarchical: Stars -> Planets -> Moons)
         if (centralStar != null)
         {
             centralStar.UpdatePosition(0f);
         }
+
+        // Update Planets
         for (int i = 0; i < allBodies.Count; i++)
         {
-            if (allBodies[i] != null && allBodies[i] != centralStar)
+            if (allBodies[i] != null && (allBodies[i].bodyType == CelestialBodyType.Planet || allBodies[i].bodyType == CelestialBodyType.DwarfPlanet))
+            {
+                allBodies[i].UpdatePosition(0f);
+            }
+        }
+
+        // Update Moons and Asteroids
+        for (int i = 0; i < allBodies.Count; i++)
+        {
+            if (allBodies[i] != null && (allBodies[i].bodyType == CelestialBodyType.Moon || allBodies[i].bodyType == CelestialBodyType.Asteroid))
             {
                 allBodies[i].UpdatePosition(0f);
             }
@@ -134,10 +145,18 @@ public class SolarSystemManager : MonoBehaviour
             centralStar.UpdatePosition(effectiveDeltaTime);
         }
 
-        // Update all planets and satellites
+        // Update all planets and satellites hierarchically
         for (int i = 0; i < allBodies.Count; i++)
         {
-            if (allBodies[i] != null && allBodies[i] != centralStar)
+            if (allBodies[i] != null && (allBodies[i].bodyType == CelestialBodyType.Planet || allBodies[i].bodyType == CelestialBodyType.DwarfPlanet))
+            {
+                allBodies[i].UpdatePosition(effectiveDeltaTime);
+            }
+        }
+
+        for (int i = 0; i < allBodies.Count; i++)
+        {
+            if (allBodies[i] != null && (allBodies[i].bodyType == CelestialBodyType.Moon || allBodies[i].bodyType == CelestialBodyType.Asteroid))
             {
                 allBodies[i].UpdatePosition(effectiveDeltaTime);
             }

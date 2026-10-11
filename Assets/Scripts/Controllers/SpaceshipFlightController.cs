@@ -308,6 +308,12 @@ public class SpaceshipFlightController : MonoBehaviour
 
     public void EngageAutopilot()
     {
+        if (currentMode == FlightMode.OrbitInspect)
+        {
+            Debug.Log("[Spaceship] Impossible d'engager l'autopilote : veuillez quitter l'orbite d'abord.");
+            return;
+        }
+
         if (SolarSystemManager.Instance != null && SolarSystemManager.Instance.currentDestination != null)
         {
             currentMode = FlightMode.Autopilot;

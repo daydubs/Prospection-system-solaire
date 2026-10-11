@@ -213,7 +213,7 @@ public class SolarSystemManager : MonoBehaviour
     {
         List<CelestialBody> moons = new List<CelestialBody>();
         if (planet == null) return moons;
-        
+
         foreach (var body in allBodies)
         {
             if (body.bodyType == CelestialBodyType.Moon && body.orbitCenter == planet.transform)

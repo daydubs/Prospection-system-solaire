@@ -63,6 +63,12 @@ public class SpaceshipFlightController : MonoBehaviour
     private CelestialBody lastTargetBody;
     private int lastAutopilotFrame = -1;
     private Vector3 positionRemainder = Vector3.zero;
+    private Vector3 freeFlightPositionRemainder = Vector3.zero;
+
+    // Track current reference body's exact displacement for perfect curved relative movement
+    private Vector3 lastRefBodyPos;
+    private CelestialBody lastRefBodyFrameTracker;
+    private int lastFreeFlightFrame = -1;
 
     private void Awake()
     {
@@ -131,9 +137,9 @@ public class SpaceshipFlightController : MonoBehaviour
     private void UpdateReferenceBody()
     {
         CelestialBody newRef = null;
-        if (currentMode == FlightMode.OrbitInspect && SolarSystemManager.Instance != null && SolarSystemManager.Instance.currentDestination != null)
+        if (currentMode == FlightMode.OrbitInspect && currentReferenceBody != null)
         {
-            newRef = SolarSystemManager.Instance.currentDestination;
+            newRef = currentReferenceBody;
         }
         else if (currentMode == FlightMode.Autopilot && SolarSystemManager.Instance != null && SolarSystemManager.Instance.currentDestination != null)
         {
@@ -267,6 +273,8 @@ public class SpaceshipFlightController : MonoBehaviour
                     {
                         SolarSystemManager.Instance.SetDestination(target);
                     }
+                    // Assign Reference Body Before Entering Orbit Inspect
+                    currentReferenceBody = target;
                     SetFlightMode(FlightMode.OrbitInspect);
                     Debug.Log($"[Spaceship] Stabilisé en orbite de {target.bodyName} !");
                 }
@@ -283,10 +291,9 @@ public class SpaceshipFlightController : MonoBehaviour
         currentMode = mode;
         if (mode == FlightMode.OrbitInspect)
         {
-            if (SolarSystemManager.Instance != null && SolarSystemManager.Instance.currentDestination != null)
+            if (currentReferenceBody != null)
             {
-                CelestialBody dest = SolarSystemManager.Instance.currentDestination;
-                currentReferenceBody = dest;
+                CelestialBody dest = currentReferenceBody;
                 float scaledRadius = dest.bodyRadius * dest.transform.lossyScale.x;
                 Vector3 relPos = transform.position - dest.transform.position;
                 float dist = relPos.magnitude;
@@ -331,6 +338,7 @@ public class SpaceshipFlightController : MonoBehaviour
             transform.LookAt(dest.transform);
             velocity = Vector3.zero;
             currentSpeed = 0f;
+            currentReferenceBody = dest;
             SetFlightMode(FlightMode.OrbitInspect);
             Debug.Log($"[Spaceship] Warped to orbit of {dest.bodyName}");
         }
@@ -340,6 +348,7 @@ public class SpaceshipFlightController : MonoBehaviour
     {
         if (SolarSystemManager.Instance != null && SolarSystemManager.Instance.currentDestination != null)
         {
+            currentReferenceBody = SolarSystemManager.Instance.currentDestination;
             SetFlightMode(FlightMode.OrbitInspect);
         }
     }
@@ -380,9 +389,33 @@ public class SpaceshipFlightController : MonoBehaviour
             velocity = Vector3.MoveTowards(velocity, Vector3.zero, deceleration * (simDt > 0f ? simDt : Time.deltaTime));
         }
 
-        // Relative motion: relative ship velocity + velocity of the host celestial body
-        Vector3 hostVelocity = currentReferenceBody != null ? currentReferenceBody.GetVelocity() : Vector3.zero;
-        transform.position += (velocity + hostVelocity) * simDt;
+        // Determine exact displacement of the reference body this frame
+        Vector3 hostDeltaPosition = Vector3.zero;
+        if (currentReferenceBody != null)
+        {
+            if (lastRefBodyFrameTracker == currentReferenceBody && Time.frameCount == lastFreeFlightFrame + 1)
+            {
+                hostDeltaPosition = currentReferenceBody.transform.position - lastRefBodyPos;
+            }
+            lastRefBodyPos = currentReferenceBody.transform.position;
+        }
+        lastRefBodyFrameTracker = currentReferenceBody;
+        lastFreeFlightFrame = Time.frameCount;
+
+        // Relative motion: relative ship velocity + exact host positional displacement (curve, not tangent)
+        Vector3 relativeMovement = velocity * simDt;
+
+        // Fix Floating-Point Precision Loss at extreme scales for Free Flight
+        freeFlightPositionRemainder += relativeMovement;
+
+        Vector3 appliedRelativeMovement = Vector3.zero;
+        if (freeFlightPositionRemainder.sqrMagnitude > 0.01f)
+        {
+            appliedRelativeMovement = freeFlightPositionRemainder;
+            freeFlightPositionRemainder = Vector3.zero;
+        }
+
+        transform.position += appliedRelativeMovement + hostDeltaPosition;
         currentSpeed = velocity.magnitude;
 
         // Rotation (Right mouse button drag or Q/E roll) - responsive with real time
@@ -429,6 +462,7 @@ public class SpaceshipFlightController : MonoBehaviour
             currentSpeed = 0f;
             velocity = Vector3.zero;
             positionRemainder = Vector3.zero; // Clear remainder on arrival
+            currentReferenceBody = dest;
             SetFlightMode(FlightMode.OrbitInspect);
             Debug.Log($"[Autopilot] Arrivé en orbite stabilisée de {dest.bodyName} !");
             return;
@@ -491,13 +525,13 @@ public class SpaceshipFlightController : MonoBehaviour
 
     private void UpdateOrbitInspect()
     {
-        if (SolarSystemManager.Instance == null || SolarSystemManager.Instance.currentDestination == null)
+        if (currentReferenceBody == null)
         {
             currentMode = FlightMode.FreeFlight;
             return;
         }
 
-        CelestialBody dest = SolarSystemManager.Instance.currentDestination;
+        CelestialBody dest = currentReferenceBody;
         var mouse = Mouse.current;
         float scaledRadius = dest.bodyRadius * dest.transform.lossyScale.x;
 

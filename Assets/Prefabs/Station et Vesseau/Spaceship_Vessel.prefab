@@ -345,7 +345,7 @@ MonoBehaviour:
   deceleration: 0.08
   techSpeedMultiplier: 1
   hasWarpTechnology: 0
-  baseAutoMaxSpeed: 2.5
+  baseAutoMaxSpeed: 7.5
   baseAutoAcceleration: 1
   arriveDistanceOffset: 2.5
   arrivalDamping: 5

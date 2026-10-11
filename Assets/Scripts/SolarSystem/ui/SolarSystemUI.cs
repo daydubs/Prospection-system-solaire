@@ -769,8 +769,8 @@ public class SolarSystemUI : MonoBehaviour
             _ => "<color=#aaccff>VOL LIBRE RELATIF</color>"
         };
 
-        string refName = playerShip.currentReferenceBody != null 
-            ? playerShip.currentReferenceBody.bodyName.ToUpper() 
+        string refName = playerShip.currentReferenceBody != null
+            ? playerShip.currentReferenceBody.bodyName.ToUpper()
             : "ESPACE PROFOND (SOLEIL)";
 
         float speedDisplayKmS = playerShip.currentSpeed * 22.25f;

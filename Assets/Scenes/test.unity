@@ -435,6 +435,38 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8299420489929791673, guid: b0fb549f8a9981046b156cd01730f369, type: 3}
+      propertyPath: availableBlueprints.Array.size
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 8299420489929791673, guid: b0fb549f8a9981046b156cd01730f369, type: 3}
+      propertyPath: 'availableBlueprints.Array.data[0]'
+      value: 
+      objectReference: {fileID: 11400000, guid: dc930d4534574b04d894e4522b930c4a, type: 2}
+    - target: {fileID: 8299420489929791673, guid: b0fb549f8a9981046b156cd01730f369, type: 3}
+      propertyPath: 'availableBlueprints.Array.data[1]'
+      value: 
+      objectReference: {fileID: 11400000, guid: cea71793503504c44898d0526efe79db, type: 2}
+    - target: {fileID: 8299420489929791673, guid: b0fb549f8a9981046b156cd01730f369, type: 3}
+      propertyPath: 'availableBlueprints.Array.data[2]'
+      value: 
+      objectReference: {fileID: 11400000, guid: 798e3b474db62464b9bd696a461ed21a, type: 2}
+    - target: {fileID: 8299420489929791673, guid: b0fb549f8a9981046b156cd01730f369, type: 3}
+      propertyPath: 'availableBlueprints.Array.data[3]'
+      value: 
+      objectReference: {fileID: 11400000, guid: b7eb7f0389df2524cbad6bc4d62d9a80, type: 2}
+    - target: {fileID: 8299420489929791673, guid: b0fb549f8a9981046b156cd01730f369, type: 3}
+      propertyPath: 'availableBlueprints.Array.data[4]'
+      value: 
+      objectReference: {fileID: 11400000, guid: 6793f6d7d95d16843824263154d2a98f, type: 2}
+    - target: {fileID: 8299420489929791673, guid: b0fb549f8a9981046b156cd01730f369, type: 3}
+      propertyPath: 'availableBlueprints.Array.data[5]'
+      value: 
+      objectReference: {fileID: 11400000, guid: 5bd78f82b2f84204e8ce1204559c487e, type: 2}
+    - target: {fileID: 8299420489929791673, guid: b0fb549f8a9981046b156cd01730f369, type: 3}
+      propertyPath: 'availableBlueprints.Array.data[6]'
+      value: 
+      objectReference: {fileID: 11400000, guid: c9d1681165f135a4cb79fe05dd3ece51, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -517,6 +549,7 @@ Terrain:
   m_AllowAutoConnect: 1
   m_EnableHeightmapRayTracing: 1
   m_EnableTreesAndDetailsRayTracing: 0
+  m_EnableHeightmapLODFrustumCulling: 1
   m_TreeMotionVectorModeOverride: 3
 --- !u!4 &1705622356
 Transform:

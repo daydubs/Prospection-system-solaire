@@ -13,6 +13,15 @@ public class ModuleSocket : MonoBehaviour
     [Tooltip("If true, a module is currently connected to this socket.")]
     public bool isOccupied = false;
 
+    [Tooltip("The blocker wall covering this hatch when not connected to another module.")]
+    [SerializeField] private GameObject hatchBlocker;
+
+    public GameObject HatchBlocker
+    {
+        get => hatchBlocker;
+        set => hatchBlocker = value;
+    }
+
     private void Awake()
     {
         // Ensure the collider is set to trigger so it doesn't block physics movement
@@ -21,6 +30,22 @@ public class ModuleSocket : MonoBehaviour
         {
             col.isTrigger = true;
             col.radius = socketSize / 2f;
+        }
+
+        UpdateBlockerState();
+    }
+
+    public void SetConnected(bool connected)
+    {
+        isOccupied = connected;
+        UpdateBlockerState();
+    }
+
+    public void UpdateBlockerState()
+    {
+        if (hatchBlocker != null)
+        {
+            hatchBlocker.SetActive(!isOccupied);
         }
     }
 

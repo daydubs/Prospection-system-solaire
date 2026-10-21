@@ -1698,8 +1698,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BuildingSystem.BlueprintUIManager
   availableBlueprints:
-  - {fileID: 11400000, guid: 5bd78f82b2f84204e8ce1204559c487e, type: 2}
   - {fileID: 11400000, guid: dc930d4534574b04d894e4522b930c4a, type: 2}
+  - {fileID: 11400000, guid: cea71793503504c44898d0526efe79db, type: 2}
+  - {fileID: 11400000, guid: 798e3b474db62464b9bd696a461ed21a, type: 2}
+  - {fileID: 11400000, guid: b7eb7f0389df2524cbad6bc4d62d9a80, type: 2}
+  - {fileID: 11400000, guid: 6793f6d7d95d16843824263154d2a98f, type: 2}
+  - {fileID: 11400000, guid: 5bd78f82b2f84204e8ce1204559c487e, type: 2}
+  - {fileID: 11400000, guid: c9d1681165f135a4cb79fe05dd3ece51, type: 2}
   contentPanel: {fileID: 1232256555769405048}
   blueprintButtonPrefab: {fileID: 4561499546480776890, guid: 109b977292cee61418439438a04e23c1, type: 3}
 --- !u!114 &1678432326939484308

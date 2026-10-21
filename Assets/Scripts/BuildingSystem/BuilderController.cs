@@ -485,17 +485,25 @@ public class BuilderController : MonoBehaviour
         // Mark the socket as occupied if we used one, and also mark the newly spawned opposing socket
         if (currentSnappedSocket != null)
         {
-            currentSnappedSocket.isOccupied = true;
+            currentSnappedSocket.SetConnected(true);
+        }
 
-            // Find the socket on the newly created module that connects back to the base
-            ModuleSocket[] newSockets = finalModule.GetComponentsInChildren<ModuleSocket>();
-            foreach (var socket in newSockets)
+        // Connect opposing sockets between newly placed module and existing modules in the base
+        ModuleSocket[] newSockets = finalModule.GetComponentsInChildren<ModuleSocket>();
+        ModuleSocket[] allSockets = Object.FindObjectsByType<ModuleSocket>(FindObjectsInactive.Exclude);
+
+        foreach (var newSocket in newSockets)
+        {
+            foreach (var otherSocket in allSockets)
             {
-                // If a socket on the new module is very close to the base socket, it's the connection point
-                if (Vector3.Distance(socket.transform.position, currentSnappedSocket.transform.position) < 0.1f)
+                if (otherSocket == newSocket) continue;
+                if (otherSocket.transform.IsChildOf(finalModule.transform)) continue;
+
+                // If two sockets align within snap distance, connect both
+                if (Vector3.Distance(newSocket.transform.position, otherSocket.transform.position) < 0.6f)
                 {
-                    socket.isOccupied = true;
-                    break;
+                    newSocket.SetConnected(true);
+                    otherSocket.SetConnected(true);
                 }
             }
         }

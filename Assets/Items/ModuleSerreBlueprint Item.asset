@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7ef6a9df9ad8ced49b236c658b1cdcb9, type: 3}
+  m_Name: ModuleSerreBlueprint Item
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingSystem.BlueprintItem
+  id: 0
+  itemName: 'Plan : Module Serre'
+  description: "Serre agricole pressuris\xE9e pour la recherche biologique et la r\xE9g\xE9n\xE9ration d'O2."
+  icon: {fileID: 21300000, guid: c831aee4a4f2c9a42b3c6f89860f23a3, type: 3}
+  maxStack: 1
+  model: {fileID: 0}
+  basePrice: 0
+  itemColor: {r: 1, g: 1, b: 1, a: 1}
+  moduleData: {fileID: 11400000, guid: 5b3ef36ba4b4bbf4d8e155bef50fd819, type: 2}

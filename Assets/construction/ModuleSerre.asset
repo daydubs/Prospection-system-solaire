@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a99fff7af65f5b4ebd7acf4b740013a, type: 3}
+  m_Name: ModuleSerre
+  m_EditorClassIdentifier: Assembly-CSharp::BaseModuleData
+  moduleName: Module Serre
+  description: "Serre agricole pressuris\xE9e pour la recherche biologique et la r\xE9g\xE9n\xE9ration d'O2."
+  icon: {fileID: 21300000, guid: 0fe7fad709c805447b54984ec644cfa7, type: 3}
+  ghostPrefab: {fileID: 8351717162750960932, guid: d87e7817caac3f24788628c07f1c8897, type: 3}
+  finalPrefab: {fileID: 4133227637356014331, guid: b8e93ad3959e6454a97752848573cb71, type: 3}
+  baseConstructionTime: 12
+  resourceCosts: []

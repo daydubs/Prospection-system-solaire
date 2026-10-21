@@ -17,6 +17,6 @@ MonoBehaviour:
   description: "Plaque m\xE9tallique renforc\xE9e utilis\xE9e pour le blindage et les cloisons des modules pressuris\xE9s."
   icon: {fileID: 21300000, guid: 31df5c1da0c83584d988fc267e2e4ecb, type: 3}
   maxStack: 50
-  model: {fileID: 919132149155446097, guid: 459a962e97a81aa44926012fef5068e1, type: 3}
+  model: {fileID: 4319205712630079967, guid: eb63a507f44a46747bff451e00e91766, type: 3}
   basePrice: 25
   itemColor: {r: 0.6, g: 0.7, b: 0.8, a: 1}

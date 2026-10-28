@@ -14,14 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BaseModuleData
   moduleName: "Sas d'acc\xE8s"
   description: "Sas pressuris\xE9 \xE9quip\xE9 de portes automatiques pour entrer et sortir de la base."
-  icon: {fileID: 21300000, guid: 9ebc12cc83c3b7740a14b7ac438d7ed3, type: 3}
+  icon: {fileID: 21300000, guid: fe38fe3a53d387547beb623347dcde06, type: 3}
   ghostPrefab: {fileID: 4934932190206697854, guid: 903a3e523e5089b488d2e6e8ba758265, type: 3}
   finalPrefab: {fileID: 602025584307929976, guid: 7f25b6b086a67e04d80ababf9dcf8864, type: 3}
   baseConstructionTime: 10
-  resourceCosts:
-  - item: {fileID: 11400000, guid: a5f3afd55dedc6e44ad496b745c67e16, type: 2}
-    amount: 5
-  - item: {fileID: 11400000, guid: f1fbe52adbf331e4490d82054c2113e0, type: 2}
-    amount: 2
-  - item: {fileID: 11400000, guid: b4695458070458f4d851ca9e14cfd39c, type: 2}
-    amount: 1
+  resourceCosts: []

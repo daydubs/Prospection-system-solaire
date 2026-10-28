@@ -68,7 +68,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ModuleSocket
   socketSize: 1
   isOccupied: 0
-  hatchBlocker: {fileID: 0}
+  hatchBlocker: {fileID: 5734330763021103640}
   socketType: StandardDoor
 --- !u!1 &761271782281183478
 GameObject:
@@ -138,7 +138,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ModuleSocket
   socketSize: 1
   isOccupied: 0
-  hatchBlocker: {fileID: 0}
+  hatchBlocker: {fileID: 6860009720596847319}
   socketType: StandardDoor
 --- !u!1 &961564906186777018
 GameObject:
@@ -586,7 +586,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ModuleSocket
   socketSize: 1
   isOccupied: 0
-  hatchBlocker: {fileID: 0}
+  hatchBlocker: {fileID: 7660330734136642703}
   socketType: StandardDoor
 --- !u!1 &5734330763021103640
 GameObject:
@@ -746,7 +746,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ModuleSocket
   socketSize: 1
   isOccupied: 0
-  hatchBlocker: {fileID: 0}
+  hatchBlocker: {fileID: 1237672114391841356}
   socketType: StandardDoor
 --- !u!1 &6860009720596847319
 GameObject:

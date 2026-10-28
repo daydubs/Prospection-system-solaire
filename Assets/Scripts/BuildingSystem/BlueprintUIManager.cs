@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using InventoryFramework;
 
 namespace BuildingSystem
 {
@@ -102,17 +103,69 @@ namespace BuildingSystem
 
         private void OnBlueprintClicked(BlueprintItem item)
         {
-            if (GameManager.Instance != null)
+            if (item == null) return;
+
+            HotbarUI hotbarUI = FindAnyObjectByType<HotbarUI>();
+            Hotbar hotbar = hotbarUI != null ? hotbarUI.hotbar : FindAnyObjectByType<Hotbar>();
+
+            // Check if player already has this blueprint in belt or inventory
+            bool alreadyHasItem = false;
+            if (hotbar != null && hotbar.slots != null)
             {
-                bool success = GameManager.Instance.AddPlayerItem(item, 1);
-                if (success)
+                foreach (var s in hotbar.slots)
                 {
-                    Debug.Log($"Added {item.itemName} to inventory.");
+                    if (s != null && !s.IsEmpty && (s.item == item || (s.item is BlueprintItem bp && bp.moduleData == item.moduleData)))
+                    {
+                        alreadyHasItem = true;
+                        break;
+                    }
+                }
+            }
+
+            if (!alreadyHasItem && GameManager.Instance != null && GameManager.Instance.HasPlayerItem(item, 1))
+            {
+                alreadyHasItem = true;
+            }
+
+            // Only add item if player does not already have it, preventing inventory filling
+            if (!alreadyHasItem)
+            {
+                bool added = false;
+                // Prefer placing onto the belt (hotbar) first
+                if (hotbar != null)
+                {
+                    added = hotbar.AddItem(item, 1);
+                }
+
+                // If hotbar full or unavailable, add to inventory
+                if (!added && GameManager.Instance != null)
+                {
+                    added = GameManager.Instance.AddPlayerItem(item, 1);
+                }
+
+                if (added)
+                {
+                    Debug.Log($"[Blueprint] Added {item.itemName} to belt/inventory.");
                 }
                 else
                 {
-                    Debug.LogWarning($"Failed to add {item.itemName} to inventory (inventory might be full).");
+                    Debug.LogWarning($"[Blueprint] Impossible d'ajouter {item.itemName} (ceinture et inventaire pleins).");
                 }
+            }
+
+            // If the item exists on the belt, select its slot so the player is holding it
+            if (hotbar != null && hotbarUI != null && hotbar.slots != null)
+            {
+                for (int i = 0; i < hotbar.slots.Count; i++)
+                {
+                    var s = hotbar.slots[i];
+                    if (s != null && !s.IsEmpty && (s.item == item || (s.item is BlueprintItem bp && bp.moduleData == item.moduleData)))
+                    {
+                        hotbarUI.SelectSlot(i);
+                        break;
+                    }
+                }
+                hotbarUI.RefreshUI();
             }
 
             BuilderController builder = FindAnyObjectByType<BuilderController>();

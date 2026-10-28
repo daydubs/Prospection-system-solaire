@@ -15,7 +15,7 @@ MonoBehaviour:
   id: 0
   itemName: 'Plan : Plateforme de soutien'
   description: "Permet de b\xE2tir des fondations sur pilotis pour compenser le terrain irr\xE9gulier."
-  icon: {fileID: 21300000, guid: c831aee4a4f2c9a42b3c6f89860f23a3, type: 3}
+  icon: {fileID: 21300000, guid: a39362fc2fa2db147bd6fe0207c97d52, type: 3}
   maxStack: 1
   model: {fileID: 0}
   basePrice: 0

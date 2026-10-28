@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 187467048e8ef5c4faaa34842d33b17b
+guid: c35d820c5da7ca746a6b84886cfa74ef
 ModelImporter:
   serializedVersion: 24600
   internalIDToNameTable: []
@@ -7,59 +7,59 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: DoorOpenerSystemCase.012
-    second: {fileID: 2100000, guid: e701608c8002dac42849956f483877c1, type: 2}
+      name: DoorOpenerSystemCaseMat
+    second: {fileID: 2100000, guid: 0de8628dad60d9f4bbc1b2cd8fa6ce40, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: DoorOpenerSystemKeyReader.012
-    second: {fileID: 2100000, guid: 5d3e0fa92c16ad945afe52289d6c24d0, type: 2}
+      name: DoorOpenerSystemKeyReaderMat
+    second: {fileID: 2100000, guid: 942dcb7fd5d3e304aac0cfd8b92441b9, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: DoorOpenerSystemMonitors.012
-    second: {fileID: 2100000, guid: ce770ca1fae92ac409ae0fa8be9a40ea, type: 2}
+      name: DoorOpenerSystemMonitorMat
+    second: {fileID: 2100000, guid: 94bc6798a0c34994fac42f6d4dd2b59c, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: DoorOpenerSystemScreen.012
-    second: {fileID: 2100000, guid: bca4c19da6f191e48a4a4476ae923de5, type: 2}
+      name: DoorOpenerSystemScreenMat
+    second: {fileID: 2100000, guid: 78b84a119746d2f418380c09b53b0d85, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: HatchBlocker.008
-    second: {fileID: 2100000, guid: 999ce1f15086c744b951c784186a373d, type: 2}
+      name: HatchBlockerMat
+    second: {fileID: 2100000, guid: 2d774b4c2eb6f264999ddc465dff9dd2, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: ModulePrincipal.002
-    second: {fileID: 2100000, guid: bff24c18b0eceb54fbc6a70e42cc34da, type: 2}
+      name: ModulePrincipalExtMat
+    second: {fileID: 2100000, guid: 7b4b2bef5be88a34683bad6da0ad1006, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: ModulePrincipalHatchs.002
-    second: {fileID: 2100000, guid: b4fd0fd5875398446ac74c54acaa12ad, type: 2}
+      name: ModulePrincipalFloorMat
+    second: {fileID: 2100000, guid: c067eaad630a1784f8df455b91300d5d, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: ModulePrincipalInterieur.002
-    second: {fileID: 2100000, guid: ff68cfaa80a26454a92212df1330ded6, type: 2}
+      name: ModulePrincipalHatchsMat
+    second: {fileID: 2100000, guid: c275fdb991d887f4e9858ec3e26bba85, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: Verre.001
-    second: {fileID: 2100000, guid: b4b416595b9899340b89343f66412389, type: 2}
+      name: ModulePrincipalInterieurMat
+    second: {fileID: 2100000, guid: 906e2e142b2deec48aa90ca4b2b74bf2, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: floor.002
-    second: {fileID: 2100000, guid: f80d43cbaf555044bb73b0b1b7f51534, type: 2}
+      name: ModulePrincipalVerreMat
+    second: {fileID: 2100000, guid: 3b4584b56d9f42d4ca5de333c180ec46, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
     materialSearch: 2
     materialLocation: 1
-    searchTexturesGlobally: 1
+    searchTexturesGlobally: 0
   animations:
     legacyGenerateAnimations: 4
     bakeSimulation: 0

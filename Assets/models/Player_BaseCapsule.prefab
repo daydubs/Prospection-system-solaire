@@ -1228,6 +1228,7 @@ GameObject:
   - component: {fileID: 736498466612702689}
   - component: {fileID: 5925235191578451076}
   - component: {fileID: 3024812525074185858}
+  - component: {fileID: 2381412977068191200}
   m_Layer: 0
   m_Name: Player_BaseCapsule
   m_TagString: Player
@@ -1355,6 +1356,8 @@ MonoBehaviour:
   maxPitch: 80
   interactRange: 6.5
   isNearHubScreen: 0
+  playerLight: {fileID: 0}
+  isLightOn: 1
   starterTool: {fileID: 11400000, guid: 5780864cff30d7f4cb065f53f95733ea, type: 2}
   starterWelder: {fileID: 11400000, guid: 874b7df99cc043c4fbce3b051f201d40, type: 2}
   starterIce: {fileID: 11400000, guid: 24f70559d8f007b4c964681d996ae13e, type: 2}
@@ -1422,6 +1425,23 @@ MonoBehaviour:
   suffocationDamageRate: 4
   consumeOxygen: 1
   playerInventory: {fileID: 0}
+--- !u!114 &2381412977068191200
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2053200088665750725}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a1fe21799bb5772469eb94afdd58abb0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EquipmentPlacementController
+  placeRange: 6
+  nearbyPreviewRadius: 15
+  snapRadius: 2.5
+  currentTargetSocket: {fileID: 0}
+  currentEquipmentItem: {fileID: 0}
 --- !u!1 &2324514678206724017
 GameObject:
   m_ObjectHideFlags: 0

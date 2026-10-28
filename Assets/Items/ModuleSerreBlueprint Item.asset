@@ -15,7 +15,7 @@ MonoBehaviour:
   id: 0
   itemName: 'Plan : Module Serre'
   description: "Serre agricole pressuris\xE9e pour la recherche biologique et la r\xE9g\xE9n\xE9ration d'O2."
-  icon: {fileID: 21300000, guid: c831aee4a4f2c9a42b3c6f89860f23a3, type: 3}
+  icon: {fileID: 21300000, guid: 572b89a73ca085c42a710e25baf2b009, type: 3}
   maxStack: 1
   model: {fileID: 0}
   basePrice: 0

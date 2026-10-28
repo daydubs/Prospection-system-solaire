@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BaseModuleData
   moduleName: Module de Vie
   description: "Quartiers d'habitation pressuris\xE9s offrant repos et stockage aux explorateurs."
-  icon: {fileID: 21300000, guid: 4e091b9353d606e4281980df23e868c2, type: 3}
+  icon: {fileID: 21300000, guid: 8f40bca7c1ab15145ac410354e0d102c, type: 3}
   ghostPrefab: {fileID: 824532863949388548, guid: 1aad55d35765bd34baaa47c59a5db314, type: 3}
   finalPrefab: {fileID: 6558908271808370394, guid: 84e34fe7969860c438c7eaf58f036228, type: 3}
   baseConstructionTime: 12

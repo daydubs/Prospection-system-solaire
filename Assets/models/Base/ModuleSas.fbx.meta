@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: a4188cd9da72a9541b24aeaf09eeee28
+guid: 891ad92d0854d5249a733698c75f2383
 ModelImporter:
   serializedVersion: 24600
   internalIDToNameTable: []
@@ -7,114 +7,74 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: DoorOpenerSystemCase.005
-    second: {fileID: 2100000, guid: e701608c8002dac42849956f483877c1, type: 2}
+      name: DoorOpenerSystemCaseMat
+    second: {fileID: 2100000, guid: 379391e25723d3e4888a2f12dd2102dc, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: DoorOpenerSystemCase.006
-    second: {fileID: 2100000, guid: e701608c8002dac42849956f483877c1, type: 2}
+      name: DoorOpenerSystemKeyReaderMat
+    second: {fileID: 2100000, guid: c8590316053e60b4aa13a49406c6e18a, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: DoorOpenerSystemCase.007
-    second: {fileID: 2100000, guid: e701608c8002dac42849956f483877c1, type: 2}
+      name: DoorOpenerSystemMonitorMat
+    second: {fileID: 2100000, guid: cf265c0d0e913f84caed43e3a0f43a98, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: DoorOpenerSystemKeyReader.005
-    second: {fileID: 2100000, guid: 5d3e0fa92c16ad945afe52289d6c24d0, type: 2}
+      name: DoorOpenerSystemScreenMat
+    second: {fileID: 2100000, guid: 70d3622fe48c87d428b89f0904147d78, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: DoorOpenerSystemKeyReader.006
-    second: {fileID: 2100000, guid: 5d3e0fa92c16ad945afe52289d6c24d0, type: 2}
+      name: ModulSasHatchMat
+    second: {fileID: 2100000, guid: 0565a69ea9bea504885c8dc308b8e382, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: DoorOpenerSystemKeyReader.007
-    second: {fileID: 2100000, guid: 5d3e0fa92c16ad945afe52289d6c24d0, type: 2}
+      name: ModuleSasDoorMat
+    second: {fileID: 2100000, guid: 402a903079da915468e919785e287b19, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: DoorOpenerSystemMonitors.005
-    second: {fileID: 2100000, guid: ce770ca1fae92ac409ae0fa8be9a40ea, type: 2}
+      name: ModuleSasExtMat
+    second: {fileID: 2100000, guid: 3c656f8ff12d719459b49e944f7d6d60, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: DoorOpenerSystemMonitors.006
-    second: {fileID: 2100000, guid: ce770ca1fae92ac409ae0fa8be9a40ea, type: 2}
+      name: ModuleSasFloorMat
+    second: {fileID: 2100000, guid: e345207d58b7332499aebe3c9a63bc49, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: DoorOpenerSystemMonitors.007
-    second: {fileID: 2100000, guid: ce770ca1fae92ac409ae0fa8be9a40ea, type: 2}
+      name: ModuleSasIntMat
+    second: {fileID: 2100000, guid: 481f8493e9d0fb448b9d0e3062bb8de1, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: DoorOpenerSystemScreen.005
-    second: {fileID: 2100000, guid: bca4c19da6f191e48a4a4476ae923de5, type: 2}
+      name: ModuleSasPanelMat
+    second: {fileID: 2100000, guid: 8c247ceac040a824b999c597afff13a2, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: DoorOpenerSystemScreen.006
-    second: {fileID: 2100000, guid: bca4c19da6f191e48a4a4476ae923de5, type: 2}
+      name: ModuleSasPoutreMat
+    second: {fileID: 2100000, guid: 14b50fbd636060544a986b513ff4257b, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: DoorOpenerSystemScreen.007
-    second: {fileID: 2100000, guid: bca4c19da6f191e48a4a4476ae923de5, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: ModuleHatch
-    second: {fileID: 2100000, guid: 18bbe29a2c12eff46ae67570d69ec7b7, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: ModuleSas
-    second: {fileID: 2100000, guid: 5be782280dca7b64eba4ed6d502d3c56, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: Panel
-    second: {fileID: 2100000, guid: 7e4000f5446720642a3a213c6f9caf97, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: SasDoor
-    second: {fileID: 2100000, guid: 5677507110c73ce4bb5d2c3416064289, type: 2}
+      name: ModuleSasStairMat
+    second: {fileID: 2100000, guid: 2cc17a1a3f9b8b447bd859a6c7045ab7, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: SasDoor.002
-    second: {fileID: 2100000, guid: f3f4ad7057733b8459e046c408f8bc22, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: SasFloor
-    second: {fileID: 2100000, guid: dff8865aa475fed4e903354340c96d5e, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: SasInterior
-    second: {fileID: 2100000, guid: 1425769fffc58a243840266481f26619, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: SasPoutres
-    second: {fileID: 2100000, guid: 949eafdb51e27d34a9d7459c4b6d23ea, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: Stair
-    second: {fileID: 2100000, guid: c76fa0b43301eab4b9f5a5c35c3a96a5, type: 2}
+    second: {fileID: 2100000, guid: ed3e5804958ad2e4ebda4015dec1593d, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
-    materialSearch: 1
+    materialSearch: 2
     materialLocation: 1
-    searchTexturesGlobally: 0
+    searchTexturesGlobally: 1
   animations:
     legacyGenerateAnimations: 4
     bakeSimulation: 0
@@ -136,16 +96,16 @@ ModelImporter:
     extraExposedTransformPaths: []
     extraUserProperties: []
     clipAnimations: []
-    isReadable: 1
+    isReadable: 0
   meshes:
     lODScreenPercentages: []
     globalScale: 1
     meshCompression: 0
-    addColliders: 1
+    addColliders: 0
     useSRGBMaterialColor: 1
     sortHierarchyByName: 1
     preBakeConvexCollisionMesh: 0
-    preBakeTriangleCollisionMesh: 0
+    preBakeTriangleCollisionMesh: 1
     importPhysicalCameras: 1
     importVisibility: 1
     importBlendShapes: 1
@@ -211,7 +171,7 @@ ModelImporter:
   autoGenerateAvatarMappingIfUnspecified: 1
   animationType: 2
   humanoidOversampling: 1
-  avatarSetup: 1
+  avatarSetup: 0
   addHumanoidExtraRootOnlyWhenUsingAvatar: 1
   importBlendShapeDeformPercent: 1
   remapMaterialsIfMaterialImportModeIsNone: 0

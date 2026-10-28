@@ -257,7 +257,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ModuleSocket
   socketSize: 1
   isOccupied: 0
-  hatchBlocker: {fileID: 0}
+  hatchBlocker: {fileID: 4749495722567784550}
   socketType: StandardDoor
 --- !u!1 &4749495722567784550
 GameObject:
@@ -603,7 +603,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ModuleSocket
   socketSize: 1
   isOccupied: 0
-  hatchBlocker: {fileID: 0}
+  hatchBlocker: {fileID: 2207160328397453321}
   socketType: StandardDoor
 --- !u!1 &8351717162750960932
 GameObject:

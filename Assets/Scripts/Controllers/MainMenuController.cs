@@ -307,6 +307,7 @@ public class MainMenuController : MonoBehaviour
 
     public void OnClickOpenNewGame()
     {
+        AudioManager.Instance.PlayButtonClick();
         if (mainMenuPanel != null) mainMenuPanel.SetActive(false);
         if (optionsPanel != null) optionsPanel.SetActive(false);
         if (loadGamePanel != null) loadGamePanel.SetActive(false);
@@ -328,6 +329,7 @@ public class MainMenuController : MonoBehaviour
     public void SelectDifficulty(int index)
     {
         selectedDifficulty = Mathf.Clamp(index, 0, 2);
+        AudioManager.Instance.PlayButtonClick();
 
         // Update button visual styles
         SetDifficultyBtnState(easyDifficultyBtn, selectedDifficulty == 0, new Color(0.2f, 0.8f, 0.4f, 1f));
@@ -371,6 +373,7 @@ public class MainMenuController : MonoBehaviour
 
     public void OnClickConfirmStartNewGame()
     {
+        AudioManager.Instance.PlayButtonClick();
         string pilot = playerNameInput != null && !string.IsNullOrWhiteSpace(playerNameInput.text) 
             ? playerNameInput.text.Trim() 
             : "Commandant Dany";
@@ -413,6 +416,7 @@ public class MainMenuController : MonoBehaviour
 
     public void OnClickContinue()
     {
+        AudioManager.Instance.PlayButtonClick();
         string currentScene = SceneManager.GetActiveScene().name;
         if (currentScene == SceneTransitionManager.SCENE_MAIN_MENU)
         {
@@ -439,6 +443,7 @@ public class MainMenuController : MonoBehaviour
 
     public void OnClickOpenLoadGame()
     {
+        AudioManager.Instance.PlayButtonClick();
         if (mainMenuPanel != null) mainMenuPanel.SetActive(false);
         if (newGamePanel != null) newGamePanel.SetActive(false);
         if (optionsPanel != null) optionsPanel.SetActive(false);
@@ -447,6 +452,7 @@ public class MainMenuController : MonoBehaviour
 
     public void OnClickLoadSlot(int slotIndex)
     {
+        AudioManager.Instance.PlayButtonClick();
         hasActiveGame = true;
         if (continueButton != null) continueButton.interactable = true;
 
@@ -484,6 +490,7 @@ public class MainMenuController : MonoBehaviour
 
     public void OnClickOpenOptions()
     {
+        AudioManager.Instance.PlayButtonClick();
         if (mainMenuPanel != null) mainMenuPanel.SetActive(false);
         if (newGamePanel != null) newGamePanel.SetActive(false);
         if (loadGamePanel != null) loadGamePanel.SetActive(false);
@@ -493,6 +500,7 @@ public class MainMenuController : MonoBehaviour
 
     public void ShowMainMenu()
     {
+        AudioManager.Instance.PlayMenuClose();
         if (mainMenuPanel != null) mainMenuPanel.SetActive(true);
         if (newGamePanel != null) newGamePanel.SetActive(false);
         if (loadGamePanel != null) loadGamePanel.SetActive(false);
@@ -501,6 +509,7 @@ public class MainMenuController : MonoBehaviour
 
     public void OnClickQuit()
     {
+        AudioManager.Instance.PlayButtonClick();
         string currentScene = SceneManager.GetActiveScene().name;
         if (currentScene != SceneTransitionManager.SCENE_MAIN_MENU)
         {
@@ -532,6 +541,7 @@ public class MainMenuController : MonoBehaviour
 
     public void SelectOptionsTab(int tabIndex)
     {
+        AudioManager.Instance.PlayTabSwitch();
         if (soundTabPanel != null) soundTabPanel.SetActive(tabIndex == 0);
         if (graphicsTabPanel != null) graphicsTabPanel.SetActive(tabIndex == 1);
         if (gameplayTabPanel != null) gameplayTabPanel.SetActive(tabIndex == 2);
@@ -562,33 +572,39 @@ public class MainMenuController : MonoBehaviour
     private void InitializeDefaultSettings()
     {
         // Sound
+        float currentMaster = AudioManager.Instance.MasterVolume;
+        float currentMusic = AudioManager.Instance.MusicVolume;
+        float currentSfx = AudioManager.Instance.SfxVolume;
+        float currentAmbience = AudioManager.Instance.AmbienceVolume;
+        bool isMuted = AudioManager.Instance.IsMuted;
+
         if (masterVolumeSlider != null)
         {
-            masterVolumeSlider.value = AudioListener.volume > 0 ? AudioListener.volume : 0.8f;
-            OnMasterVolumeChanged(masterVolumeSlider.value);
+            masterVolumeSlider.value = currentMaster;
+            OnMasterVolumeChanged(currentMaster);
             masterVolumeSlider.onValueChanged.AddListener(OnMasterVolumeChanged);
         }
         if (musicVolumeSlider != null)
         {
-            musicVolumeSlider.value = 0.75f;
-            OnMusicVolumeChanged(0.75f);
+            musicVolumeSlider.value = currentMusic;
+            OnMusicVolumeChanged(currentMusic);
             musicVolumeSlider.onValueChanged.AddListener(OnMusicVolumeChanged);
         }
         if (sfxVolumeSlider != null)
         {
-            sfxVolumeSlider.value = 0.9f;
-            OnSfxVolumeChanged(0.9f);
+            sfxVolumeSlider.value = currentSfx;
+            OnSfxVolumeChanged(currentSfx);
             sfxVolumeSlider.onValueChanged.AddListener(OnSfxVolumeChanged);
         }
         if (radioVolumeSlider != null)
         {
-            radioVolumeSlider.value = 0.85f;
-            OnRadioVolumeChanged(0.85f);
+            radioVolumeSlider.value = currentAmbience;
+            OnRadioVolumeChanged(currentAmbience);
             radioVolumeSlider.onValueChanged.AddListener(OnRadioVolumeChanged);
         }
         if (muteToggle != null)
         {
-            muteToggle.isOn = false;
+            muteToggle.isOn = isMuted;
             muteToggle.onValueChanged.AddListener(OnMuteToggled);
         }
 
@@ -640,28 +656,31 @@ public class MainMenuController : MonoBehaviour
 
     public void OnMasterVolumeChanged(float val)
     {
-        AudioListener.volume = muteToggle != null && muteToggle.isOn ? 0f : val;
+        AudioManager.Instance.SetMasterVolume(val);
         if (masterVolumeText != null) masterVolumeText.text = $"{Mathf.RoundToInt(val * 100)}%";
     }
 
     public void OnMusicVolumeChanged(float val)
     {
+        AudioManager.Instance.SetMusicVolume(val);
         if (musicVolumeText != null) musicVolumeText.text = $"{Mathf.RoundToInt(val * 100)}%";
     }
 
     public void OnSfxVolumeChanged(float val)
     {
+        AudioManager.Instance.SetSFXVolume(val);
         if (sfxVolumeText != null) sfxVolumeText.text = $"{Mathf.RoundToInt(val * 100)}%";
     }
 
     public void OnRadioVolumeChanged(float val)
     {
+        AudioManager.Instance.SetAmbienceVolume(val);
         if (radioVolumeText != null) radioVolumeText.text = $"{Mathf.RoundToInt(val * 100)}%";
     }
 
     public void OnMuteToggled(bool isMuted)
     {
-        AudioListener.volume = isMuted ? 0f : (masterVolumeSlider != null ? masterVolumeSlider.value : 0.8f);
+        AudioManager.Instance.SetMute(isMuted);
     }
 
     public void OnQualityLevelChanged(int level)
@@ -713,6 +732,7 @@ public class MainMenuController : MonoBehaviour
 
     public void OnApplySettings()
     {
+        AudioManager.Instance.PlayButtonClick();
         ShowNotification("Paramètres sauvegardés et appliqués !");
         ShowMainMenu();
     }
@@ -725,6 +745,7 @@ public class MainMenuController : MonoBehaviour
     {
         if (!isActiveAndEnabled || notificationBanner == null || notificationText == null) return;
 
+        AudioManager.Instance.PlayNotification();
         notificationText.text = message;
         notificationBanner.SetActive(true);
 

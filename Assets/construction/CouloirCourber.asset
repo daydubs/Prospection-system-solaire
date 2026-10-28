@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BaseModuleData
   moduleName: "Couloir Courb\xE9 (90\xB0)"
   description: "Couloir avec virage \xE0 angle droit pour orienter l'expansion de la base."
-  icon: {fileID: 21300000, guid: 1fede5ee5b1110d4f93717ff41f4cda7, type: 3}
+  icon: {fileID: 21300000, guid: 9727c8f6eddf33147b55b0071f57b587, type: 3}
   ghostPrefab: {fileID: 7926996197116500370, guid: 5f95ca881e8762c419cac3e7b7da5de4, type: 3}
   finalPrefab: {fileID: 6441832073567289115, guid: b78112ee7a94af4429e6cc90e0685fc0, type: 3}
   baseConstructionTime: 8

@@ -125,6 +125,10 @@ public class MineableResource : MonoBehaviour, IInteractable
 
             if (anyAttempted)
             {
+                if (AudioManager.Instance != null)
+                {
+                    AudioManager.Instance.PlayResourceMined();
+                }
                 Destroy(gameObject);
             }
         }

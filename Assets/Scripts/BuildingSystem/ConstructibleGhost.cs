@@ -204,7 +204,7 @@ public class ConstructibleGhost : MonoBehaviour
 
     private void FinishConstruction()
     {
-        // 2. Tell the builder to spawn the real object
-        builder.FinalizeConstruction(moduleData.finalPrefab, transform.position, transform.rotation);
+        // 2. Tell the builder to spawn the real object and remove module from belt
+        builder.FinalizeConstruction(moduleData.finalPrefab, transform.position, transform.rotation, moduleData);
     }
 }

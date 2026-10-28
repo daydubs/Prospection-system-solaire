@@ -32,7 +32,25 @@ public class ModuleSocket : MonoBehaviour
             col.radius = socketSize / 2f;
         }
 
+        if (hatchBlocker == null)
+        {
+            AutoFindHatchBlocker();
+        }
+
         UpdateBlockerState();
+    }
+
+    private void Start()
+    {
+        UpdateBlockerState();
+    }
+
+    private void OnValidate()
+    {
+        if (hatchBlocker == null)
+        {
+            AutoFindHatchBlocker();
+        }
     }
 
     public void SetConnected(bool connected)
@@ -43,9 +61,54 @@ public class ModuleSocket : MonoBehaviour
 
     public void UpdateBlockerState()
     {
+        if (hatchBlocker == null)
+        {
+            AutoFindHatchBlocker();
+        }
+
         if (hatchBlocker != null)
         {
             hatchBlocker.SetActive(!isOccupied);
+        }
+    }
+
+    /// <summary>
+    /// Automatically searches the module hierarchy for the nearest hatch blocker object.
+    /// </summary>
+    public void AutoFindHatchBlocker()
+    {
+        if (hatchBlocker != null) return;
+
+        Transform rootModule = transform.parent != null ? transform.parent : transform;
+        while (rootModule.parent != null && rootModule.parent.GetComponent<ModuleSocket>() == null)
+        {
+            rootModule = rootModule.parent;
+        }
+
+        Transform[] allTransforms = rootModule.GetComponentsInChildren<Transform>(true);
+        Transform closest = null;
+        float minDistance = 2.0f; // Sockets and their hatch blockers are typically within 0.01 - 0.5m
+
+        foreach (var t in allTransforms)
+        {
+            if (t == transform) continue;
+            string lowerName = t.name.ToLower();
+            if (lowerName.Contains("hatch") || lowerName.Contains("blocker"))
+            {
+                if (lowerName.Contains("door_inner") || lowerName.Contains("door_outer")) continue;
+
+                float dist = Vector3.Distance(transform.position, t.position);
+                if (dist < minDistance)
+                {
+                    minDistance = dist;
+                    closest = t;
+                }
+            }
+        }
+
+        if (closest != null)
+        {
+            hatchBlocker = closest.gameObject;
         }
     }
 

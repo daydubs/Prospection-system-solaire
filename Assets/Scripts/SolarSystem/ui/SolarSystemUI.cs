@@ -247,10 +247,10 @@ public class SolarSystemUI : MonoBehaviour
         // Tab selection buttons
         GUILayout.BeginHorizontal();
         GUILayout.Space(12);
-        if (GUILayout.Button("🚀 VAISSEAU", consoleTab == 0 ? activeBtnStyle : buttonStyle, GUILayout.Height(30))) consoleTab = 0;
-        if (GUILayout.Button("🔬 TECHNOLOGIES", consoleTab == 1 ? activeBtnStyle : buttonStyle, GUILayout.Height(30))) consoleTab = 1;
-        if (GUILayout.Button("👤 PILOTE & FACTIONS", consoleTab == 2 ? activeBtnStyle : buttonStyle, GUILayout.Height(30))) consoleTab = 2;
-        if (GUILayout.Button("📦 SOUTE & RESSOURCES", consoleTab == 3 ? activeBtnStyle : buttonStyle, GUILayout.Height(30))) consoleTab = 3;
+        if (GUILayout.Button("🚀 VAISSEAU", consoleTab == 0 ? activeBtnStyle : buttonStyle, GUILayout.Height(30))) { AudioManager.Instance.PlayTabSwitch(); consoleTab = 0; }
+        if (GUILayout.Button("🔬 TECHNOLOGIES", consoleTab == 1 ? activeBtnStyle : buttonStyle, GUILayout.Height(30))) { AudioManager.Instance.PlayTabSwitch(); consoleTab = 1; }
+        if (GUILayout.Button("👤 PILOTE & FACTIONS", consoleTab == 2 ? activeBtnStyle : buttonStyle, GUILayout.Height(30))) { AudioManager.Instance.PlayTabSwitch(); consoleTab = 2; }
+        if (GUILayout.Button("📦 SOUTE & RESSOURCES", consoleTab == 3 ? activeBtnStyle : buttonStyle, GUILayout.Height(30))) { AudioManager.Instance.PlayTabSwitch(); consoleTab = 3; }
         GUILayout.Space(12);
         GUILayout.EndHorizontal();
 
@@ -552,6 +552,7 @@ public class SolarSystemUI : MonoBehaviour
         string label = $"{prefix}{body.bodyName}";
         if (GUILayout.Button(label, st, GUILayout.Height(28)))
         {
+            if (AudioManager.Instance != null) AudioManager.Instance.PlayButtonClick();
             systemManager.SetDestination(body);
         }
 
@@ -603,6 +604,7 @@ public class SolarSystemUI : MonoBehaviour
         GUILayout.BeginHorizontal();
         if (GUILayout.Button("🚀 Pilote Auto [T]", buttonStyle, GUILayout.Height(32)))
         {
+            if (AudioManager.Instance != null) AudioManager.Instance.PlayButtonClick();
             if (playerShip != null) playerShip.EngageAutopilot();
         }
 
@@ -610,15 +612,18 @@ public class SolarSystemUI : MonoBehaviour
         string orbitBtnText = isInOrbitMode ? "🛰 Quitter Orbite [O]" : "🛰 Orbiter [O]";
         if (GUILayout.Button(orbitBtnText, buttonStyle, GUILayout.Height(32)))
         {
+            if (AudioManager.Instance != null) AudioManager.Instance.PlayButtonClick();
             if (playerShip != null) playerShip.ToggleOrbitMode();
         }
 
         if (GUILayout.Button("⚡ Warp [J]", buttonStyle, GUILayout.Height(32)))
         {
+            if (AudioManager.Instance != null) AudioManager.Instance.PlayButtonClick();
             if (playerShip != null) playerShip.WarpToDestination();
         }
         if (GUILayout.Button("🔍 Observer [F]", buttonStyle, GUILayout.Height(32)))
         {
+            if (AudioManager.Instance != null) AudioManager.Instance.PlayButtonClick();
             if (playerShip != null) playerShip.FocusOnDestination();
         }
         GUILayout.EndHorizontal();
@@ -646,6 +651,7 @@ public class SolarSystemUI : MonoBehaviour
 
                 if (GUILayout.Button("🛬 ATTERRIR SUR LA LUNE (LANDER) [L]", landBtnStyle, GUILayout.Height(36)))
                 {
+                    if (AudioManager.Instance != null) AudioManager.Instance.PlayButtonClick();
                     LandOnMoon();
                 }
             }
@@ -688,31 +694,37 @@ public class SolarSystemUI : MonoBehaviour
 
         if (GUILayout.Button(systemManager.isPaused ? "▶ Reprendre" : "⏸ Pause", buttonStyle, GUILayout.Width(90), GUILayout.Height(26)))
         {
+            if (AudioManager.Instance != null) AudioManager.Instance.PlayButtonClick();
             systemManager.TogglePause();
         }
 
         if (GUILayout.Button("1x", systemManager.timeScale == 1f && !systemManager.isPaused ? activeBtnStyle : buttonStyle, GUILayout.Width(35), GUILayout.Height(26)))
         {
+            if (AudioManager.Instance != null) AudioManager.Instance.PlayButtonClick();
             systemManager.isPaused = false;
             systemManager.SetTimeScale(1f);
         }
         if (GUILayout.Button("5x", systemManager.timeScale == 5f ? activeBtnStyle : buttonStyle, GUILayout.Width(35), GUILayout.Height(26)))
         {
+            if (AudioManager.Instance != null) AudioManager.Instance.PlayButtonClick();
             systemManager.isPaused = false;
             systemManager.SetTimeScale(5f);
         }
         if (GUILayout.Button("20x", systemManager.timeScale == 20f ? activeBtnStyle : buttonStyle, GUILayout.Width(40), GUILayout.Height(26)))
         {
+            if (AudioManager.Instance != null) AudioManager.Instance.PlayButtonClick();
             systemManager.isPaused = false;
             systemManager.SetTimeScale(20f);
         }
         if (GUILayout.Button("50x", systemManager.timeScale == 50f ? activeBtnStyle : buttonStyle, GUILayout.Width(40), GUILayout.Height(26)))
         {
+            if (AudioManager.Instance != null) AudioManager.Instance.PlayButtonClick();
             systemManager.isPaused = false;
             systemManager.SetTimeScale(50f);
         }
         if (GUILayout.Button("100x", systemManager.timeScale == 100f ? activeBtnStyle : buttonStyle, GUILayout.Width(45), GUILayout.Height(26)))
         {
+            if (AudioManager.Instance != null) AudioManager.Instance.PlayButtonClick();
             systemManager.isPaused = false;
             systemManager.SetTimeScale(100f);
         }
@@ -720,12 +732,14 @@ public class SolarSystemUI : MonoBehaviour
         GUILayout.Space(8);
         if (GUILayout.Button(systemManager.showOrbitLines ? "Orbites: OUI" : "Orbites: NON", buttonStyle, GUILayout.Width(95), GUILayout.Height(26)))
         {
+            if (AudioManager.Instance != null) AudioManager.Instance.PlayButtonClick();
             systemManager.ToggleOrbitLines(!systemManager.showOrbitLines);
         }
 
         GUILayout.Space(6);
         if (GUILayout.Button("🌍 BASE", buttonStyle, GUILayout.Width(70), GUILayout.Height(26)))
         {
+            if (AudioManager.Instance != null) AudioManager.Instance.PlayButtonClick();
             if (SceneTransitionManager.Instance != null)
             {
                 SceneTransitionManager.Instance.LoadEarthBase();
@@ -739,6 +753,7 @@ public class SolarSystemUI : MonoBehaviour
         GUILayout.Space(4);
         if (GUILayout.Button("☰ MENU [Esc]", buttonStyle, GUILayout.Width(90), GUILayout.Height(26)))
         {
+            if (AudioManager.Instance != null) AudioManager.Instance.PlayButtonClick();
             if (MainMenuController.Instance != null)
             {
                 MainMenuController.Instance.SetMenuVisibility(true);

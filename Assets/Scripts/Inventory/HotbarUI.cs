@@ -144,7 +144,40 @@ namespace InventoryFramework
 
             if (slot.item.model == null || toolsParent == null) return;
 
-            Instantiate(slot.item.model, toolsParent);
+            GameObject heldInstance = Instantiate(slot.item.model, toolsParent);
+            heldInstance.transform.localPosition = Vector3.zero;
+            heldInstance.transform.localRotation = Quaternion.identity;
+
+            // Disable all colliders and interactive components on the held item in hand
+            // so it never intercepts interaction or placement raycasts from the player camera
+            int ignoreRaycastLayer = LayerMask.NameToLayer("Ignore Raycast");
+            if (ignoreRaycastLayer != -1)
+            {
+                SetLayerRecursively(heldInstance, ignoreRaycastLayer);
+            }
+
+            foreach (var col in heldInstance.GetComponentsInChildren<Collider>(true))
+            {
+                col.enabled = false;
+            }
+
+            foreach (var interactable in heldInstance.GetComponentsInChildren<MonoBehaviour>(true))
+            {
+                if (interactable is IPromptInteractable || interactable is IInteractable)
+                {
+                    interactable.enabled = false;
+                }
+            }
+        }
+
+        private void SetLayerRecursively(GameObject obj, int newLayer)
+        {
+            if (obj == null) return;
+            obj.layer = newLayer;
+            foreach (Transform child in obj.transform)
+            {
+                SetLayerRecursively(child.gameObject, newLayer);
+            }
         }
 
         public Item GetEquippedWelder()

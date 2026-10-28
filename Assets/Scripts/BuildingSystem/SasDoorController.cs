@@ -73,6 +73,14 @@ public class SasDoorController : MonoBehaviour, IPromptInteractable
         if (IsOpen) return;
         IsOpen = true;
 
+        if (AudioManager.Instance != null)
+        {
+            if (AudioManager.Instance.doorOpenSound != null)
+                AudioManager.Instance.PlaySFXAtPosition(AudioManager.Instance.doorOpenSound, transform.position, 0.9f);
+            else
+                AudioManager.Instance.PlayDoorOpen();
+        }
+
         if (doorBlockerCollider != null)
             doorBlockerCollider.enabled = false;
 
@@ -84,6 +92,14 @@ public class SasDoorController : MonoBehaviour, IPromptInteractable
     {
         if (!IsOpen) return;
         IsOpen = false;
+
+        if (AudioManager.Instance != null)
+        {
+            if (AudioManager.Instance.doorCloseSound != null)
+                AudioManager.Instance.PlaySFXAtPosition(AudioManager.Instance.doorCloseSound, transform.position, 0.9f);
+            else
+                AudioManager.Instance.PlayDoorClose();
+        }
 
         if (currentRoutine != null) StopCoroutine(currentRoutine);
         currentRoutine = StartCoroutine(AnimateDoor(false));

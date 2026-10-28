@@ -118,6 +118,10 @@ namespace CraftingSystem
             {
                 audioSource.PlayOneShot(craftSound);
             }
+            else if (AudioManager.Instance != null)
+            {
+                AudioManager.Instance.PlayCraftSuccess();
+            }
         }
     }
 }

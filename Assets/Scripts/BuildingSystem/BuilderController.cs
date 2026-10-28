@@ -477,20 +477,47 @@ public class BuilderController : MonoBehaviour
         }
     }
 
-    public void FinalizeConstruction(GameObject finalPrefab, Vector3 pos, Quaternion rot)
+    public void FinalizeConstruction(GameObject finalPrefab, Vector3 pos, Quaternion rot, BaseModuleData moduleData = null)
     {
+        BaseModuleData moduleJustBuilt = moduleData != null ? moduleData : currentModuleToBuild;
+
+        // Remember the socket we snapped to before destroying the ghost
+        ModuleSocket snappedSocket = currentSnappedSocket;
+
+        // Destroy ghost so it doesn't linger or interfere
+        DestroyGhost();
+
         // Spawn the final module
         GameObject finalModule = Instantiate(finalPrefab, pos, rot);
 
-        // Mark the socket as occupied if we used one, and also mark the newly spawned opposing socket
-        if (currentSnappedSocket != null)
+        // Mark the base socket we snapped to as connected
+        if (snappedSocket != null)
         {
-            currentSnappedSocket.SetConnected(true);
+            snappedSocket.SetConnected(true);
         }
 
-        // Connect opposing sockets between newly placed module and existing modules in the base
+        // Connect opposing sockets between newly placed module and existing real modules in the base
         ModuleSocket[] newSockets = finalModule.GetComponentsInChildren<ModuleSocket>();
         ModuleSocket[] allSockets = Object.FindObjectsByType<ModuleSocket>(FindObjectsInactive.Exclude);
+
+        if (snappedSocket != null && newSockets.Length > 0)
+        {
+            ModuleSocket bestMatchSocket = null;
+            float bestDist = float.MaxValue;
+            foreach (var s in newSockets)
+            {
+                float d = Vector3.Distance(s.transform.position, snappedSocket.transform.position);
+                if (d < bestDist)
+                {
+                    bestDist = d;
+                    bestMatchSocket = s;
+                }
+            }
+            if (bestMatchSocket != null && bestDist < 1.5f)
+            {
+                bestMatchSocket.SetConnected(true);
+            }
+        }
 
         foreach (var newSocket in newSockets)
         {
@@ -499,18 +526,145 @@ public class BuilderController : MonoBehaviour
                 if (otherSocket == newSocket) continue;
                 if (otherSocket.transform.IsChildOf(finalModule.transform)) continue;
 
-                // If two sockets align within snap distance, connect both
-                if (Vector3.Distance(newSocket.transform.position, otherSocket.transform.position) < 0.6f)
+                // Never connect to a ghost (which might still be in memory before frame ends)
+                if (otherSocket.GetComponentInParent<ConstructibleGhost>() != null) continue;
+
+                // Only connect if the sockets are close enough AND facing opposite each other (facing into each other)
+                if (Vector3.Distance(newSocket.transform.position, otherSocket.transform.position) < 1.0f)
                 {
-                    newSocket.SetConnected(true);
-                    otherSocket.SetConnected(true);
+                    float alignmentDot = Vector3.Dot(newSocket.OutwardDirection, otherSocket.OutwardDirection);
+                    if (alignmentDot < -0.5f) // Must be pointing towards each other
+                    {
+                        newSocket.SetConnected(true);
+                        otherSocket.SetConnected(true);
+                    }
                 }
             }
         }
 
-        // The ghost destroys itself, reset state
-        DestroyGhost();
         isBuildModeActive = false;
         currentModuleToBuild = null;
+
+        // Remove the module from the belt (hotbar) or inventory once placed to prevent inventory clogging
+        if (moduleJustBuilt != null)
+        {
+            RemovePlacedModuleItem(moduleJustBuilt);
+        }
+
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlayConstructionSound();
+        }
+    }
+
+    /// <summary>
+    /// Removes 1 module/blueprint item corresponding to the placed module from the hotbar (belt),
+    /// or from main inventory if not present on the belt, preventing inventory clutter.
+    /// </summary>
+    public bool RemovePlacedModuleItem(BaseModuleData moduleData)
+    {
+        if (moduleData == null) return false;
+
+        var hotbarUI = FindAnyObjectByType<InventoryFramework.HotbarUI>();
+        var hotbar = hotbarUI != null ? hotbarUI.hotbar : FindAnyObjectByType<InventoryFramework.Hotbar>();
+        bool removed = false;
+
+        // 1. Check the belt (Hotbar) first
+        if (hotbar != null && hotbar.slots != null)
+        {
+            // Check currently selected slot first
+            int selectedIdx = hotbarUI != null ? hotbarUI.SelectedIndex : -1;
+            if (selectedIdx >= 0 && selectedIdx < hotbar.slots.Count)
+            {
+                var slot = hotbar.slots[selectedIdx];
+                if (slot != null && !slot.IsEmpty && IsMatchingBlueprint(slot.item, moduleData))
+                {
+                    slot.count--;
+                    if (slot.count <= 0)
+                    {
+                        slot.item = null;
+                        slot.count = 0;
+                    }
+                    removed = true;
+                }
+            }
+
+            // If not found in selected slot, scan all other belt slots
+            if (!removed)
+            {
+                for (int i = 0; i < hotbar.slots.Count; i++)
+                {
+                    var slot = hotbar.slots[i];
+                    if (slot != null && !slot.IsEmpty && IsMatchingBlueprint(slot.item, moduleData))
+                    {
+                        slot.count--;
+                        if (slot.count <= 0)
+                        {
+                            slot.item = null;
+                            slot.count = 0;
+                        }
+                        removed = true;
+                        break;
+                    }
+                }
+            }
+        }
+
+        // 2. If not found on the belt, check player inventory
+        if (!removed)
+        {
+            var inv = inventory != null ? inventory : (GameManager.Instance != null ? GameManager.Instance.playerInventory : FindAnyObjectByType<InventoryFramework.Inventory>());
+            if (inv != null && inv.slots != null)
+            {
+                for (int i = 0; i < inv.slots.Count; i++)
+                {
+                    var slot = inv.slots[i];
+                    if (slot != null && !slot.IsEmpty && IsMatchingBlueprint(slot.item, moduleData))
+                    {
+                        slot.count--;
+                        if (slot.count <= 0)
+                        {
+                            slot.item = null;
+                            slot.count = 0;
+                        }
+                        removed = true;
+                        break;
+                    }
+                }
+            }
+        }
+
+        // 3. Refresh UIs immediately
+        if (hotbarUI != null)
+        {
+            hotbarUI.RefreshUI();
+        }
+
+        var invUI = FindAnyObjectByType<InventoryFramework.InventoryUI>();
+        if (invUI != null)
+        {
+            invUI.RefreshUI();
+        }
+
+        return removed;
+    }
+
+    private bool IsMatchingBlueprint(InventoryFramework.Item item, BaseModuleData module)
+    {
+        if (item == null || module == null) return false;
+
+        if (item is BuildingSystem.BlueprintItem bp)
+        {
+            if (bp.moduleData == module) return true;
+            if (bp.moduleData != null && !string.IsNullOrEmpty(bp.moduleData.moduleName) && bp.moduleData.moduleName == module.moduleName) return true;
+        }
+
+        if (!string.IsNullOrEmpty(item.itemName) && !string.IsNullOrEmpty(module.moduleName))
+        {
+            if (item.itemName.IndexOf(module.moduleName, System.StringComparison.OrdinalIgnoreCase) >= 0)
+                return true;
+        }
+
+        return false;
     }
 }

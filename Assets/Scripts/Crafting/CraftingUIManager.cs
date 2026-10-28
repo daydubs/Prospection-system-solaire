@@ -501,6 +501,10 @@ namespace CraftingSystem
             {
                 currentStation.PlayCraftEffect();
             }
+            if (AudioManager.Instance != null)
+            {
+                AudioManager.Instance.PlayCraftSuccess();
+            }
 
             // Notification
             string msg = $"Imprimé : +{totalProduced} {selectedRecipe.GetDisplayName()} !";

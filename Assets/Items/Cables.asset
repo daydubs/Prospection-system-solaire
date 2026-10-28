@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: de710cc37b178ac41bdc90fbef7a5c3b, type: 3}
+  m_Name: Cables
+  m_EditorClassIdentifier: Assembly-CSharp::InventoryFramework.Item
+  id: 103
+  itemName: Cables electrique
+  description: CableSoupleD'alimentation
+  icon: {fileID: 21300000, guid: 3d9c6f2c1912f6c4bb088f0078c13b44, type: 3}
+  maxStack: 1000
+  model: {fileID: 7601695659354914903, guid: 8d61d6f8f70b576499cdc3cf14cf2fce, type: 3}
+  basePrice: 255
+  itemColor: {r: 0, g: 0.28817713, b: 1, a: 1}

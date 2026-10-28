@@ -31,7 +31,13 @@ namespace InventoryFramework
             var invUI = FindAnyObjectByType<InventoryUI>();
             if (invUI != null) invUI.RefreshUI();
 
-            return addedToInventory || addedToHotbar;
+            bool success = addedToInventory || addedToHotbar;
+            if (success && AudioManager.Instance != null)
+            {
+                AudioManager.Instance.PlayItemPickup();
+            }
+
+            return success;
         }
     }
 }

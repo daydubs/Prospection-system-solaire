@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 54a9939f412e77141bec639606089008
+guid: a9dd9314dd8e8684aa2e2e52893706fe
 ModelImporter:
   serializedVersion: 24600
   internalIDToNameTable: []
@@ -7,63 +7,38 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: DoorOpenerSystemCase.010
-    second: {fileID: 2100000, guid: e701608c8002dac42849956f483877c1, type: 2}
+      name: DoorOpenerSystemCaseMat
+    second: {fileID: 2100000, guid: 379391e25723d3e4888a2f12dd2102dc, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: DoorOpenerSystemCase.011
-    second: {fileID: 2100000, guid: e701608c8002dac42849956f483877c1, type: 2}
+      name: DoorOpenerSystemKeyReaderMat
+    second: {fileID: 2100000, guid: c8590316053e60b4aa13a49406c6e18a, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: DoorOpenerSystemKeyReader.010
-    second: {fileID: 2100000, guid: 5d3e0fa92c16ad945afe52289d6c24d0, type: 2}
+      name: DoorOpenerSystemMonitorMat
+    second: {fileID: 2100000, guid: cf265c0d0e913f84caed43e3a0f43a98, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: DoorOpenerSystemKeyReader.011
-    second: {fileID: 2100000, guid: 5d3e0fa92c16ad945afe52289d6c24d0, type: 2}
+      name: DoorOpenerSystemScreenMat
+    second: {fileID: 2100000, guid: 70d3622fe48c87d428b89f0904147d78, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: DoorOpenerSystemMonitors.010
-    second: {fileID: 2100000, guid: ce770ca1fae92ac409ae0fa8be9a40ea, type: 2}
+      name: HatchBlockerMat
+    second: {fileID: 2100000, guid: 819284bc872052c48b55e5b81545086b, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: DoorOpenerSystemMonitors.011
-    second: {fileID: 2100000, guid: ce770ca1fae92ac409ae0fa8be9a40ea, type: 2}
+      name: ModuleSasPoutreMat.001
+    second: {fileID: 2100000, guid: ffa163e9a69df614387ace5607d4896d, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: DoorOpenerSystemScreen.010
-    second: {fileID: 2100000, guid: bca4c19da6f191e48a4a4476ae923de5, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: DoorOpenerSystemScreen.011
-    second: {fileID: 2100000, guid: bca4c19da6f191e48a4a4476ae923de5, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: HatchBlocker.006
-    second: {fileID: 2100000, guid: 999ce1f15086c744b951c784186a373d, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: HatchBlocker.007
-    second: {fileID: 2100000, guid: 999ce1f15086c744b951c784186a373d, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: ModuleSasPoutre.001
-    second: {fileID: 2100000, guid: d413c4f284d03b744b843c3f84400a02, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: ModuleSerreExt.001
-    second: {fileID: 2100000, guid: 2fb65e8c15a2e844cbcd776fd0f8e5b2, type: 2}
+      name: ModuleSerreExtMat
+    second: {fileID: 2100000, guid: 9e6b060aa1288cd438048d1b4b170b5b, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
@@ -72,24 +47,24 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: ModuleSerreInt.001
-    second: {fileID: 2100000, guid: 5c5655f7261d5114f97ac7c1bbc06f3b, type: 2}
+      name: ModuleSerreIntMat
+    second: {fileID: 2100000, guid: a97a5ccea12abbf4d84adce1da66f4f5, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: ModuleSerreSas.001
-    second: {fileID: 2100000, guid: 2f6d0075177960a459075aa1dad970e8, type: 2}
+      name: ModuleSerreSasMat
+    second: {fileID: 2100000, guid: 4e0fae85e8a73984287fac78f40420db, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: ModuleSerreVerre.001
-    second: {fileID: 2100000, guid: 249e2f74a0d484948b646a46c8acf7f4, type: 2}
+      name: ModuleSerreVerreMat
+    second: {fileID: 2100000, guid: b529d584edd33ab48a8d4174d322ffd7, type: 2}
   materials:
     materialImportMode: 2
-    materialName: 0
+    materialName: 2
     materialSearch: 2
     materialLocation: 1
-    searchTexturesGlobally: 0
+    searchTexturesGlobally: 1
   animations:
     legacyGenerateAnimations: 4
     bakeSimulation: 0

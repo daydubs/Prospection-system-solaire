@@ -15,7 +15,7 @@ MonoBehaviour:
   id: 0
   itemName: 'Plan : Module Principal'
   description: "Hub central de commandement \xE9quip\xE9 de 4 points de connexion cardinaux."
-  icon: {fileID: 21300000, guid: c831aee4a4f2c9a42b3c6f89860f23a3, type: 3}
+  icon: {fileID: 21300000, guid: 2532852faefeeac469bc50136da07db5, type: 3}
   maxStack: 1
   model: {fileID: 0}
   basePrice: 0

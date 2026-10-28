@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: e74834fd1a0034646be6e921c7e1167f
+guid: 86ab5487b56698643a2e5fd716793eae
 ModelImporter:
   serializedVersion: 24600
   internalIDToNameTable: []
@@ -7,57 +7,57 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: DoorOpenerSystemCase.004
-    second: {fileID: 2100000, guid: e701608c8002dac42849956f483877c1, type: 2}
+      name: DoorOpenerSystemCaseMat
+    second: {fileID: 2100000, guid: 0de8628dad60d9f4bbc1b2cd8fa6ce40, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: DoorOpenerSystemKeyReader.004
-    second: {fileID: 2100000, guid: 5d3e0fa92c16ad945afe52289d6c24d0, type: 2}
+      name: DoorOpenerSystemKeyReaderMat
+    second: {fileID: 2100000, guid: 942dcb7fd5d3e304aac0cfd8b92441b9, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: DoorOpenerSystemMonitors.004
-    second: {fileID: 2100000, guid: ce770ca1fae92ac409ae0fa8be9a40ea, type: 2}
+      name: DoorOpenerSystemMonitorMat
+    second: {fileID: 2100000, guid: 94bc6798a0c34994fac42f6d4dd2b59c, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: DoorOpenerSystemScreen.004
-    second: {fileID: 2100000, guid: bca4c19da6f191e48a4a4476ae923de5, type: 2}
+      name: DoorOpenerSystemScreenMat
+    second: {fileID: 2100000, guid: 78b84a119746d2f418380c09b53b0d85, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: HatchBlocker.003
-    second: {fileID: 2100000, guid: 999ce1f15086c744b951c784186a373d, type: 2}
+      name: HatchBlockerMat
+    second: {fileID: 2100000, guid: 2d774b4c2eb6f264999ddc465dff9dd2, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: ModuleCouloirCurvedExt
-    second: {fileID: 2100000, guid: 1c4128e713fb6fe4eb5f208107e6c6d4, type: 2}
+      name: ModuleCouloirCourberExtMat
+    second: {fileID: 2100000, guid: c81f19c2278587c4f9f5bdc86354744b, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: ModuleCouloirCurvedFloor
-    second: {fileID: 2100000, guid: 9f604ef480744cc4d9c0222d7770be22, type: 2}
+      name: ModuleCouloirCourberFloorMat
+    second: {fileID: 2100000, guid: c4d11c62ee3b8ca44bbb44544c090d5d, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: ModuleCouloirCurvedHatch
-    second: {fileID: 2100000, guid: bd5a7736b591c2a4f8e0df5d2141d39c, type: 2}
+      name: ModuleCouloirCourberHatchMat
+    second: {fileID: 2100000, guid: ff462125915800345a836bea89809b86, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: ModuleCouloirCurvedPoutre
-    second: {fileID: 2100000, guid: 256a464f37e484e4f9233e7c3a2e9e57, type: 2}
+      name: ModuleCouloirCourberIntMat
+    second: {fileID: 2100000, guid: e28f5069e0c73e9468911d5a395b38c8, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: ModuleCouloirCurvedint
-    second: {fileID: 2100000, guid: f5cc31952c7a08447bffb8e38ac4aaf7, type: 2}
+      name: ModuleCouloirCourberPoutreMat
+    second: {fileID: 2100000, guid: 5c3893f63ba434648aa1daaf465c91fe, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
-    materialSearch: 1
+    materialSearch: 2
     materialLocation: 1
     searchTexturesGlobally: 0
   animations:

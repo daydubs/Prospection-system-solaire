@@ -42,6 +42,10 @@ public class SpaceshipFlightController : MonoBehaviour
     public Vector3 thirdPersonCameraOffset = new Vector3(0f, 2f, -10f); // Pulled back view
     public bool isFirstPersonView = false;
 
+    [Header("Engine Audio")]
+    public AudioSource engineAudioSource;
+    public AudioClip engineLoopClip;
+
     [HideInInspector] // Keeping it for compatibility if needed elsewhere, but transitioning to FP/TP offsets
     public Vector3 cameraOffset = new Vector3(0f, 2f, -6f);
 
@@ -106,6 +110,50 @@ public class SpaceshipFlightController : MonoBehaviour
             mount.transform.localPosition = isFirstPersonView ? firstPersonCameraOffset : thirdPersonCameraOffset;
             cameraMountPoint = mount.transform;
         }
+
+        InitializeEngineAudio();
+    }
+
+    private void InitializeEngineAudio()
+    {
+        if (engineAudioSource == null)
+        {
+            engineAudioSource = gameObject.AddComponent<AudioSource>();
+        }
+
+        engineAudioSource.loop = true;
+        engineAudioSource.playOnAwake = false;
+        engineAudioSource.spatialBlend = 0.2f;
+
+#if UNITY_EDITOR
+        if (engineLoopClip == null)
+        {
+            engineLoopClip = UnityEditor.AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Libraries/Soundbits_freeSFX_2025/Sounds/jw4_engines-motors-024.wav");
+        }
+#endif
+
+        if (engineLoopClip != null)
+        {
+            engineAudioSource.clip = engineLoopClip;
+            engineAudioSource.volume = 0.15f;
+            engineAudioSource.pitch = 0.8f;
+            engineAudioSource.Play();
+        }
+    }
+
+    private void UpdateEngineAudio()
+    {
+        if (engineAudioSource == null || !engineAudioSource.isPlaying) return;
+
+        float maxExpectedSpeed = Mathf.Max(normalSpeed * boostMultiplier * techSpeedMultiplier, 1f);
+        float speedRatio = Mathf.Clamp01(currentSpeed / maxExpectedSpeed);
+
+        float targetPitch = Mathf.Lerp(0.8f, 1.4f, speedRatio);
+        float effectiveSFX = AudioManager.Instance != null ? AudioManager.Instance.GetEffectiveSFXVolume() : 0.8f;
+        float targetVol = Mathf.Lerp(0.18f, 0.85f, speedRatio) * effectiveSFX;
+
+        engineAudioSource.pitch = Mathf.Lerp(engineAudioSource.pitch, targetPitch, 5f * Time.deltaTime);
+        engineAudioSource.volume = Mathf.Lerp(engineAudioSource.volume, targetVol, 5f * Time.deltaTime);
     }
 
     private void Update()
@@ -131,6 +179,7 @@ public class SpaceshipFlightController : MonoBehaviour
                 break;
         }
 
+        UpdateEngineAudio();
         UpdateCameraPosition();
     }
 
@@ -324,6 +373,7 @@ public class SpaceshipFlightController : MonoBehaviour
         if (SolarSystemManager.Instance != null && SolarSystemManager.Instance.currentDestination != null)
         {
             currentMode = FlightMode.Autopilot;
+            if (AudioManager.Instance != null) AudioManager.Instance.PlayShipWarp();
             Debug.Log($"[Autopilot] Engaging navigation to {SolarSystemManager.Instance.currentDestination.bodyName}");
         }
     }
@@ -340,6 +390,7 @@ public class SpaceshipFlightController : MonoBehaviour
             currentSpeed = 0f;
             currentReferenceBody = dest;
             SetFlightMode(FlightMode.OrbitInspect);
+            if (AudioManager.Instance != null) AudioManager.Instance.PlayShipWarp();
             Debug.Log($"[Spaceship] Warped to orbit of {dest.bodyName}");
         }
     }

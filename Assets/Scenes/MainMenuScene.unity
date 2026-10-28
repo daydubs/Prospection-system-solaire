@@ -169,6 +169,8 @@ MonoBehaviour:
   firstPersonCameraOffset: {x: 0.06, y: -0.11, z: 1.61}
   thirdPersonCameraOffset: {x: 0, y: 2, z: -10}
   isFirstPersonView: 0
+  engineAudioSource: {fileID: 0}
+  engineLoopClip: {fileID: 0}
   cameraOffset: {x: 0, y: 2, z: -6}
   currentMode: 0
   currentSpeed: 0
@@ -718,6 +720,81 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 832575517}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &991901217
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 991901219}
+  - component: {fileID: 991901218}
+  m_Layer: 0
+  m_Name: AudioManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &991901218
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 991901217}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: be44e48b4956fde468c8d23ac0ac3692, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AudioManager
+  masterVolume: 0.8
+  musicVolume: 0.75
+  sfxVolume: 0.9
+  ambienceVolume: 0.6
+  uiVolume: 0.85
+  isMuted: 0
+  mainMenuMusic: {fileID: 8300000, guid: d3d3de9d1f1ba7c489a622519fe0d73c, type: 3}
+  spaceMusic: {fileID: 8300000, guid: e5ac30c79e9ee72449cb63b3280cf63e, type: 3}
+  earthBaseMusic: {fileID: 8300000, guid: de85fb9b760dbb94aaede06e14973755, type: 3}
+  moonMusic: {fileID: 8300000, guid: 05fad52eabbb25940aeb15203312f379, type: 3}
+  spaceAmbience: {fileID: 8300000, guid: 4558ba739d23b5d46ac8ac68b75a8c28, type: 3}
+  baseAmbience: {fileID: 8300000, guid: 6d2e2db0b97a8c84e9b7aba22496d5fe, type: 3}
+  moonAmbience: {fileID: 8300000, guid: 02483efb84aee864ab0e20bc137c6d82, type: 3}
+  buttonClickSound: {fileID: 8300000, guid: afbe78ae55d82ca4bb97dd9196cede70, type: 3}
+  buttonHoverSound: {fileID: 8300000, guid: 8fc95a475480c0b479be697641558228, type: 3}
+  tabSwitchSound: {fileID: 8300000, guid: 46c7c15357fa4474287da677828a3688, type: 3}
+  menuOpenSound: {fileID: 0}
+  menuCloseSound: {fileID: 8300000, guid: e157eff9cdd63ba42b1e0743fef59af6, type: 3}
+  notificationSound: {fileID: 8300000, guid: cc4db59733078f949ac6f08e9ec3877e, type: 3}
+  footstepSound: {fileID: 8300000, guid: 9b8767af087b4854ab3181240321ede5, type: 3}
+  jumpSound: {fileID: 8300000, guid: 279baece9ad572e4ea5a663f3f0c8cc7, type: 3}
+  landSound: {fileID: 8300000, guid: 0142691fb0701cb41b362db3a065ec9d, type: 3}
+  itemPickupSound: {fileID: 8300000, guid: 9c147e798e1372c439e8e6119d821b5e, type: 3}
+  doorOpenSound: {fileID: 8300000, guid: dea0ec7117563bc43908db8eb0d4c0cb, type: 3}
+  doorCloseSound: {fileID: 8300000, guid: dea0ec7117563bc43908db8eb0d4c0cb, type: 3}
+  miningLaserSound: {fileID: 8300000, guid: e88084c6f293c324db2b4dcf575d60dc, type: 3}
+  resourceMinedSound: {fileID: 8300000, guid: 4ddd973a1a20afd40adc877e34fc259f, type: 3}
+  craftSuccessSound: {fileID: 8300000, guid: 4f9922933b0da9145a0feca714f1c3af, type: 3}
+  constructionSound: {fileID: 8300000, guid: 7b444d2c823e4b744a7999d99588ad09, type: 3}
+  shipWarpSound: {fileID: 8300000, guid: 7784e7ab59ab376458c07be56b1a8d6f, type: 3}
+  shipPassingSound: {fileID: 8300000, guid: 5b04aab493710014cbbdd363a9e18e8a, type: 3}
+--- !u!4 &991901219
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 991901217}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
@@ -1360,3 +1437,4 @@ SceneRoots:
   - {fileID: 286129403}
   - {fileID: 286842837}
   - {fileID: 288075410}
+  - {fileID: 991901219}

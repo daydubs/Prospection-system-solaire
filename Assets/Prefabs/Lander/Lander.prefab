@@ -71,6 +71,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 9183eb66818e68b458d9b7c98508e8dd, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2305884455467213339}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 9183eb66818e68b458d9b7c98508e8dd, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1479648861648738421}
   m_SourcePrefab: {fileID: 100100000, guid: 9183eb66818e68b458d9b7c98508e8dd, type: 3}
 --- !u!1 &2610408794059898615 stripped
 GameObject:
@@ -99,3 +102,26 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: -332837351270667294, guid: 9183eb66818e68b458d9b7c98508e8dd, type: 3}
+--- !u!114 &1479648861648738421
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2610408794059898615}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 90df53a80206aef4195890adf0e1417d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CraftingSystem.LanderCraftingStation
+  stationName: Imprimante 3D (Lander)
+  interactionPrompt: Ouvrir l'Imprimante 3D
+  takeoffInteractionRange: 8
+  stationRecipes:
+  - {fileID: 11400000, guid: 3cd8c4b0942fed64591ce48f7cf76055, type: 2}
+  - {fileID: 11400000, guid: 557c433b335344b4794540ecebb48b89, type: 2}
+  - {fileID: 11400000, guid: ffcbed738d618cb49b15ac8b2d68cb8f, type: 2}
+  - {fileID: 11400000, guid: 10babaec1a6c41741857d2177ddc4441, type: 2}
+  - {fileID: 11400000, guid: 57a40b17a28faaa489fd737de450f0bc, type: 2}
+  audioSource: {fileID: 0}
+  craftSound: {fileID: 0}

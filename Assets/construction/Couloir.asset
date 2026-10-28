@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BaseModuleData
   moduleName: Couloir
   description: "Couloir pressuris\xE9 standard permettant de relier deux modules de la base."
-  icon: {fileID: 21300000, guid: a682aa55bdf877641ac990b8257d8f02, type: 3}
+  icon: {fileID: 21300000, guid: fb61f9daae3a95a46a52dcb10540bbd4, type: 3}
   ghostPrefab: {fileID: 1087471290267805441, guid: 58066799ddcb6a7448043fb3b8623d97, type: 3}
   finalPrefab: {fileID: 2971641857491717433, guid: 59ed793777cbf4a4096ba71b054682ea, type: 3}
   baseConstructionTime: 8

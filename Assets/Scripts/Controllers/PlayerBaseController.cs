@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
-using InventoryFramework; // Access HotbarUI, Item
+using InventoryFramework;
+using System; // Access HotbarUI, Item
 
 public class PlayerBaseController : MonoBehaviour
 {
@@ -19,6 +20,10 @@ public class PlayerBaseController : MonoBehaviour
     [Header("Interaction")]
     public float interactRange = 6.5f;
     public bool isNearHubScreen = false;
+
+    [Header("Light")]
+    public Light playerLight;
+    public bool isLightOn = true;
 
     [Header("Mining & Starter Tools")]
     public Item starterTool;
@@ -43,6 +48,7 @@ public class PlayerBaseController : MonoBehaviour
     private Vector3 defaultCameraLocalPos = new Vector3(0f, 0.75f, 0f);
     private IInteractable currentInteractable;
     private MineableResource currentMineable;
+    private bool wasGrounded = true;
 
     [Header ("Main Menu")]
     public GameObject mainMenuUI;
@@ -59,9 +65,14 @@ public class PlayerBaseController : MonoBehaviour
 
     private void Awake()
     {
+        isLightOn = true;
         Debug.Log($"[PlayerBaseController] Awake() - Position initiale du joueur : {transform.position}");
         characterController = GetComponent<CharacterController>();
         builderController = GetComponent<BuilderController>();
+        if (GetComponent<EquipmentPlacementController>() == null)
+        {
+            gameObject.AddComponent<EquipmentPlacementController>();
+        }
         inputActions = new InputSystem_Actions();
         if (cameraTransform == null)
         {
@@ -273,6 +284,19 @@ public class PlayerBaseController : MonoBehaviour
         CheckInteraction();
         HandleBuildMode();
         HandleInteractionInput();
+        HandleLight();
+    }
+
+    private void HandleLight()
+    {
+        if (playerLight != null)
+        {
+            if (inputActions.Player.Light.WasPressedThisFrame())
+            {
+                isLightOn = !isLightOn;
+            }
+        }
+        playerLight.enabled = isLightOn;
     }
 
     private void HandleBuildMode()
@@ -404,14 +428,23 @@ public class PlayerBaseController : MonoBehaviour
         float dt = Time.deltaTime;
         if (dt > 0.1f) dt = 0.1f; // Clamp to avoid large movement spikes (e.g., initial frame drops)
 
-        if (characterController.isGrounded && verticalVelocity < 0)
+        bool isGrounded = characterController.isGrounded;
+
+        // Detect landing
+        if (!wasGrounded && isGrounded && verticalVelocity < -2f)
+        {
+            if (AudioManager.Instance != null) AudioManager.Instance.PlayLand();
+        }
+
+        if (isGrounded && verticalVelocity < 0)
         {
             verticalVelocity = -2f; // Slight negative force to keep grounded reliably
         }
 
-        if (characterController.isGrounded && inputActions.Player.Jump.WasPressedThisFrame())
+        if (isGrounded && inputActions.Player.Jump.WasPressedThisFrame())
         {
             verticalVelocity = Mathf.Sqrt(jumpHeight * -2f * gravity);
+            if (AudioManager.Instance != null) AudioManager.Instance.PlayJump();
         }
 
         verticalVelocity += gravity * dt;
@@ -419,6 +452,15 @@ public class PlayerBaseController : MonoBehaviour
 
         Vector3 finalMovement = (moveDir * currentSpeed) + (Vector3.up * verticalVelocity);
         characterController.Move(finalMovement * dt);
+
+        // Footsteps
+        bool isMoving = isGrounded && moveDir.sqrMagnitude > 0.01f;
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.StepUpdate(isMoving, isSprinting);
+        }
+
+        wasGrounded = isGrounded;
     }
 
     private void CheckInteraction()
@@ -538,6 +580,7 @@ public class PlayerBaseController : MonoBehaviour
                 if (hasRequiredTool)
                 {
                     Debug.Log($"[Mining] Récolte de '{targetMineable.resourceName}' avec '{required}'...");
+                    if (AudioManager.Instance != null) AudioManager.Instance.PlayMiningHit();
                     targetMineable.Mine();
                 }
                 else

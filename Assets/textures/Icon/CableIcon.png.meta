@@ -9,7 +9,7 @@ TextureImporter:
   serializedVersion: 13
   mipmaps:
     mipMapMode: 0
-    enableMipMap: 0
+    enableMipMap: 1
     sRGBTexture: 1
     linearTexture: 0
     fadeOut: 0
@@ -24,7 +24,7 @@ TextureImporter:
     heightScale: 0.25
     normalMapFilter: 0
     flipGreenChannel: 0
-  isReadable: 0
+  isReadable: 1
   streamingMipmaps: 0
   streamingMipmapsPriority: 0
   vTOnly: 0
@@ -115,7 +115,7 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
       spriteID: 996936c46b7572850800000000000000
       internalID: 6352142239906633369
@@ -149,13 +149,17 @@ TextureImporter:
       - {x: -19, y: 6}
       - {x: 14, y: 34}
       - {x: 25, y: 62}
-      - {x: 28, y: 91}
-      - {x: 45, y: 95}
+      - {x: 28, y: 92}
+      - {x: 43, y: 95}
+      - {x: 47, y: 99}
       - {x: 47, y: 134}
-      - {x: 60, y: 140}
-      - {x: 60, y: 171}
+      - {x: 59, y: 139}
+      - {x: 59, y: 152}
+      - {x: 59, y: 171}
+      - {x: 53, y: 175}
       - {x: 45, y: 178}
-      - {x: 17, y: 180}
+      - {x: 33, y: 179}
+      - {x: 11, y: 179}
       - {x: -5, y: 177}
       - {x: -18, y: 172}
       - {x: -17, y: 140}
@@ -212,7 +216,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      CaleIcon_0: 6352142239906633369
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -57,7 +57,7 @@ TextureImporter:
   alphaUsage: 1
   alphaIsTransparency: 1
   spriteTessellationMethod: 0
-  spriteTessellationDetail: -1
+  spriteTessellationDetail: 0
   spriteGeometrySubdivision: -1
   textureType: 8
   textureShape: 1
@@ -110,7 +110,7 @@ TextureImporter:
         width: 458
         height: 421
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -123,12 +123,26 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
-    outline: []
+    outline:
+    - - {x: 41, y: 113.5}
+      - {x: 39, y: 131.5}
+      - {x: -2, y: 134.5}
+      - {x: -42, y: 130.5}
+      - {x: -41, y: 118.5}
+      - {x: -39, y: 82.5}
+      - {x: -38, y: 35.5}
+      - {x: -37, y: -42.5}
+      - {x: -38, y: -87.5}
+      - {x: -18, y: -98.5}
+      - {x: 1, y: -103.5}
+      - {x: 23, y: -95.5}
+      - {x: 35, y: -89.5}
+      - {x: 35, y: 77.5}
     customData: 
     physicsShape: []
     bones: []
     spriteID: 5e97eb03825dee720800000000000000
-    internalID: 0
+    internalID: 1537655665
     vertices: []
     indices: 
     edges: []

@@ -169,25 +169,73 @@ namespace BuildingSystem.Cables
             _lastStartRot = startPoint.rotation;
             _lastEndRot = endPoint.rotation;
 
-            Vector3 pStart = startPoint.position;
-            Vector3 fwdStart = startPoint.forward;
-            Vector3 pEnd = endPoint.position;
-            Vector3 fwdEnd = endPoint.forward;
-
-            GenerateMeshInternal(pStart, fwdStart, pEnd, fwdEnd);
+            // Auto-detect plugs from anchors if not explicitly linked
+            if (startPlug == null && startPoint != null)
+            {
+                startPlug = startPoint.Find("ConnectorPlug");
+            }
+            if (endPlug == null && endPoint != null)
+            {
+                endPlug = endPoint.Find("ConnectorPlug");
+            }
 
             // Position and orient plugs if assigned
             if (startPlug != null)
             {
-                startPlug.position = pStart;
-                startPlug.rotation = Quaternion.LookRotation(fwdStart, startPoint.up);
+                startPlug.position = startPoint.position;
+                startPlug.rotation = Quaternion.LookRotation(startPoint.forward, startPoint.up);
             }
 
             if (endPlug != null)
             {
-                endPlug.position = pEnd;
-                endPlug.rotation = Quaternion.LookRotation(fwdEnd, endPoint.up);
+                endPlug.position = endPoint.position;
+                endPlug.rotation = Quaternion.LookRotation(endPoint.forward, endPoint.up);
             }
+
+            Vector3 pStart = GetCableExitPoint(startPoint, startPlug);
+            Vector3 fwdStart = GetCableExitDirection(startPoint, startPlug);
+            Vector3 pEnd = GetCableExitPoint(endPoint, endPlug);
+            Vector3 fwdEnd = GetCableExitDirection(endPoint, endPlug);
+
+            GenerateMeshInternal(pStart, fwdStart, pEnd, fwdEnd);
+        }
+
+        private Vector3 GetCableExitPoint(Transform anchor, Transform plug)
+        {
+            if (plug == null && anchor != null)
+            {
+                plug = anchor.Find("ConnectorPlug");
+            }
+
+            if (plug != null)
+            {
+                Transform exit = plug.Find("CableExit");
+                if (exit != null)
+                {
+                    return exit.position;
+                }
+                return plug.position + plug.forward * 0.19f;
+            }
+            return anchor != null ? anchor.position : Vector3.zero;
+        }
+
+        private Vector3 GetCableExitDirection(Transform anchor, Transform plug)
+        {
+            if (plug == null && anchor != null)
+            {
+                plug = anchor.Find("ConnectorPlug");
+            }
+
+            if (plug != null)
+            {
+                Transform exit = plug.Find("CableExit");
+                if (exit != null)
+                {
+                    return exit.forward;
+                }
+                return plug.forward;
+            }
+            return anchor != null ? anchor.forward : Vector3.forward;
         }
 
         private void GenerateMeshInternal(Vector3 p0, Vector3 dir0, Vector3 p3, Vector3 dir1)

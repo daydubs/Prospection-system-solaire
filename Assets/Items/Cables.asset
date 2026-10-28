@@ -15,8 +15,8 @@ MonoBehaviour:
   id: 103
   itemName: Cables electrique
   description: CableSoupleD'alimentation
-  icon: {fileID: 21300000, guid: 3d9c6f2c1912f6c4bb088f0078c13b44, type: 3}
+  icon: {fileID: -7030271668444042279, guid: bb23c3b30fe44424b85fbc77e8797f4a, type: 3}
   maxStack: 1000
   model: {fileID: 7601695659354914903, guid: 8d61d6f8f70b576499cdc3cf14cf2fce, type: 3}
   basePrice: 255
-  itemColor: {r: 0, g: 0.28817713, b: 1, a: 1}
+  itemColor: {r: 1, g: 1, b: 1, a: 1}

@@ -56,6 +56,7 @@
     <Analyzer Include="C:\Program Files\Unity\Hub\Editor\6000.6.3f1\Editor\Data\BCLExtensions\TargetingPacks\netstandard2.1\analyzers\dotnet\roslyn4.0\cs\System.Text.Json.SourceGeneration.dll" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Scripts\BuildingSystem\Electricity\BaseElectricityTerminalUI.cs" />
     <Compile Include="Assets\Scripts\Managers\AudioManager.cs" />
     <Compile Include="Assets\Scripts\Inventory\InventorySlot.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_TextEventHandler.cs" />
@@ -84,6 +85,7 @@
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\VertexShakeB.cs" />
     <Compile Include="Assets\Scripts\BuildingSystem\ModuleSocket.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\VertexJitter.cs" />
+    <Compile Include="Assets\Scripts\BuildingSystem\Electricity\BaseElectricityController.cs" />
     <Compile Include="Assets\Scripts\Controllers\MainMenuController.cs" />
     <Compile Include="Assets\Scripts\Crafting\CraftingRecipe.cs" />
     <Compile Include="Assets\Scripts\BuildingSystem\ScrubberUnit.cs" />
@@ -104,6 +106,7 @@
     <Compile Include="Assets\Scripts\Managers\SceneTransitionManager.cs" />
     <Compile Include="Assets\Scripts\BuildingSystem\ConstructibleGhost.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\VertexShakeA.cs" />
+    <Compile Include="Assets\Scripts\BuildingSystem\Electricity\BaseElectricityWorldScreenUI.cs" />
     <Compile Include="Assets\Scripts\SolarSystem\ui\SolarSystemUI.cs" />
     <Compile Include="Assets\Scripts\Inventory\InventorySlotUI.cs" />
     <Compile Include="Assets\Scripts\Controllers\SpaceshipFlightController.cs" />
@@ -121,10 +124,12 @@
     <Compile Include="Assets\Scripts\Inventory\DragContext.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark01.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TextMeshSpawner.cs" />
+    <Compile Include="Assets\Scripts\BuildingSystem\Electricity\CircuitRowItemUI.cs" />
     <Compile Include="Assets\Scripts\resources\MineableResource.cs" />
     <Compile Include="Assets\Scripts\Controllers\PlayerBaseController.cs" />
     <Compile Include="Assets\Scripts\Inventory\InventoryTester.cs" />
     <Compile Include="Assets\Scripts\BuildingSystem\BlueprintUIFixer.cs" />
+    <Compile Include="Assets\Scripts\BuildingSystem\Electricity\BaseCircuitData.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\CameraController.cs" />
     <Compile Include="Assets\Scripts\BuildingSystem\BlueprintUIManager.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark03.cs" />

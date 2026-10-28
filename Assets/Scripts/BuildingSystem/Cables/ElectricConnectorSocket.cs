@@ -62,6 +62,16 @@ namespace BuildingSystem.Cables
         public FlexibleCableRenderer CableRenderer => cableRenderer;
         public GameObject PlugInstance => plugInstance;
 
+        public void SetPowered(bool powered)
+        {
+            if (isPowered != powered)
+            {
+                isPowered = powered;
+                UpdateVisualFeedback();
+                OnPowerStateChanged?.Invoke(isPowered);
+            }
+        }
+
         private void Awake()
         {
             Collider col = GetComponent<Collider>();
@@ -264,6 +274,12 @@ namespace BuildingSystem.Cables
             if (plugInstance != null)
             {
                 plugInstance.SetActive(true);
+                // Ensure all child objects (e.g. PlugMesh) are also active
+                for (int i = 0; i < plugInstance.transform.childCount; i++)
+                {
+                    plugInstance.transform.GetChild(i).gameObject.SetActive(true);
+                }
+
                 plugInstance.transform.position = transform.position;
                 plugInstance.transform.rotation = transform.rotation;
 

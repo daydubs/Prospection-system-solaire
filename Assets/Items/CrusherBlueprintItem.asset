@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7ef6a9df9ad8ced49b236c658b1cdcb9, type: 3}
+  m_Name: CrusherBlueprintItem
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingSystem.BlueprintItem
+  id: 5424
+  itemName: Crusher
+  description: Broie les gravat recoleter par la foreuse industriel, les reduit en poudre utiliser par l'imprimente 3D
+  icon: {fileID: 21300000, guid: 1cf0b9779aa4b924388485fa2909d248, type: 3}
+  maxStack: 1
+  model: {fileID: 1754124327537575199, guid: fc22fe3d7d9206540a098a8f646fadea, type: 3}
+  basePrice: 124
+  itemColor: {r: 1, g: 1, b: 1, a: 1}
+  moduleData: {fileID: 11400000, guid: 8d32b020760945f47a604e5b05b682b3, type: 2}

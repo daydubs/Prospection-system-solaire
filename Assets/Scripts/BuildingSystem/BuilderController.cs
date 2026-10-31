@@ -32,6 +32,7 @@ public class BuilderController : MonoBehaviour
     private float currentYRotation = 0f;
 
     private GameObject currentGhost;
+    private Renderer groundPlacementRenderer;
     private ConstructibleGhost ghostScript;
     private ModuleSocket currentSnappedSocket;
     private InputSystem_Actions inputActions;
@@ -194,6 +195,7 @@ public class BuilderController : MonoBehaviour
         if (currentModuleToBuild == null || currentModuleToBuild.ghostPrefab == null) return;
 
         currentGhost = Instantiate(currentModuleToBuild.ghostPrefab);
+        groundPlacementRenderer = currentGhost.GetComponent<Renderer>();
 
         // Put ghost on Ignore Raycast layer so placement raycast never hits it
         int ignoreRaycastLayer = LayerMask.NameToLayer("Ignore Raycast");
@@ -289,8 +291,10 @@ public class BuilderController : MonoBehaviour
 
             if (Physics.Raycast(ray, out RaycastHit hit, buildRange, layerMask, QueryTriggerInteraction.Ignore))
             {
-                // First, check if we hit near an existing unoccupied socket
-                ModuleSocket closestSocket = FindClosestUnoccupiedSocket(hit.point);
+                // Ground equipment must not snap to room/door sockets.
+                ModuleSocket closestSocket = currentModuleToBuild.groundPlacementOnly
+                    ? null
+                    : FindClosestUnoccupiedSocket(hit.point);
 
                 if (closestSocket != null)
                 {
@@ -376,8 +380,19 @@ public class BuilderController : MonoBehaviour
                         currentGhost.transform.rotation = Quaternion.Euler(0, currentYRotation, 0) * initialPrefabRot;
                     }
 
-                    // Check if placement is valid (e.g. slope not too steep) and welder is equipped
-                    ghostScript.SetPlacementValidity(hasWelder && hit.normal.y > 0.7f);
+                    // Ground equipment rests on the terrain instead of using the imported mesh pivot.
+                    bool validSurface = hit.normal.y > 0.7f;
+                    if (currentModuleToBuild.groundPlacementOnly)
+                    {
+                        validSurface &= hit.collider is TerrainCollider;
+                        if (groundPlacementRenderer != null)
+                        {
+                            float groundOffset = hit.point.y - groundPlacementRenderer.bounds.min.y;
+                            currentGhost.transform.position += Vector3.up * groundOffset;
+                        }
+                    }
+
+                    ghostScript.SetPlacementValidity(hasWelder && validSurface);
                 }
             }
             else

@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7ef6a9df9ad8ced49b236c658b1cdcb9, type: 3}
+  m_Name: SolarPanel
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingSystem.BlueprintItem
+  id: 1221
+  itemName: Solar panel
+  description: Panneau solaire pour produire de l'energie pour la base
+  icon: {fileID: 21300000, guid: 0bb39cbaa7e8939499aab9104b48d3d8, type: 3}
+  maxStack: 1
+  model: {fileID: 3140325432162407227, guid: ea157fcce2532f842bc30c66c967c906, type: 3}
+  basePrice: 224
+  itemColor: {r: 1, g: 1, b: 1, a: 1}
+  moduleData: {fileID: 11400000, guid: 0e04b8448487ca8499def2ca9cd7a428, type: 2}

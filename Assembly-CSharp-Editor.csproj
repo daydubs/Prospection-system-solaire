@@ -749,7 +749,7 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="AiEditorToolsSdk">
-      <HintPath>Library\PackageCache\com.unity.ai.assistant@a0bce5f1cc56\Modules\Unity.AI.Toolkit.Sdk\Editor\AiEditorToolsSdk.dll</HintPath>
+      <HintPath>Library\PackageCache\com.unity.ai.assistant@890548b66362\Modules\Unity.AI.Toolkit.Sdk\Editor\AiEditorToolsSdk.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Unity.VisualScripting.TextureAssets">

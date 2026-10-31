@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: de710cc37b178ac41bdc90fbef7a5c3b, type: 3}
   m_Name: RegolitePowder
   m_EditorClassIdentifier: Assembly-CSharp::InventoryFramework.Item
-  id: 0
-  itemName: 
-  description: 
+  id: 104
+  itemName: Poudre de régolithe
+  description: Gravats lunaires broyés par le Crusher. Matière destinée à l'impression 3D.
   icon: {fileID: 0}
-  maxStack: 1
+  maxStack: 100
   model: {fileID: 919132149155446097, guid: 459a962e97a81aa44926012fef5068e1, type: 3}

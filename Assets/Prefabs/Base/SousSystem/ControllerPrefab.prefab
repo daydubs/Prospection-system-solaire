@@ -541,7 +541,7 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
+    rgba: 4294957490
   m_fontColor: {r: 0.7, g: 0.85, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
@@ -554,7 +554,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
@@ -691,7 +691,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
@@ -806,7 +806,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 105.6 / 120.0 kWh
+  m_text: 89 / 120 kWh
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -828,7 +828,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
@@ -952,7 +952,7 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
+    rgba: 4294960640
   m_fontColor: {r: 0, g: 0.9, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
@@ -965,7 +965,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
@@ -1120,7 +1120,7 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
+    rgba: 4279941375
   m_fontColor: {r: 1, g: 0.72, b: 0.1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
@@ -1133,7 +1133,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
@@ -1460,7 +1460,7 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
+    rgba: 4285785600
   m_fontColor: {r: 0, g: 0.9, b: 0.45, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
@@ -1473,7 +1473,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
@@ -1588,7 +1588,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: +5.7 kW (Charge)
+  m_text: +4,2 kW (Charge)
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -1597,8 +1597,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 0, g: 0.9, b: 1, a: 1}
+    rgba: 4294957312
+  m_fontColor: {r: 0, g: 0.85, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -1610,7 +1610,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
@@ -1805,7 +1805,7 @@ MonoBehaviour:
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
-  m_FillAmount: 1
+  m_FillAmount: 0.52
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
@@ -1900,7 +1900,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0.9, b: 0.45, a: 1}
+  m_Color: {r: 0.4, g: 0.45, b: 0.5, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -2248,7 +2248,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
@@ -2441,7 +2441,7 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
+    rgba: 4278190080
   m_fontColor: {r: 0, g: 0, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
@@ -2454,7 +2454,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
@@ -2591,7 +2591,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
@@ -2760,7 +2760,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
@@ -2868,7 +2868,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0.9, b: 0.45, a: 1}
+  m_Color: {r: 0.4, g: 0.45, b: 0.5, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -3045,7 +3045,7 @@ MonoBehaviour:
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
-  m_FillAmount: 1
+  m_FillAmount: 0.352
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
@@ -3214,7 +3214,7 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
+    rgba: 4294957490
   m_fontColor: {r: 0.7, g: 0.85, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
@@ -3227,7 +3227,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
@@ -3364,7 +3364,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
@@ -3488,7 +3488,7 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
+    rgba: 4285785600
   m_fontColor: {r: 0, g: 0.9, b: 0.45, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
@@ -3501,7 +3501,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
@@ -3699,7 +3699,7 @@ MonoBehaviour:
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
-  m_FillAmount: 1
+  m_FillAmount: 0.7375
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
@@ -3881,8 +3881,8 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5935278080410059418}
-  m_LocalRotation: {x: -0.000000028533034, y: -0.65275973, z: -0.757565, w: 0.00000003311422}
-  m_LocalPosition: {x: 0, y: 0, z: 0.021}
+  m_LocalRotation: {x: -0.7115645, y: -0.0008727741, z: -0.0011639438, w: -0.7026194}
+  m_LocalPosition: {x: 0, y: 0, z: 0.02324}
   m_LocalScale: {x: 0.000012, y: 0.000012, z: 0.000012}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -3894,10 +3894,10 @@ RectTransform:
   - {fileID: 7665166499797441295}
   - {fileID: 277348264001509730}
   m_Father: {fileID: 500348641325297463}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 89.257, y: 167.161, z: 167.185}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0.007}
+  m_AnchoredPosition: {x: -0.00001, y: 0.00433}
   m_SizeDelta: {x: 1200, y: 750}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!223 &432656969567231152
@@ -3919,7 +3919,7 @@ Canvas:
   m_SortingBucketNormalizedSize: 0
   m_VertexColorAlwaysGammaSpace: 0
   m_UseReflectionProbes: 0
-  m_AdditionalShaderChannelsFlag: 0
+  m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
   m_SortingOrder: 1
@@ -3946,7 +3946,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 10
-  m_PresetInfoIsWorld: 0
+  m_PresetInfoIsWorld: 1
 --- !u!114 &553028622008307587
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4073,7 +4073,7 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
+    rgba: 4294957312
   m_fontColor: {r: 0, g: 0.85, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
@@ -4086,7 +4086,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
@@ -4287,7 +4287,7 @@ MonoBehaviour:
   plugPrefab: {fileID: 7601695659354914903, guid: 8d61d6f8f70b576499cdc3cf14cf2fce, type: 3}
   cableMaterial: {fileID: 2100000, guid: f221443ae7bb3bf48a70e1022409913b, type: 2}
   connectedSocket: {fileID: 0}
-  isPowered: 1
+  isPowered: 0
   statusLight: {fileID: 0}
   connectedColor: {r: 0, g: 1, b: 0, a: 1}
   disconnectedColor: {r: 1, g: 0, b: 0, a: 1}
@@ -4669,7 +4669,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 7.8 <size=65%>kW</size>
+  m_text: 8,8 <size=65%>kW</size>
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -4678,7 +4678,7 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
+    rgba: 4279941375
   m_fontColor: {r: 1, g: 0.72, b: 0.1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
@@ -4691,7 +4691,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
@@ -4806,7 +4806,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 13.5 <size=65%>kW</size>
+  m_text: 13,0 <size=65%>kW</size>
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -4815,7 +4815,7 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
+    rgba: 4294957312
   m_fontColor: {r: 0, g: 0.85, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
@@ -4828,7 +4828,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
@@ -4936,7 +4936,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0.9, b: 0.45, a: 1}
+  m_Color: {r: 0.4, g: 0.45, b: 0.5, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -5202,7 +5202,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 88%
+  m_text: 74%
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -5211,7 +5211,7 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
+    rgba: 4285785600
   m_fontColor: {r: 0, g: 0.9, b: 0.45, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
@@ -5224,7 +5224,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
@@ -5347,7 +5347,7 @@ MonoBehaviour:
   plugPrefab: {fileID: 7601695659354914903, guid: 8d61d6f8f70b576499cdc3cf14cf2fce, type: 3}
   cableMaterial: {fileID: 2100000, guid: f221443ae7bb3bf48a70e1022409913b, type: 2}
   connectedSocket: {fileID: 0}
-  isPowered: 1
+  isPowered: 0
   statusLight: {fileID: 0}
   connectedColor: {r: 0, g: 1, b: 0, a: 1}
   disconnectedColor: {r: 1, g: 0, b: 0, a: 1}
@@ -5530,7 +5530,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
@@ -5734,8 +5734,8 @@ MonoBehaviour:
   - {fileID: 4965966242405934196}
   - {fileID: 4374803043017383279}
   outputSocket: {fileID: 1097738040595837959}
-  solarPowerPerConnectedInput: 4.5
-  baseSolarBaselineKW: 4
+  solarPowerPerConnectedInput: 15
+  baseSolarBaselineKW: 0
   isAuxiliaryGeneratorOn: 0
   auxiliaryGeneratorPowerKW: 10
   batteryCapacityKWh: 120
@@ -5747,27 +5747,27 @@ MonoBehaviour:
     circuitId: life_support
     nominalConsumptionKW: 3.2
     isEssential: 1
-    isActive: 1
+    isActive: 0
   - circuitName: "\xC9purateur CO2 (Scrubber O2)"
     circuitId: scrubber
     nominalConsumptionKW: 1.8
     isEssential: 1
-    isActive: 1
+    isActive: 0
   - circuitName: "\xC9clairage Base & Balises"
     circuitId: lighting
     nominalConsumptionKW: 0.8
     isEssential: 0
-    isActive: 1
+    isActive: 0
   - circuitName: "Sas & Pompes Pressuris\xE9es"
     circuitId: airlock
     nominalConsumptionKW: 0.6
     isEssential: 0
-    isActive: 1
+    isActive: 0
   - circuitName: Atelier & Imprimante 3D
     circuitId: fabricator
     nominalConsumptionKW: 2.4
     isEssential: 0
-    isActive: 1
+    isActive: 0
   worldScreenUI: {fileID: 3785035324769483062}
   terminalUI: {fileID: 0}
   terminalUIPrefab: {fileID: 6637130573902085608, guid: 0b2150125d9f9664eab850dea7afc30d, type: 3}

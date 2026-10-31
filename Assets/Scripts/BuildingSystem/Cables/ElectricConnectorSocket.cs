@@ -16,8 +16,16 @@ namespace BuildingSystem.Cables
     /// and triggers power distribution events.
     /// </summary>
     [RequireComponent(typeof(Collider))]
-    public class ElectricConnectorSocket : MonoBehaviour, IPromptInteractable
+    public class ElectricConnectorSocket : CableConnectorSocket
     {
+        public override CableKind Kind => CableKind.Electricity;
+        public override CableConnectorSocket Peer => connectedSocket;
+        public override GameObject PlugPrefab => plugPrefab;
+        public override void ConnectTo(CableConnectorSocket target)
+        {
+            if (target is ElectricConnectorSocket electric) ConnectTo(electric, true);
+        }
+
         [Header("Socket Identification")]
         [Tooltip("Display name shown in the HUD prompt.")]
         [SerializeField] private string socketDisplayName = "Prise Électrique";
@@ -55,12 +63,12 @@ namespace BuildingSystem.Cables
 
         public event Action<bool> OnPowerStateChanged;
 
-        public SocketConnectionState State => state;
+        public override SocketConnectionState State => state;
         public bool IsPowered => isPowered;
-        public bool HasStoredCable => hasStoredCable;
+        public override bool HasStoredCable => hasStoredCable;
         public ElectricConnectorSocket ConnectedSocket => connectedSocket;
-        public FlexibleCableRenderer CableRenderer => cableRenderer;
-        public GameObject PlugInstance => plugInstance;
+        public override FlexibleCableRenderer CableRenderer => cableRenderer;
+        public override GameObject PlugInstance => plugInstance;
 
         public void SetPowered(bool powered)
         {
@@ -70,11 +78,21 @@ namespace BuildingSystem.Cables
                 UpdateVisualFeedback();
                 OnPowerStateChanged?.Invoke(isPowered);
             }
+            if (PortRole == CablePortRole.Output && connectedSocket != null &&
+                connectedSocket.PortRole == CablePortRole.Input)
+            {
+                connectedSocket.SetPowered(powered && state == SocketConnectionState.Connected);
+            }
         }
 
         private void Awake()
         {
             Collider col = GetComponent<Collider>();
+            if (plugInstance == null)
+            {
+                Transform existingPlug = transform.Find("ConnectorPlug");
+                if (existingPlug != null) plugInstance = existingPlug.gameObject;
+            }
             if (col != null)
             {
                 col.isTrigger = true;
@@ -90,7 +108,10 @@ namespace BuildingSystem.Cables
             {
                 if (hasStoredCable)
                 {
-                    ConnectTo(connectedSocket, false);
+                    ElectricConnectorSocket target = connectedSocket;
+                    connectedSocket = null;
+                    state = SocketConnectionState.Disconnected;
+                    ConnectTo(target, false);
                 }
                 else
                 {
@@ -99,24 +120,10 @@ namespace BuildingSystem.Cables
             }
         }
 
-        public string GetInteractionPrompt()
+        public override string GetInteractionPrompt()
         {
-            // Check if player is currently carrying a cable from any socket
-            ElectricConnectorSocket activeSource = CableInteractionManager.Instance != null 
-                ? CableInteractionManager.Instance.CarryingSourceSocket 
-                : null;
-
-            if (activeSource != null)
-            {
-                if (activeSource == this)
-                {
-                    return $"Rembobiner le flexible [{socketDisplayName}]";
-                }
-                else
-                {
-                    return $"Raccorder le flexible à [{socketDisplayName}]";
-                }
-            }
+            var manager = CableInteractionManager.Instance;
+            if (manager != null && manager.IsCarryingCable) return manager.GetPrompt(this);
 
             switch (state)
             {
@@ -134,7 +141,7 @@ namespace BuildingSystem.Cables
             }
         }
 
-        public void Interact()
+        public override void Interact()
         {
             if (CableInteractionManager.Instance == null)
             {
@@ -149,7 +156,7 @@ namespace BuildingSystem.Cables
         /// <summary>
         /// Initiates pulling the cable from this socket.
         /// </summary>
-        public void StartCarryingCable(Transform carryAnchor)
+        public override void StartCarryingCable(Transform carryAnchor)
         {
             state = SocketConnectionState.Carrying;
             EnsureCableRenderer();
@@ -173,13 +180,14 @@ namespace BuildingSystem.Cables
         /// </summary>
         public void ConnectTo(ElectricConnectorSocket targetSocket, bool notifyTarget = true)
         {
-            if (targetSocket == null || targetSocket == this) return;
+            if (!CanConnectTo(targetSocket, out _)) return;
 
             connectedSocket = targetSocket;
             state = SocketConnectionState.Connected;
-            isPowered = true;
+            if (PortRole != CablePortRole.Output)
+                isPowered = PortRole == CablePortRole.Legacy || (PortRole == CablePortRole.Input && connectedSocket != null && connectedSocket.IsPowered);
 
-            EnsureCableRenderer();
+EnsureCableRenderer();
             EnsureLocalPlug();
             GameObject targetPlug = targetSocket.EnsureLocalPlug();
 
@@ -208,9 +216,10 @@ namespace BuildingSystem.Cables
         {
             connectedSocket = sourceSocket;
             state = SocketConnectionState.Connected;
-            isPowered = true;
+            if (PortRole != CablePortRole.Output)
+                isPowered = PortRole == CablePortRole.Legacy || (PortRole == CablePortRole.Input && connectedSocket != null && connectedSocket.IsPowered);
 
-            EnsureLocalPlug();
+EnsureLocalPlug();
             UpdateVisualFeedback();
             OnPowerStateChanged?.Invoke(isPowered);
         }
@@ -218,7 +227,7 @@ namespace BuildingSystem.Cables
         /// <summary>
         /// Disconnects and rewinds the cable back to its resting state.
         /// </summary>
-        public void Disconnect()
+        public override void Disconnect()
         {
             if (connectedSocket != null && connectedSocket.ConnectedSocket == this)
             {
@@ -233,6 +242,8 @@ namespace BuildingSystem.Cables
 
             if (cableRenderer != null)
             {
+                cableRenderer.EndPlug = null;
+                cableRenderer.EndPoint = null;
                 cableRenderer.gameObject.SetActive(false);
             }
 
@@ -245,7 +256,7 @@ namespace BuildingSystem.Cables
             OnPowerStateChanged?.Invoke(isPowered);
         }
 
-        public GameObject EnsureLocalPlug()
+        public override GameObject EnsureLocalPlug()
         {
             if (plugInstance == null)
             {

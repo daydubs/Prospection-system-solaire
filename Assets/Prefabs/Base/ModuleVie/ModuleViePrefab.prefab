@@ -1740,7 +1740,7 @@ MonoBehaviour:
   plugPrefab: {fileID: 7601695659354914903, guid: 8d61d6f8f70b576499cdc3cf14cf2fce, type: 3}
   cableMaterial: {fileID: 2100000, guid: f221443ae7bb3bf48a70e1022409913b, type: 2}
   connectedSocket: {fileID: 0}
-  isPowered: 1
+  isPowered: 0
   statusLight: {fileID: 0}
   connectedColor: {r: 0, g: 1, b: 0, a: 1}
   disconnectedColor: {r: 1, g: 0, b: 0, a: 1}

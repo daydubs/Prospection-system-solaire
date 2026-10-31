@@ -56,7 +56,6 @@
     <Analyzer Include="C:\Program Files\Unity\Hub\Editor\6000.6.3f1\Editor\Data\BCLExtensions\TargetingPacks\netstandard2.1\analyzers\dotnet\roslyn4.0\cs\System.Text.Json.SourceGeneration.dll" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Scripts\BuildingSystem\Electricity\BaseElectricityTerminalUI.cs" />
     <Compile Include="Assets\Scripts\Managers\AudioManager.cs" />
     <Compile Include="Assets\Scripts\Inventory\InventorySlot.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_TextEventHandler.cs" />
@@ -72,6 +71,7 @@
     <Compile Include="Assets\Scripts\Inventory\InventoryUI.cs" />
     <Compile Include="Assets\Scripts\Inventory\ItemColorApplier.cs" />
     <Compile Include="Assets\Scripts\Crafting\CraftingIngredientRowUI.cs" />
+    <Compile Include="Assets\Scripts\BuildingSystem\Cables\MaterialConnectorSocket.cs" />
     <Compile Include="Assets\Scripts\Inventory\Hotbar.cs" />
     <Compile Include="Assets\Scripts\resources\EnvironmentalResourceManager.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark02.cs" />
@@ -117,6 +117,7 @@
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\ChatController.cs" />
     <Compile Include="Assets\Scripts\BuildingSystem\BlueprintItem.cs" />
     <Compile Include="Assets\Scripts\Inventory\PickupItem.cs" />
+    <Compile Include="Assets\Scripts\BuildingSystem\Cables\CableConnectorSocket.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_DigitValidator.cs" />
     <Compile Include="Assets\InputSystem_Actions.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_FrameRateCounter.cs" />
@@ -149,14 +150,17 @@
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TeleType.cs" />
     <Compile Include="Assets\Scripts\SolarSystem\SolarSystemBuilder.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_TextEventCheck.cs" />
+    <Compile Include="Assets\Scripts\BuildingSystem\Industry\CrusherUnit.cs" />
     <Compile Include="Assets\Scripts\UI\PlayerHUDManager.cs" />
     <Compile Include="Assets\Scripts\BuildingSystem\BaseModuleData.cs" />
     <Compile Include="Assets\Scripts\Debug\MovementLogger.cs" />
     <Compile Include="Assets\Scripts\Crafting\LanderCraftingStation.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TextMeshProFloatingText.cs" />
     <Compile Include="Assets\Scripts\SolarSystem\CelestialSkyFollow.cs" />
+    <Compile Include="Assets\Scripts\BuildingSystem\Industry\RigUnit.cs" />
     <Compile Include="Assets\Scripts\Controllers\StationRotator.cs" />
     <Compile Include="Assets\Scripts\Crafting\CraftingRecipeRowUI.cs" />
+    <Compile Include="Assets\Scripts\BuildingSystem\Electricity\BaseElectricityTerminalUI.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />

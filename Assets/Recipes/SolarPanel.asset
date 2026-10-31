@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 73db9203e5cc1a547b31f72c14a2ab2a, type: 3}
+  m_Name: SolarPanel
+  m_EditorClassIdentifier: Assembly-CSharp::CraftingSystem.CraftingRecipe
+  recipeName: Solar panel
+  category: Composants
+  description: 
+  outputItem: {fileID: 11400000, guid: b211dd97e0e31564c86ebfcd23553e7b, type: 2}
+  outputAmount: 1
+  ingredients: []

@@ -19,6 +19,10 @@ public class BaseModuleData : ScriptableObject
     [Tooltip("The final, fully functional module with colliders and interactions.")]
     public GameObject finalPrefab;
 
+    [Header("Placement")]
+    [Tooltip("Place only on outdoor terrain, without snapping to module sockets.")]
+    public bool groundPlacementOnly = false;
+
     [Header("Building Requirements")]
     [Tooltip("Time in seconds it takes to construct this module at normal speed.")]
     public float baseConstructionTime = 5f;

@@ -49,6 +49,63 @@ namespace BuildingSystem.Cables
         [Tooltip("Texture tile repetition factor per meter along the cable length.")]
         [SerializeField] private float uvTilePerMeter = 3.0f;
 
+        [Header("Ground routing (opt-in)")]
+        [SerializeField] private bool followGround;
+        [SerializeField] private LayerMask groundMask = -1;
+        [SerializeField, Min(0f)] private float groundClearance = 0.025f;
+        [SerializeField, Min(1f)] private float groundProbeHeight = 30f;
+        [SerializeField, Min(0.1f)] private float endTransitionLength = 1f;
+        private readonly RaycastHit[] _groundHits = new RaycastHit[32];
+        private Vector3[] _vertices, _normals, _centerLine;
+        private Vector2[] _uvs;
+        private int[] _triangles;
+        private float[] _lengths;
+        public bool FollowGround => followGround;
+        public float CurrentLength { get; private set; }
+        public bool HasUnsupportedGround { get; private set; }
+
+        public float MeasureTo(Transform target, Transform targetPlug = null)
+        {
+            if (target == null) return float.PositiveInfinity;
+            Vector3 a = GetCableExitPoint(startPoint != null ? startPoint : transform.parent, startPlug);
+            Transform origin = startPoint != null ? startPoint : transform.parent;
+            Vector3 b = GetCableExitPoint(target, targetPlug);
+            int count = Mathf.Max(8, lengthSegments);
+            float length = 0f;
+            Vector3 previous = a;
+            for (int i = 1; i <= count; i++)
+            {
+                Vector3 point = SamplePath(a, GetCableExitDirection(origin, startPlug), b, GetCableExitDirection(target, targetPlug), (float)i / count);
+                length += Vector3.Distance(previous, point);
+                previous = point;
+            }
+            return length;
+        }
+
+        private Vector3 SamplePath(Vector3 a, Vector3 directionA, Vector3 b, Vector3 directionB, float t)
+        {
+            float distance = Vector3.Distance(a, b);
+            float handle = Mathf.Clamp(distance * 0.35f, 0.4f, 2.5f) * tangentStiffness;
+            Vector3 point = SampleCubicBezier(a, a + directionA.normalized * handle, b + directionB.normalized * handle, b, t);
+            point += Vector3.down * (4f * t * (1f - t) * gravitySag * Mathf.Clamp(distance * 0.18f, 0.2f, 1.5f));
+            if (!followGround || t <= 0f || t >= 1f) return point;
+            float top = Mathf.Max(a.y, b.y, point.y) + groundProbeHeight;
+            int hits = Physics.RaycastNonAlloc(new Vector3(point.x, top, point.z), Vector3.down, _groundHits,
+                groundProbeHeight * 2f + Mathf.Abs(a.y - b.y), groundMask, QueryTriggerInteraction.Ignore);
+            float surface = float.NegativeInfinity;
+            for (int i = 0; i < hits; i++)
+            {
+                // Industrial routing is deliberately restricted to terrain, not players, buildings or rocks.
+                if (_groundHits[i].collider is TerrainCollider) surface = Mathf.Max(surface, _groundHits[i].point.y);
+            }
+            if (float.IsNegativeInfinity(surface)) { HasUnsupportedGround = true; return point; }
+            float floor = surface + cableRadius + groundClearance;
+            float transition = Mathf.Clamp01(Mathf.Min(t, 1f - t) * distance / endTransitionLength);
+            transition = transition * transition * (3f - 2f * transition);
+            point.y = Mathf.Max(floor, Mathf.Lerp(point.y, floor, transition));
+            return point;
+        }
+
         private MeshFilter _meshFilter;
         private MeshRenderer _meshRenderer;
         private Mesh _proceduralMesh;
@@ -261,25 +318,32 @@ namespace BuildingSystem.Cables
             int ringVerts = radialSegments + 1; // +1 to close UV seam
             int totalVerts = rings * ringVerts;
 
-            Vector3[] vertices = new Vector3[totalVerts];
-            Vector3[] normals = new Vector3[totalVerts];
-            Vector2[] uvs = new Vector2[totalVerts];
-            int[] triangles = new int[lengthSegments * radialSegments * 6];
+            if (_vertices == null || _vertices.Length != totalVerts)
+            {
+                _vertices = new Vector3[totalVerts]; _normals = new Vector3[totalVerts]; _uvs = new Vector2[totalVerts];
+                _triangles = new int[lengthSegments * radialSegments * 6];
+            }
+            Vector3[] vertices = _vertices;
+            Vector3[] normals = _normals;
+            Vector2[] uvs = _uvs;
+            int[] triangles = _triangles;
 
             // Sample curve points and accumulate length for UVs
-            Vector3[] centerLine = new Vector3[rings];
-            float[] accumulatedLengths = new float[rings];
+            if (_centerLine == null || _centerLine.Length != rings) { _centerLine = new Vector3[rings]; _lengths = new float[rings]; }
+            Vector3[] centerLine = _centerLine;
+            float[] accumulatedLengths = _lengths;
+            HasUnsupportedGround = false;
             accumulatedLengths[0] = 0f;
 
             for (int i = 0; i < rings; i++)
             {
                 float t = (float)i / lengthSegments;
                 // Cubic Bezier base
-                Vector3 pt = SampleCubicBezier(p0, p1, p2, p3, t);
+                Vector3 pt = SamplePath(p0, dir0, p3, dir1, t);
 
                 // Additional parabolic gravitational droop (natural catenary shape)
                 float sagCurve = 4f * t * (1f - t); // Parabola: 0 at ends, 1 at mid
-                pt += Vector3.down * (sagCurve * effectiveSag);
+                // Sag and ground support are applied by SamplePath.
 
                 centerLine[i] = pt;
                 if (i > 0)
@@ -289,6 +353,7 @@ namespace BuildingSystem.Cables
             }
 
             float totalLength = accumulatedLengths[rings - 1];
+            CurrentLength = totalLength;
 
             // Build parallel transport frame to prevent tube twisting
             Vector3 forward = (centerLine[1] - centerLine[0]).normalized;

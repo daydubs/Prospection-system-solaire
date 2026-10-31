@@ -1,220 +1,128 @@
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 namespace BuildingSystem.Cables
 {
-    /// <summary>
-    /// Manages the player's interaction with electrical cables:
-    /// Pulling a cable from a socket, carrying it in hand (anchored to camera/hand),
-    /// stretching the flexible curve in real time, plugging into a target socket, or canceling.
-    /// </summary>
     public class CableInteractionManager : MonoBehaviour
     {
-        private static CableInteractionManager _instance;
-        public static CableInteractionManager Instance
-        {
-            get
-            {
-                if (_instance == null)
-                {
-                    _instance = Object.FindAnyObjectByType<CableInteractionManager>();
-                }
-                return _instance;
-            }
-            private set => _instance = value;
-        }
-
-        [Header("Carrying Settings")]
-        [Tooltip("Transform that the loose plug follows when being carried (e.g. Camera or Hand). If null, will attach to Main Camera.")]
+        public static CableInteractionManager Instance { get; private set; }
         [SerializeField] private Transform carryAnchor;
-
-        [Tooltip("Offset relative to the anchor transform.")]
         [SerializeField] private Vector3 carryOffset = new Vector3(0.35f, -0.3f, 0.65f);
-
-        [Tooltip("Maximum allowed cable reach before tension blocks further pulling.")]
         [SerializeField] private float maxCableLength = 15f;
-
-        [Tooltip("Prefab for the visual plug shown in player's hand while carrying.")]
         [SerializeField] private GameObject plugPrefab;
-
-        private ElectricConnectorSocket _carryingSource;
+        [SerializeField] private PlayerBaseController playerController;
+        [SerializeField] private BuilderController builderController;
+        private CableConnectorSocket _carryingSource;
         private GameObject _tempAnchorObject;
         private GameObject _carryPlugInstance;
-
-        public ElectricConnectorSocket CarryingSourceSocket => _carryingSource;
+        private UnityEngine.InputSystem.InputAction _cancel;
+        public CableConnectorSocket CarryingSourceSocket => _carryingSource;
         public bool IsCarryingCable => _carryingSource != null;
+        public bool InteractionsBlocked => (playerController != null && (playerController.isInventoryOpen || playerController.isBlueprintOpen)) ||
+            (builderController != null && builderController.isBuildModeActive) ||
+            (MainMenuController.Instance != null && MainMenuController.Instance.isMenuOpen) ||
+            (CraftingSystem.CraftingUIManager.Instance != null && CraftingSystem.CraftingUIManager.Instance.IsOpen);
 
         private void Awake()
         {
-            if (Instance != null && Instance != this)
-            {
-                Destroy(gameObject);
-                return;
-            }
+            if (Instance != null && Instance != this) { enabled = false; return; }
             Instance = this;
+            _cancel = new UnityEngine.InputSystem.InputAction("CancelCable", UnityEngine.InputSystem.InputActionType.Button, "<Mouse>/rightButton");
         }
-
+        private void OnEnable()
+        {
+            if (_cancel == null) return;
+            _cancel.performed += OnCancel;
+            _cancel.Enable();
+        }
+        private void OnDisable()
+        {
+            if (_cancel != null) { _cancel.performed -= OnCancel; _cancel.Disable(); }
+            CancelCarrying();
+        }
+        private void OnDestroy()
+        {
+            _cancel?.Dispose();
+            if (_tempAnchorObject != null) Destroy(_tempAnchorObject);
+            if (_carryPlugInstance != null) Destroy(_carryPlugInstance);
+            if (Instance == this) Instance = null;
+        }
         private void Start()
         {
             EnsureCarryAnchor();
+            if (carryAnchor != null && playerController == null) playerController = carryAnchor.GetComponentInParent<PlayerBaseController>();
+            if (playerController != null && builderController == null) builderController = playerController.GetComponent<BuilderController>();
         }
-
-        private void Update()
+        private void OnCancel(UnityEngine.InputSystem.InputAction.CallbackContext context)
         {
-            if (_carryingSource == null) return;
-
-            // Handle Right-Click cancellation to rewind cable
-            bool cancelRequested = false;
-            if (Mouse.current != null && Mouse.current.rightButton.wasPressedThisFrame)
-            {
-                cancelRequested = true;
-            }
-
-            if (cancelRequested)
-            {
-                CancelCarrying();
-                return;
-            }
-
-            // Update carry anchor position
-            UpdateCarryAnchorTransform();
-
-            // Check distance limit
-            if (carryAnchor != null)
-            {
-                float dist = Vector3.Distance(_carryingSource.transform.position, carryAnchor.position);
-                if (dist > maxCableLength)
-                {
-                    // Clamp anchor back towards socket to simulate cable tension
-                    Vector3 dir = (carryAnchor.position - _carryingSource.transform.position).normalized;
-                    carryAnchor.position = _carryingSource.transform.position + dir * maxCableLength;
-                }
-            }
+            if (!InteractionsBlocked) CancelCarrying();
         }
-
         private void EnsureCarryAnchor()
         {
-            if (carryAnchor == null)
-            {
-                Camera cam = Camera.main;
-                if (cam == null) cam = FindFirstObjectByType<Camera>();
-
-                if (cam != null)
-                {
-                    _tempAnchorObject = new GameObject("CableCarryAnchor");
-                    _tempAnchorObject.transform.SetParent(cam.transform, false);
-                    _tempAnchorObject.transform.localPosition = carryOffset;
-                    carryAnchor = _tempAnchorObject.transform;
-                }
-            }
+            if (carryAnchor != null) return;
+            Camera camera = Camera.main;
+            if (camera == null) return;
+            _tempAnchorObject = new GameObject("CableCarryAnchor");
+            _tempAnchorObject.transform.SetParent(camera.transform, false);
+            carryAnchor = _tempAnchorObject.transform;
         }
-
-        private void UpdateCarryAnchorTransform()
+        private void LateUpdate()
         {
-            if (carryAnchor == null)
+            if (_carryingSource == null)
             {
-                EnsureCarryAnchor();
-            }
-
-            if (carryAnchor != null)
-            {
-                carryAnchor.localPosition = carryOffset;
-                // Forward faces towards the camera forward
-                carryAnchor.localRotation = Quaternion.identity;
-            }
-        }
-
-        /// <summary>
-        /// Called by a socket when interacted with by the player.
-        /// </summary>
-        public void HandleSocketInteraction(ElectricConnectorSocket clickedSocket)
-        {
-            if (clickedSocket == null) return;
-
-            // Case 1: Player is currently carrying a cable
-            if (_carryingSource != null)
-            {
-                if (_carryingSource == clickedSocket)
-                {
-                    // Clicked the same socket -> rewind
-                    CancelCarrying();
-                }
-                else
-                {
-                    // Clicked a different socket -> complete connection!
-                    CompleteConnection(_carryingSource, clickedSocket);
-                }
+                if (_carryPlugInstance != null) Destroy(_carryPlugInstance);
                 return;
             }
-
-            // Case 2: Player is NOT carrying a cable
-            if (clickedSocket.State == SocketConnectionState.Connected)
-            {
-                // Disconnect existing cable
-                clickedSocket.Disconnect();
-            }
-            else if (clickedSocket.HasStoredCable)
-            {
-                // Start pulling cable from this socket
-                StartCarryingFrom(clickedSocket);
-            }
-            else if (clickedSocket.ConnectedSocket != null)
-            {
-                // If it was linked, disconnect
-                clickedSocket.Disconnect();
-            }
+            if (InteractionsBlocked) { CancelCarrying(); return; }
+            if (carryAnchor == null) { CancelCarrying(); return; }
+            carryAnchor.localPosition = carryOffset;
+            carryAnchor.localRotation = Quaternion.identity;
+            Vector3 delta = carryAnchor.position - _carryingSource.transform.position;
+            if (delta.magnitude > maxCableLength) carryAnchor.position = _carryingSource.transform.position + delta.normalized * maxCableLength;
         }
-
-        private void StartCarryingFrom(ElectricConnectorSocket source)
+        public string GetPrompt(CableConnectorSocket target)
         {
-            EnsureCarryAnchor();
-            _carryingSource = source;
-            source.StartCarryingCable(carryAnchor);
-
-            if (_carryPlugInstance == null && plugPrefab != null && carryAnchor != null)
-            {
-                _carryPlugInstance = Instantiate(plugPrefab, carryAnchor);
-                _carryPlugInstance.name = "CarryPlug";
-            }
-
-            if (_carryPlugInstance != null)
-            {
-                _carryPlugInstance.SetActive(true);
-                _carryPlugInstance.transform.localPosition = Vector3.zero;
-                _carryPlugInstance.transform.localRotation = Quaternion.Euler(0, 180, 0);
-                _carryPlugInstance.transform.localScale = Vector3.one;
-
-                if (source.CableRenderer != null)
-                {
-                    source.CableRenderer.EndPlug = _carryPlugInstance.transform;
-                }
-            }
+            if (_carryingSource == null) return null;
+            if (target == _carryingSource) return "Rembobiner le flexible";
+            if (!_carryingSource.CanConnectTo(target, out string reason)) return reason;
+            return _carryingSource.Kind == CableKind.Rubble ? "Raccorder le tuyau de gravats" : "Raccorder le câble électrique";
         }
-
-        private void CompleteConnection(ElectricConnectorSocket source, ElectricConnectorSocket target)
+        public void HandleSocketInteraction(CableConnectorSocket clickedSocket)
         {
-            if (_carryPlugInstance != null)
-            {
-                _carryPlugInstance.SetActive(false);
-            }
-
-            _carryingSource = null;
-            source.ConnectTo(target);
-        }
-
-        public void CancelCarrying()
-        {
-            if (_carryPlugInstance != null)
-            {
-                _carryPlugInstance.SetActive(false);
-            }
-
+            if (clickedSocket == null || InteractionsBlocked) return;
             if (_carryingSource != null)
             {
-                ElectricConnectorSocket s = _carryingSource;
+                if (_carryingSource == clickedSocket) { CancelCarrying(); return; }
+                if (!_carryingSource.CanConnectTo(clickedSocket, out _)) return;
+                CableConnectorSocket source = _carryingSource;
+                source.ConnectTo(clickedSocket);
+                if (source.Peer != clickedSocket) return;
                 _carryingSource = null;
-                s.Disconnect();
+                if (_carryPlugInstance != null) Destroy(_carryPlugInstance);
+                return;
             }
+            if (clickedSocket.State == SocketConnectionState.Connected) { clickedSocket.Disconnect(); return; }
+            if (!clickedSocket.HasStoredCable) return;
+            EnsureCarryAnchor();
+            if (carryAnchor == null) return;
+            _carryingSource = clickedSocket;
+            clickedSocket.StartCarryingCable(carryAnchor);
+            GameObject visual = clickedSocket.PlugPrefab != null ? clickedSocket.PlugPrefab : plugPrefab;
+            if (visual != null)
+            {
+                _carryPlugInstance = Instantiate(visual, carryAnchor);
+                _carryPlugInstance.transform.localPosition = Vector3.zero;
+                _carryPlugInstance.transform.localRotation = Quaternion.identity;
+                if (clickedSocket.PlugInstance != null)
+                    _carryPlugInstance.transform.localScale = clickedSocket.PlugInstance.transform.lossyScale;
+                if (clickedSocket.CableRenderer != null) clickedSocket.CableRenderer.EndPlug = _carryPlugInstance.transform;
+            }
+        }
+        public void CancelCarrying()
+        {
+            CableConnectorSocket source = _carryingSource;
+            _carryingSource = null;
+            if (source != null) source.Disconnect();
+            if (_carryPlugInstance != null) Destroy(_carryPlugInstance);
         }
     }
 }

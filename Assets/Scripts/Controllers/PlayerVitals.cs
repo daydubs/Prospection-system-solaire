@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerVitals : MonoBehaviour
 {
@@ -17,6 +18,7 @@ public class PlayerVitals : MonoBehaviour
     [Tooltip("Dégâts par seconde subis en cas de panne d'oxygène")]
     [SerializeField] private float suffocationDamageRate = 4.0f;
     [SerializeField] private bool consumeOxygen = true;
+    [SerializeField] private Image noCasque;
 
     [Header("Inventory Reference")]
     [SerializeField] private InventoryFramework.Inventory playerInventory;

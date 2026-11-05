@@ -9,9 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7ef6a9df9ad8ced49b236c658b1cdcb9, type: 3}
+  m_Script: {fileID: 11500000, guid: de710cc37b178ac41bdc90fbef7a5c3b, type: 3}
   m_Name: Scrubber
-  m_EditorClassIdentifier: Assembly-CSharp::BuildingSystem.BlueprintItem
+  m_EditorClassIdentifier: Assembly-CSharp::InventoryFramework.Item
   id: 43
   itemName: Scrubber
   description: retire et stock l'oxygene du CO2
@@ -19,5 +19,7 @@ MonoBehaviour:
   maxStack: 1
   model: {fileID: 5005387304552334016, guid: 1cb97c8ee5b34754b835ad3a1b4e6a50, type: 3}
   basePrice: 0
+  _isConstructible: 0
+  _moduleData: {fileID: 0}
+  _batteryDefinition: {fileID: 0}
   itemColor: {r: 1, g: 1, b: 1, a: 1}
-  moduleData: {fileID: 0}

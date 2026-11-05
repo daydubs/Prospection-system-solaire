@@ -223,8 +223,16 @@ namespace BuildingSystem.Electricity
             }
         }
 
+        private bool previousCanMove;
+        private CursorLockMode previousCursorLock;
+        private bool previousCursorVisible;
+        private PlayerBaseController terminalPlayer;
+
         public void OpenTerminal(BaseElectricityController controller)
         {
+            if (isOpen || BaseBatteryTerminalUI.AnyOpen) return;
+            if (BuildingSystem.Cables.CableInteractionManager.Instance != null &&
+                (BuildingSystem.Cables.CableInteractionManager.Instance.IsCarryingCable || BuildingSystem.Cables.CableInteractionManager.Instance.InteractionsBlocked)) return;
             currentController = controller ?? BaseElectricityController.Instance;
             if (currentController == null) return;
 
@@ -249,10 +257,15 @@ namespace BuildingSystem.Electricity
             }
 
             // Désactiver le contrôle de la caméra et libérer le curseur
-            var player = Object.FindAnyObjectByType<PlayerBaseController>();
-            if (player != null)
+            var cableManager = BuildingSystem.Cables.CableInteractionManager.Instance;
+            terminalPlayer = cableManager != null ? cableManager.PlayerController : null;
+            if (terminalPlayer == null && Camera.main != null) terminalPlayer = Camera.main.GetComponentInParent<PlayerBaseController>();
+            previousCursorLock = Cursor.lockState;
+            previousCursorVisible = Cursor.visible;
+            if (terminalPlayer != null)
             {
-                player.canMove = false;
+                previousCanMove = terminalPlayer.canMove;
+                terminalPlayer.canMove = false;
             }
 
             Cursor.lockState = CursorLockMode.None;
@@ -264,6 +277,7 @@ namespace BuildingSystem.Electricity
 
         public void CloseTerminal()
         {
+            bool wasOpen = isOpen;
             isOpen = false;
 
             if (mainPanel != null)
@@ -283,16 +297,20 @@ namespace BuildingSystem.Electricity
                 rootCanvas.enabled = false;
             }
 
-            // Rétablir le contrôle du joueur
-            var player = Object.FindAnyObjectByType<PlayerBaseController>();
-            if (player != null)
+            if (!wasOpen) return;
+            if (terminalPlayer != null) terminalPlayer.canMove = previousCanMove;
+            bool otherMenu = BaseBatteryTerminalUI.AnyOpen ||
+                (MainMenuController.Instance != null && MainMenuController.Instance.isMenuOpen) ||
+                (CraftingSystem.CraftingUIManager.Instance != null && CraftingSystem.CraftingUIManager.Instance.IsOpen);
+            if (!otherMenu)
             {
-                player.canMove = true;
+                Cursor.lockState = previousCursorLock;
+                Cursor.visible = previousCursorVisible;
             }
-
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
         }
+
+        private void OnDisable() => CloseTerminal();
+        private void OnDestroy() { if (Instance == this) Instance = null; }
 
         public void RefreshDisplay()
         {
@@ -417,7 +435,8 @@ namespace BuildingSystem.Electricity
                     if (i < currentController.InputSockets.Length && currentController.InputSockets[i] != null)
                     {
                         bool isPow = currentController.InputSockets[i].IsPowered;
-                        inputSocketStatusTexts[i].text = isPow ? $"Entrée {i + 1} : Raccordée" : $"Entrée {i + 1} : Débranchée";
+                        bool connected = currentController.InputSockets[i].ConnectedSocket != null;
+                        inputSocketStatusTexts[i].text = !connected ? $"Entrée {i + 1} : Débranchée" : isPow ? $"Entrée {i + 1} : Alimentée" : $"Entrée {i + 1} : Hors tension";
                         if (inputSocketLeds != null && i < inputSocketLeds.Length && inputSocketLeds[i] != null)
                         {
                             inputSocketLeds[i].color = isPow ? colorActiveGreen : colorInactiveGray;
@@ -439,6 +458,27 @@ namespace BuildingSystem.Electricity
                 bool isPow = currentController.OutputSocket.IsPowered;
                 outputSocketStatusText.text = isPow ? "Sortie Réseau : Alimentée" : "Sortie Réseau : Hors Tension";
                 if (outputSocketLed != null) outputSocketLed.color = isPow ? colorActiveGreen : colorInactiveGray;
+            }
+
+            // Physical storage overrides the historical virtual-battery presentation.
+            var battery = currentController.ConnectedBattery;
+            if (batteryPercentText != null) batteryPercentText.text = battery != null ? $"{batPct:F1}%" : "—";
+            if (batteryCapacityText != null) batteryCapacityText.text = battery != null ? $"{battery.ChargeKWh:F3} / {battery.CapacityKWh:F0} kWh" : "Aucun module batterie raccordé";
+            if (netPowerText != null)
+            {
+                netPowerText.text = !mainOn ? "DISJONCTEUR COUPÉ" : currentController.UnservedKW > 0f ? $"Non desservi : {currentController.UnservedKW:F1} kW" :
+                    battery != null && battery.DischargingKW > 0f ? $"Secours : {battery.DischargingKW:F1} kW" :
+                    battery != null && battery.ChargingKW > 0f ? $"Stockage : +{battery.ChargingKW:F1} kW" : $"Surplus non stocké : {Mathf.Max(0f, net):F1} kW";
+                netPowerText.color = currentController.UnservedKW > 0f ? colorAlertRed : battery != null && battery.DischargingKW > 0f ? colorWarningAmber : colorActiveGreen;
+            }
+            if (estimatedTimeText != null)
+                estimatedTimeText.text = battery == null ? "Stockage absent" : battery.ChargingKW > 0f ? "Pleine dans : " + FormatHours((battery.CapacityKWh - battery.ChargeKWh) / battery.ChargingKW) :
+                    battery.DischargingKW > 0f ? "Autonomie : " + FormatHours(battery.ChargeKWh / battery.DischargingKW) : battery.Status;
+            if (activeCircuitsCountText != null)
+            {
+                int supplied = 0;
+                for (int i = 0; i < currentController.Circuits.Count; i++) if (currentController.IsCircuitSupplied(i)) supplied++;
+                activeCircuitsCountText.text = $"{supplied} / {currentController.Circuits.Count} circuits alimentés";
             }
 
             // 8. Refresh des lignes de circuits

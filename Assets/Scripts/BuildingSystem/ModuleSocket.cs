@@ -53,8 +53,36 @@ public class ModuleSocket : MonoBehaviour
         }
     }
 
+    private readonly HashSet<ModuleSocket> _peers = new HashSet<ModuleSocket>();
+
+    public void ConnectWith(ModuleSocket other)
+    {
+        if (other == null || other == this) return;
+        _peers.Add(other);
+        other._peers.Add(this);
+        SetConnected(true);
+        other.SetConnected(true);
+    }
+
+    public void DisconnectConnections()
+    {
+        foreach (var other in _peers)
+        {
+            if (other == null) continue;
+            other._peers.Remove(this);
+            other.isOccupied = other._peers.Count > 0;
+            other.UpdateBlockerState();
+        }
+        _peers.Clear();
+        isOccupied = false;
+        UpdateBlockerState();
+    }
+
+    private void OnDisable() => DisconnectConnections();
+
     public void SetConnected(bool connected)
     {
+        if (!connected) { DisconnectConnections(); return; }
         isOccupied = connected;
         UpdateBlockerState();
     }

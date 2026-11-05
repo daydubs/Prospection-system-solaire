@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a99fff7af65f5b4ebd7acf4b740013a, type: 3}
+  m_Name: ModuleBatterie
+  m_EditorClassIdentifier: Assembly-CSharp::BaseModuleData
+  _item: {fileID: 11400000, guid: 7fb1351a009ac2c4887c99f0e4078c8f, type: 2}
+  ghostPrefab: {fileID: 1548799974917503476, guid: dae92b4d290fb3f4cb67f29ca7aebb72, type: 3}
+  finalPrefab: {fileID: 4389652489375618052, guid: a89e173d45f1ff8448940e37ddfcf863, type: 3}
+  groundPlacementOnly: 1
+  _deconstructionRecipe: {fileID: 11400000, guid: 14409e84c6a8fe14b828adae9cf650b0, type: 2}
+  baseConstructionTime: 5
+  resourceCosts: []

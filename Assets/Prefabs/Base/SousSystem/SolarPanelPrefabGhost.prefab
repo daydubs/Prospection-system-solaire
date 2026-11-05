@@ -357,6 +357,13 @@ MonoBehaviour:
   lengthSegments: 28
   radialSegments: 8
   uvTilePerMeter: 3
+  followGround: 0
+  groundMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  groundClearance: 0.025
+  groundProbeHeight: 30
+  endTransitionLength: 1
 --- !u!1 &8617215982726418402
 GameObject:
   m_ObjectHideFlags: 0
@@ -410,7 +417,7 @@ SphereCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 1
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_Radius: 0.002
   m_Center: {x: 0, y: 0, z: 0}
@@ -421,11 +428,14 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8617215982726418402}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 533956b0d5a6f804bb8be13a4b20e285, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BuildingSystem.Cables.ElectricConnectorSocket
+  _baseEndpoint: 0
+  portRole: 0
+  maximumLength: 15
   socketDisplayName: Panneau Solaire
   hasStoredCable: 1
   cableRenderer: {fileID: 0}

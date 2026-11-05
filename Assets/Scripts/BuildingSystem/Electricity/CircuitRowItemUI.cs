@@ -49,8 +49,8 @@ namespace BuildingSystem.Electricity
             if (controller == null || circuitIndex < 0 || circuitIndex >= controller.Circuits.Count) return;
 
             BaseCircuitData data = controller.Circuits[circuitIndex];
-            bool gridPowered = controller.IsMainBreakerOn && (controller.TotalProductionKW > 0f || controller.CurrentBatteryKWh > 0.1f);
-            float currentCons = data.GetCurrentConsumption(controller.CurrentMode);
+            bool gridPowered = controller.IsCircuitSupplied(circuitIndex);
+            float currentCons = gridPowered ? data.GetCurrentConsumption(controller.CurrentMode) : 0f;
 
             if (circuitNameText != null)
             {

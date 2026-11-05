@@ -286,7 +286,7 @@ SphereCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 0.0012
+  m_Radius: 0.0017999994
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &4018948013587941051
 MonoBehaviour:
@@ -300,6 +300,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 533956b0d5a6f804bb8be13a4b20e285, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BuildingSystem.Cables.ElectricConnectorSocket
+  _baseEndpoint: 2
+  portRole: 1
+  maximumLength: 15
   socketDisplayName: "Pupitre de Contr\xF4le (Entr\xE9e 2)"
   hasStoredCable: 0
   cableRenderer: {fileID: 0}
@@ -441,7 +444,7 @@ SphereCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 0.0012
+  m_Radius: 0.0017999994
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &1097738040595837959
 MonoBehaviour:
@@ -455,6 +458,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 533956b0d5a6f804bb8be13a4b20e285, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BuildingSystem.Cables.ElectricConnectorSocket
+  _baseEndpoint: 3
+  portRole: 2
+  maximumLength: 15
   socketDisplayName: "Pupitre de Contr\xF4le (Sortie Module)"
   hasStoredCable: 0
   cableRenderer: {fileID: 0}
@@ -1970,7 +1976,7 @@ SphereCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 0.0012
+  m_Radius: 0.0017999994
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &4374803043017383279
 MonoBehaviour:
@@ -1984,6 +1990,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 533956b0d5a6f804bb8be13a4b20e285, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BuildingSystem.Cables.ElectricConnectorSocket
+  _baseEndpoint: 2
+  portRole: 1
+  maximumLength: 15
   socketDisplayName: "Pupitre de Contr\xF4le (Entr\xE9e 4)"
   hasStoredCable: 0
   cableRenderer: {fileID: 0}
@@ -4267,7 +4276,7 @@ SphereCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 0.0012
+  m_Radius: 0.0017999994
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &4965966242405934196
 MonoBehaviour:
@@ -4281,6 +4290,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 533956b0d5a6f804bb8be13a4b20e285, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BuildingSystem.Cables.ElectricConnectorSocket
+  _baseEndpoint: 2
+  portRole: 1
+  maximumLength: 15
   socketDisplayName: "Pupitre de Contr\xF4le (Entr\xE9e 3)"
   hasStoredCable: 0
   cableRenderer: {fileID: 0}
@@ -4291,7 +4303,7 @@ MonoBehaviour:
   statusLight: {fileID: 0}
   connectedColor: {r: 0, g: 1, b: 0, a: 1}
   disconnectedColor: {r: 1, g: 0, b: 0, a: 1}
-  state: 2
+  state: 0
   plugInstance: {fileID: 0}
 --- !u!1 &6648319329003590288
 GameObject:
@@ -5327,7 +5339,7 @@ SphereCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 0.0012
+  m_Radius: 0.0017999994
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &6021706154960183969
 MonoBehaviour:
@@ -5341,6 +5353,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 533956b0d5a6f804bb8be13a4b20e285, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BuildingSystem.Cables.ElectricConnectorSocket
+  _baseEndpoint: 2
+  portRole: 1
+  maximumLength: 15
   socketDisplayName: "Pupitre de Contr\xF4le (Entr\xE9e 1)"
   hasStoredCable: 0
   cableRenderer: {fileID: 0}
@@ -5351,7 +5366,7 @@ MonoBehaviour:
   statusLight: {fileID: 0}
   connectedColor: {r: 0, g: 1, b: 0, a: 1}
   disconnectedColor: {r: 1, g: 0, b: 0, a: 1}
-  state: 2
+  state: 0
   plugInstance: {fileID: 0}
 --- !u!1 &9068788182038609576
 GameObject:
@@ -5738,8 +5753,8 @@ MonoBehaviour:
   baseSolarBaselineKW: 0
   isAuxiliaryGeneratorOn: 0
   auxiliaryGeneratorPowerKW: 10
-  batteryCapacityKWh: 120
-  currentBatteryKWh: 88.5
+  batteryCapacityKWh: 0
+  currentBatteryKWh: 0
   isMainBreakerOn: 1
   currentMode: 0
   circuits:

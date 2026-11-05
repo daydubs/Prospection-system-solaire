@@ -73,9 +73,21 @@ namespace BuildingSystem.Electricity
         public event Action OnGridStateChanged;
 
         // Propriétés publiques de télémétrie
-        public float BatteryCapacityKWh => batteryCapacityKWh;
-        public float CurrentBatteryKWh => currentBatteryKWh;
-        public float BatteryPercentage => batteryCapacityKWh > 0f ? Mathf.Clamp01(currentBatteryKWh / batteryCapacityKWh) * 100f : 0f;
+        private BaseBatteryModule _connectedBattery;
+        private BasePowerReceiver _receiver;
+        private ElectricConnectorSocket _lastOutputPeer;
+        private ElectricConnectorSocket _lastBatteryPeer;
+        private bool[] _servedCircuits;
+        private float _servedKW;
+        private float _requestedKW;
+        private float _nextRefresh;
+        public BaseBatteryModule ConnectedBattery => _connectedBattery;
+        public BasePowerReceiver ConnectedBase => _receiver;
+        public float RequestedConsumptionKW => _requestedKW;
+        public float UnservedKW => Mathf.Max(0f, _requestedKW - _servedKW);
+        public float BatteryCapacityKWh => _connectedBattery != null ? _connectedBattery.CapacityKWh : 0f;
+        public float CurrentBatteryKWh => _connectedBattery != null ? _connectedBattery.ChargeKWh : 0f;
+        public float BatteryPercentage => _connectedBattery != null ? _connectedBattery.Percentage : 0f;
         public bool IsMainBreakerOn => isMainBreakerOn;
         public bool IsAuxiliaryGeneratorOn => isAuxiliaryGeneratorOn;
         public float AuxiliaryGeneratorPowerKW => auxiliaryGeneratorPowerKW;
@@ -88,49 +100,18 @@ namespace BuildingSystem.Electricity
         {
             get
             {
-                float prod = baseSolarBaselineKW;
-
-                // Ajout de la puissance des prises d'entrée connectées
+                float production = isAuxiliaryGeneratorOn ? auxiliaryGeneratorPowerKW : 0f;
                 if (inputSockets != null)
-                {
-                    foreach (var s in inputSockets)
-                    {
-                        if (s != null && s.IsPowered)
-                        {
-                            prod += solarPowerPerConnectedInput;
-                        }
-                    }
-                }
-
-                // Ajout du générateur auxiliaire s'il est allumé
-                if (isAuxiliaryGeneratorOn)
-                {
-                    prod += auxiliaryGeneratorPowerKW;
-                }
-
-                return prod;
+                    foreach (var socket in inputSockets)
+                        if (socket != null && socket.State == SocketConnectionState.Connected && socket.IsPowered &&
+                            socket.ConnectedSocket != null && socket.ConnectedSocket.PortRole == CablePortRole.Output)
+                            production += solarPowerPerConnectedInput;
+                return Mathf.Max(0f, production);
             }
         }
-
-        public float TotalConsumptionKW
-        {
-            get
-            {
-                if (!isMainBreakerOn) return 0f;
-
-                // Si la batterie est vide et la production nulle, le réseau s'éteint
-                if (currentBatteryKWh <= 0.05f && TotalProductionKW <= 0.1f) return 0f;
-
-                float total = 0f;
-                foreach (var c in circuits)
-                {
-                    total += c.GetCurrentConsumption(currentMode);
-                }
-                return total;
-            }
-        }
-
+        public float TotalConsumptionKW => _servedKW;
         public float NetPowerKW => TotalProductionKW - TotalConsumptionKW;
+        public bool IsCircuitSupplied(int index) => _servedCircuits != null && index >= 0 && index < _servedCircuits.Length && _servedCircuits[index];
 
         private void Awake()
         {
@@ -151,6 +132,13 @@ namespace BuildingSystem.Electricity
         private void OnDisable()
         {
             UnsubscribeFromSockets();
+            if (outputSocket != null) outputSocket.SetPowered(false);
+            if (_receiver != null) _receiver.SetSupply(false, false);
+            if (_connectedBattery != null)
+            {
+                _connectedBattery.ClearFlow();
+                if (_connectedBattery.OutputSocket != null) _connectedBattery.OutputSocket.SetPowered(false);
+            }
         }
 
         private void Start()
@@ -161,8 +149,7 @@ namespace BuildingSystem.Electricity
 
         private void Update()
         {
-            SimulateBattery(Time.deltaTime);
-            UpdateHardwareOutput();
+            SimulateGrid(Time.deltaTime);
         }
 
         private void InitializeDefaults()
@@ -243,42 +230,77 @@ namespace BuildingSystem.Electricity
             NotifyGridChanged();
         }
 
-        private void SimulateBattery(float dt)
+        private void ResolveRoute()
         {
-            float net = NetPowerKW;
-
-            // 1 kWh = 1 kW * 3600 secondes
-            float energyDeltaKWh = (net / 3600f) * dt;
-
-            currentBatteryKWh = Mathf.Clamp(currentBatteryKWh + energyDeltaKWh, 0f, batteryCapacityKWh);
-
-            // Si la batterie tombe à zéro et qu'il y a déficit, passage automatique en mode d'urgence
-            if (currentBatteryKWh <= 0.05f && net < 0f && currentMode != PowerGridMode.Emergency)
+            ElectricConnectorSocket peer = outputSocket != null ? outputSocket.ConnectedSocket : null;
+            ElectricConnectorSocket batteryPeer = _connectedBattery != null && _connectedBattery.OutputSocket != null ? _connectedBattery.OutputSocket.ConnectedSocket : null;
+            if (peer == _lastOutputPeer && batteryPeer == _lastBatteryPeer &&
+                (_connectedBattery == null || _connectedBattery.isActiveAndEnabled) &&
+                (peer != null || (_connectedBattery == null && _receiver == null))) return;
+            if (_receiver != null) _receiver.SetSupply(false, false);
+            if (_connectedBattery != null)
             {
-                SetPowerMode(PowerGridMode.Emergency);
+                _connectedBattery.ClearFlow();
+                if (_connectedBattery.OutputSocket != null) _connectedBattery.OutputSocket.SetPowered(false);
+            }
+            _connectedBattery = peer != null ? peer.GetComponentInParent<BaseBatteryModule>() : null;
+            bool inactiveBattery = _connectedBattery != null && !_connectedBattery.isActiveAndEnabled;
+            if (_connectedBattery != null && (_connectedBattery.InputSocket != peer || inactiveBattery)) _connectedBattery = null;
+            ElectricConnectorSocket end = _connectedBattery != null && _connectedBattery.OutputSocket != null ? _connectedBattery.OutputSocket.ConnectedSocket : peer;
+            _receiver = end != null ? end.GetComponentInParent<BasePowerReceiver>() : null;
+            if (_receiver != null && _receiver.InputSocket != end) _receiver = null;
+            _lastOutputPeer = inactiveBattery ? null : peer;
+            _lastBatteryPeer = _connectedBattery != null && _connectedBattery.OutputSocket != null ? _connectedBattery.OutputSocket.ConnectedSocket : null;
+        }
+
+        public void SimulateGrid(float dt)
+        {
+            if (float.IsNaN(dt) || float.IsInfinity(dt) || dt <= 0f) return;
+            ResolveRoute();
+            if (_servedCircuits == null || _servedCircuits.Length != circuits.Count) _servedCircuits = new bool[circuits.Count];
+            Array.Clear(_servedCircuits, 0, _servedCircuits.Length);
+            _servedKW = 0f;
+            _requestedKW = 0f;
+            float production = TotalProductionKW;
+            float available = isMainBreakerOn ? production + (_connectedBattery != null ? _connectedBattery.AvailableDischargeKW(dt) : 0f) : 0f;
+            bool connected = _receiver != null && _receiver.isActiveAndEnabled;
+            if (connected && isMainBreakerOn)
+            {
+                foreach (var circuit in circuits) _requestedKW += Mathf.Max(0f, circuit.GetCurrentConsumption(currentMode));
+                // Stable priority: essential circuits first, then secondary circuits.
+                for (int pass = 0; pass < 2; pass++)
+                    for (int i = 0; i < circuits.Count; i++)
+                    {
+                        var circuit = circuits[i];
+                        if (circuit.isEssential != (pass == 0)) continue;
+                        float demand = Mathf.Max(0f, circuit.GetCurrentConsumption(currentMode));
+                        if (!circuit.isActive || (currentMode == PowerGridMode.Emergency && !circuit.isEssential)) continue;
+                        if (demand <= available)
+                        {
+                            _servedCircuits[i] = true;
+                            _servedKW += demand;
+                            available -= demand;
+                        }
+                    }
+            }
+            if (_connectedBattery != null) _connectedBattery.ApplyEnergyBalance(this, production, _servedKW, dt);
+            bool supplied = isMainBreakerOn && connected && (_servedKW > 0f || production > 0f || (_connectedBattery != null && _connectedBattery.DischargingAllowed && _connectedBattery.ChargeKWh > 0f));
+            // Controller output denotes upstream generation, never battery energy flowing backwards.
+            if (outputSocket != null) outputSocket.SetPowered(isMainBreakerOn && production > 0f);
+            if (_connectedBattery != null && _connectedBattery.OutputSocket != null) _connectedBattery.OutputSocket.SetPowered(supplied);
+            bool scrubberSupplied = false;
+            for (int i = 0; i < circuits.Count; i++) if (circuits[i].circuitId == "scrubber") scrubberSupplied = _servedCircuits[i];
+            if (_receiver != null) _receiver.SetSupply(supplied, scrubberSupplied);
+            if (Time.unscaledTime >= _nextRefresh)
+            {
+                _nextRefresh = Time.unscaledTime + 0.2f;
+                NotifyGridChanged();
             }
         }
 
-        private void UpdateHardwareOutput()
+        private void OnDestroy()
         {
-            bool hasPower = isMainBreakerOn && (TotalProductionKW > 0f || currentBatteryKWh > 0.1f);
-
-            if (outputSocket != null)
-            {
-                outputSocket.SetPowered(hasPower);
-            }
-
-            // Sync Scrubber operational state with scrubber circuit
-            BaseCircuitData scrubberCircuit = circuits.Find(c => c.circuitId == "scrubber");
-            bool scrubberActive = hasPower && (scrubberCircuit == null || scrubberCircuit.isActive);
-            var scrubbers = FindObjectsByType<ScrubberUnit>(FindObjectsInactive.Exclude);
-            foreach (var sc in scrubbers)
-            {
-                if (sc != null && sc.isOperational != scrubberActive)
-                {
-                    sc.isOperational = scrubberActive;
-                }
-            }
+            if (Instance == this) Instance = null;
         }
 
         public void NotifyGridChanged()

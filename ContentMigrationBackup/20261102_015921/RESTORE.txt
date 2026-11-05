@@ -1,0 +1,1 @@
+Close Unity. Copy backed up Assets files and meta files to their original paths. Remove new authoring scripts/assets separately using the final migration report. Reopen Unity. Backup includes originals, not Library or generated cache.

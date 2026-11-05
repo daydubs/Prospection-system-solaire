@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -103,7 +104,7 @@ namespace InventoryFramework
             string name = item.itemName ?? "";
             return name.IndexOf("Oxygen", System.StringComparison.OrdinalIgnoreCase) >= 0 ||
                    name.IndexOf("Oxygène", System.StringComparison.OrdinalIgnoreCase) >= 0 ||
-                   name.IndexOf("O2", System.StringComparison.OrdinalIgnoreCase) >= 0;
+                   string.Equals(name.Trim(), "O2", System.StringComparison.OrdinalIgnoreCase);
         }
 
         public int GetItemCount(Item item)
@@ -261,6 +262,7 @@ namespace InventoryFramework
         {
             if (newItem == null || amount <= 0) return false;
             if (slots == null) return false;
+            if (newItem.IsBattery) return BatteryInventoryTransfer.TryCreate(newItem, amount, slots);
 
             int maxStack = newItem.maxStack > 0 ? newItem.maxStack : 1;
 
@@ -325,14 +327,13 @@ namespace InventoryFramework
                     if (slot.count >= remainingToConsume)
                     {
                         slot.count -= remainingToConsume;
-                        if (slot.count == 0) slot.item = null; // Clear slot if empty
+                        if (slot.count == 0) slot.Clear();
                         return true;
                     }
                     else
                     {
                         remainingToConsume -= slot.count;
-                        slot.count = 0;
-                        slot.item = null;
+                        slot.Clear();
                     }
                 }
             }
@@ -341,37 +342,13 @@ namespace InventoryFramework
 
         public void MoveOrSwap(int from, int to)
         {
-            if (from == to) return;
+            if (from == to || slots == null || from < 0 || to < 0 || from >= slots.Count || to >= slots.Count) return;
+            slots[from].SwapWith(slots[to]);
+        }
 
-            var slotFrom = slots[from];
-            var slotTo = slots[to];
-
-            // Move to Empty Slot
-            if (slotTo.IsEmpty)
-            {
-                slotTo.item = slotFrom.item;
-                slotTo.count = slotFrom.count;
-                slotTo.currentOxygen = slotFrom.currentOxygen;
-
-                slotFrom.item = null;
-                slotFrom.count = 0;
-                slotFrom.currentOxygen = 100f;
-            }
-            else
-            {
-                // Swap Items
-                var tmpItem = slotFrom.item;
-                var tmpCount = slotFrom.count;
-                var tmpOxygen = slotFrom.currentOxygen;
-
-                slotFrom.item = slotTo.item;
-                slotFrom.count = slotTo.count;
-                slotFrom.currentOxygen = slotTo.currentOxygen;
-
-                slotTo.item = tmpItem;
-                slotTo.count = tmpCount;
-                slotTo.currentOxygen = tmpOxygen;
-            }
+        internal bool AddItem(List<Item> powderItem, int v)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -17,9 +17,8 @@ namespace CraftingSystem
 
     /// <summary>
     /// Définition d'une recette de fabrication pour l'imprimante 3D du Lander.
-    /// Peut être créée via clic droit -> Create -> Crafting -> Recipe.
+    /// Créée et éditée via Tools -> Contenu -> Items et modules.
     /// </summary>
-    [CreateAssetMenu(fileName = "NewCraftingRecipe", menuName = "Crafting/Recipe")]
     public class CraftingRecipe : ScriptableObject
     {
         [Header("Informations Générales")]

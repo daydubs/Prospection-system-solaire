@@ -75,64 +75,26 @@ namespace BuildingSystem.Electricity
                 consumptionFillBar.fillAmount = Mathf.Clamp01(cons / MaxScaleKW);
             }
 
-            // 3. Batterie
-            if (batteryPercentText != null)
-            {
-                batteryPercentText.text = $"{batPct:F0}%";
-            }
-            if (batteryCapacityText != null)
-            {
-                batteryCapacityText.text = $"{controller.CurrentBatteryKWh:F0} / {controller.BatteryCapacityKWh:F0} kWh";
-            }
+            var battery = controller.ConnectedBattery;
+            if (batteryPercentText != null) batteryPercentText.text = battery != null ? $"{batPct:F0}%" : "—";
+            if (batteryCapacityText != null) batteryCapacityText.text = battery != null ? $"{battery.ChargeKWh:F2} / {battery.CapacityKWh:F0} kWh" : "Aucun module batterie raccordé";
             if (batteryFillBar != null)
             {
                 batteryFillBar.fillAmount = batPct / 100f;
-                batteryFillBar.color = batPct > 40f ? colorStable : (batPct > 15f ? colorDischarging : colorCritical);
+                batteryFillBar.color = battery == null ? colorOffline : batPct > 40f ? colorStable : batPct > 15f ? colorDischarging : colorCritical;
             }
-
-            // 4. Bilan Net
             if (netPowerText != null)
             {
-                if (!mainOn)
-                {
-                    netPowerText.text = "DISJONCTEUR COUPÉ";
-                    netPowerText.color = colorOffline;
-                }
-                else if (net >= 0f)
-                {
-                    netPowerText.text = $"+{net:F1} kW (Charge)";
-                    netPowerText.color = colorSurplus;
-                }
-                else
-                {
-                    netPowerText.text = $"{net:F1} kW (Décharge)";
-                    netPowerText.color = colorDischarging;
-                }
+                netPowerText.text = !mainOn ? "DISJONCTEUR COUPÉ" : controller.UnservedKW > 0f ? $"Non desservi : {controller.UnservedKW:F1} kW" :
+                    battery != null && battery.DischargingKW > 0f ? $"Secours : {battery.DischargingKW:F1} kW" :
+                    battery != null && battery.ChargingKW > 0f ? $"Stockage : +{battery.ChargingKW:F1} kW" : $"Surplus : {Mathf.Max(0f, net):F1} kW";
+                netPowerText.color = controller.UnservedKW > 0f ? colorCritical : battery != null && battery.DischargingKW > 0f ? colorDischarging : colorSurplus;
             }
-
-            // 5. Statut Global
             if (gridStatusBadgeText != null)
             {
-                if (!mainOn)
-                {
-                    gridStatusBadgeText.text = "HORS TENSION";
-                    if (gridStatusBadgeBg != null) gridStatusBadgeBg.color = colorCritical;
-                }
-                else if (controller.CurrentMode == PowerGridMode.Emergency)
-                {
-                    gridStatusBadgeText.text = "URGENCE";
-                    if (gridStatusBadgeBg != null) gridStatusBadgeBg.color = colorCritical;
-                }
-                else if (net < -0.1f)
-                {
-                    gridStatusBadgeText.text = "SUR BATTERIE";
-                    if (gridStatusBadgeBg != null) gridStatusBadgeBg.color = colorDischarging;
-                }
-                else
-                {
-                    gridStatusBadgeText.text = "STABLE";
-                    if (gridStatusBadgeBg != null) gridStatusBadgeBg.color = colorStable;
-                }
+                gridStatusBadgeText.text = !mainOn ? "COUPÉ" : controller.ConnectedBase == null ? "BASE DÉBRANCHÉE" : controller.UnservedKW > 0f ? "DÉLESTAGE" :
+                    battery != null && battery.DischargingKW > 0f ? "SUR BATTERIE" : controller.ConnectedBase.IsSupplied ? "ALIMENTÉE" : "HORS TENSION";
+                if (gridStatusBadgeBg != null) gridStatusBadgeBg.color = controller.UnservedKW > 0f ? colorCritical : controller.ConnectedBase == null ? colorOffline : colorStable;
             }
 
             // 6. Mode Badge

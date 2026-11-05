@@ -41,8 +41,14 @@ public class PlayerBaseController : MonoBehaviour
     public bool canMove = true;
     public bool isFirstPerson = true;
 
+    [Header("Déconstruction")]
+    [SerializeField] private Item _cutterItem;
+    [SerializeField] private HotbarUI _deconstructionHotbar;
+    private ModuleDeconstructionController _deconstruction;
+
     private CharacterController characterController;
     private BuilderController builderController;
+    private InventoryUI cachedInventoryUI;
     private float verticalVelocity = 0f;
     private float cameraPitch = 0f;
     private Vector3 defaultCameraLocalPos = new Vector3(0f, 0.75f, 0f);
@@ -69,10 +75,16 @@ public class PlayerBaseController : MonoBehaviour
         Debug.Log($"[PlayerBaseController] Awake() - Position initiale du joueur : {transform.position}");
         characterController = GetComponent<CharacterController>();
         builderController = GetComponent<BuilderController>();
+        if (inventoryUI != null)
+        {
+            cachedInventoryUI = inventoryUI.GetComponentInParent<InventoryUI>(true)
+                ?? inventoryUI.GetComponentInChildren<InventoryUI>(true);
+        }
         if (GetComponent<EquipmentPlacementController>() == null)
         {
             gameObject.AddComponent<EquipmentPlacementController>();
         }
+        _deconstruction = new ModuleDeconstructionController(_cutterItem, _deconstructionHotbar, cachedInventoryUI);
         inputActions = new InputSystem_Actions();
         if (cameraTransform == null)
         {
@@ -87,15 +99,28 @@ public class PlayerBaseController : MonoBehaviour
 
     private void OnEnable()
     {
+        inputActions.Player.Attack.started += OnDeconstructionAttack;
+        inputActions.Player.Attack.performed += OnDeconstructionAttack;
+        inputActions.Player.Attack.canceled += OnDeconstructionAttack;
         inputActions.Player.Enable();
         // When enabled, force sync physics transforms so CharacterController recognizes the position
         Physics.SyncTransforms();
         Debug.Log($"[PlayerBaseController] OnEnable() - Position : {transform.position}");
     }
 
+    private void OnDeconstructionAttack(UnityEngine.InputSystem.InputAction.CallbackContext context)
+    {
+        _deconstruction?.SetAttack(!context.canceled);
+    }
+
     private void OnDisable()
     {
+        inputActions.Player.Attack.started -= OnDeconstructionAttack;
+        inputActions.Player.Attack.performed -= OnDeconstructionAttack;
+        inputActions.Player.Attack.canceled -= OnDeconstructionAttack;
         inputActions.Player.Disable();
+        _deconstruction?.SetAttack(false);
+        _deconstruction?.Cancel();
     }
 
     private void Start()
@@ -246,11 +271,21 @@ public class PlayerBaseController : MonoBehaviour
         if (hotbarUI != null) hotbarUI.RefreshUI();
     }
 
+    private bool DeconstructionBlocked => !canMove || isInventoryOpen || isBlueprintOpen ||
+        (MainMenuController.Instance != null && MainMenuController.Instance.isMenuOpen) ||
+        (EarthBaseController.Instance != null && EarthBaseController.Instance.isHubUIOpen) ||
+        (CraftingSystem.CraftingUIManager.Instance != null && CraftingSystem.CraftingUIManager.Instance.IsOpen) ||
+        (builderController != null && builderController.isBuildModeActive) ||
+        BuildingSystem.Electricity.BaseBatteryTerminalUI.AnyOpen ||
+        (BuildingSystem.Electricity.BaseElectricityTerminalUI.Instance != null && BuildingSystem.Electricity.BaseElectricityTerminalUI.Instance.IsOpen) ||
+        (BuildingSystem.Cables.CableInteractionManager.Instance != null &&
+            (BuildingSystem.Cables.CableInteractionManager.Instance.InteractionsBlocked || BuildingSystem.Cables.CableInteractionManager.Instance.IsCarryingCable));
+
     private void Update()
     {
-        
         HandleInventoryInput();
         HandleBlueprintInput();
+        if (DeconstructionBlocked) _deconstruction?.Cancel();
 
         // Don't process player movement when main menu, pause, or Hub UI/Inventory is open
         if (MainMenuController.Instance != null && MainMenuController.Instance.isMenuOpen)
@@ -283,6 +318,7 @@ public class PlayerBaseController : MonoBehaviour
         HandleMovement();
         CheckInteraction();
         HandleBuildMode();
+        _deconstruction?.Tick(cameraTransform, interactRange, DeconstructionBlocked, Time.deltaTime);
         HandleInteractionInput();
         HandleLight();
     }
@@ -307,11 +343,11 @@ public class PlayerBaseController : MonoBehaviour
         if (hotbarUI != null)
         {
             Item selectedItem = hotbarUI.GetSelectedItem();
-            if (selectedItem != null && selectedItem is BuildingSystem.BlueprintItem blueprintItem)
+            if (selectedItem != null && selectedItem.IsConstructible)
             {
-                if (builderController.currentModuleToBuild != blueprintItem.moduleData)
+                if (builderController.currentModuleToBuild != selectedItem.moduleData)
                 {
-                    builderController.EnterBuildMode(blueprintItem.moduleData);
+                    builderController.EnterBuildMode(selectedItem.moduleData);
                 }
             }
             else if (selectedItem != null && builderController.IsWelder(selectedItem))
@@ -344,6 +380,8 @@ public class PlayerBaseController : MonoBehaviour
         if (inputActions.Player.Inventory.WasPressedThisFrame() || (Keyboard.current != null && Keyboard.current.iKey.wasPressedThisFrame))
         {
             // Do not toggle inventory if we are in other UI modes
+            if (BuildingSystem.Electricity.BaseBatteryTerminalUI.AnyOpen ||
+                (BuildingSystem.Electricity.BaseElectricityTerminalUI.Instance != null && BuildingSystem.Electricity.BaseElectricityTerminalUI.Instance.IsOpen)) return;
             if (MainMenuController.Instance != null && MainMenuController.Instance.isMenuOpen) return;
             if (EarthBaseController.Instance != null && EarthBaseController.Instance.isHubUIOpen) return;
             if (CraftingSystem.CraftingUIManager.Instance != null && CraftingSystem.CraftingUIManager.Instance.IsOpen) return;
@@ -353,6 +391,10 @@ public class PlayerBaseController : MonoBehaviour
             if (inventoryUI != null)
             {
                 inventoryUI.SetActive(isInventoryOpen);
+                if (isInventoryOpen && cachedInventoryUI != null)
+                {
+                    cachedInventoryUI.RefreshUI();
+                }
             }
 
             if (isInventoryOpen || isBlueprintOpen)
@@ -373,6 +415,8 @@ public class PlayerBaseController : MonoBehaviour
         if (inputActions.Player.Construction.WasPressedThisFrame())
         {
             // Do not toggle blueprint UI if we are in other UI modes
+            if (BuildingSystem.Electricity.BaseBatteryTerminalUI.AnyOpen ||
+                (BuildingSystem.Electricity.BaseElectricityTerminalUI.Instance != null && BuildingSystem.Electricity.BaseElectricityTerminalUI.Instance.IsOpen)) return;
             if (MainMenuController.Instance != null && MainMenuController.Instance.isMenuOpen) return;
             if (EarthBaseController.Instance != null && EarthBaseController.Instance.isHubUIOpen) return;
             if (CraftingSystem.CraftingUIManager.Instance != null && CraftingSystem.CraftingUIManager.Instance.IsOpen) return;
@@ -501,6 +545,8 @@ public class PlayerBaseController : MonoBehaviour
                 currentInteractable.Interact();
             }
         }
+
+        if (_deconstruction != null && _deconstruction.HasCutter) return;
 
         bool attackPressed = inputActions.Player.Attack.WasPressedThisFrame() || 
             (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame);
@@ -633,6 +679,10 @@ public class PlayerBaseController : MonoBehaviour
                     : $"[Clic Gauche] Poser : {builderController.currentModuleToBuild.moduleName}  |  [Molette] Tourner  |  [Clic Droit] Annuler";
                 GUI.Label(new Rect(centerX - 250, centerY + 18, 500, 30), prompt, style);
             }
+        }
+        else if (_deconstruction != null && _deconstruction.HasPrompt && !DeconstructionBlocked)
+        {
+            _deconstruction.DrawPrompt(centerX, centerY);
         }
         else if (currentMineable != null)
         {

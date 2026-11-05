@@ -12,10 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a99fff7af65f5b4ebd7acf4b740013a, type: 3}
   m_Name: ModuleSerre
   m_EditorClassIdentifier: Assembly-CSharp::BaseModuleData
-  moduleName: Module Serre
-  description: "Serre agricole pressuris\xE9e pour la recherche biologique et la r\xE9g\xE9n\xE9ration d'O2."
-  icon: {fileID: 21300000, guid: 572b89a73ca085c42a710e25baf2b009, type: 3}
+  _item: {fileID: 11400000, guid: 798e3b474db62464b9bd696a461ed21a, type: 2}
   ghostPrefab: {fileID: 8351717162750960932, guid: d87e7817caac3f24788628c07f1c8897, type: 3}
   finalPrefab: {fileID: 4133227637356014331, guid: b8e93ad3959e6454a97752848573cb71, type: 3}
+  groundPlacementOnly: 0
   baseConstructionTime: 12
   resourceCosts: []

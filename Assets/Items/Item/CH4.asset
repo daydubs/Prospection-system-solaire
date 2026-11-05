@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: de710cc37b178ac41bdc90fbef7a5c3b, type: 3}
+  m_Name: CH4
+  m_EditorClassIdentifier: Assembly-CSharp::InventoryFramework.Item
+  id: 5437
+  itemName: CH4
+  description: Bouteil de CH4 creer par le sabatier
+  icon: {fileID: 21300000, guid: 0cd4628ead87fdb429939d6acfd56d3d, type: 3}
+  maxStack: 20
+  model: {fileID: 2258234829991161683, guid: 33324f7941396674ca31ee2f7d163783, type: 3}
+  basePrice: 0
+  _isConstructible: 0
+  _moduleData: {fileID: 0}
+  _batteryDefinition: {fileID: 0}
+  itemColor: {r: 1, g: 1, b: 1, a: 1}

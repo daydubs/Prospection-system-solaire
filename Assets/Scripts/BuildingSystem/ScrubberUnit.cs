@@ -45,6 +45,11 @@ public class ScrubberUnit : MonoBehaviour, IPromptInteractable
         hostSocket = socket;
         scrubberItem = item;
         isOperational = true;
+        if (hostSocket != null)
+        {
+            var receiver = hostSocket.GetComponentInParent<BuildingSystem.Electricity.BasePowerReceiver>();
+            if (receiver != null) receiver.RefreshMountedConsumers();
+        }
     }
 
     private void Update()
@@ -81,38 +86,34 @@ public class ScrubberUnit : MonoBehaviour, IPromptInteractable
     /// <summary>
     /// Dismantles the scrubber and returns the item to the player.
     /// </summary>
+    public bool TryDismantle(Inventory inventory, Hotbar hotbar, out string reason)
+    {
+        reason = null;
+        if (!isActiveAndEnabled || hostSocket == null || hostSocket.occupiedEquipment != gameObject || scrubberItem == null)
+        { reason = "Équipement non monté ou item manquant"; return false; }
+        var refund = new System.Collections.Generic.Dictionary<Item, int> { { scrubberItem, 1 } };
+        if (!InventoryRefundTransaction.TryApply(refund, inventory, hotbar, true, out reason)) return false;
+        var receiver = hostSocket.GetComponentInParent<BuildingSystem.Electricity.BasePowerReceiver>();
+        hostSocket.SetOccupied(false, null);
+        isOperational = false;
+        gameObject.SetActive(false);
+        if (receiver != null) receiver.RefreshMountedConsumers();
+        Destroy(gameObject);
+        return true;
+    }
+
     public void Dismantle()
     {
-        if (hostSocket != null)
+        var inventory = GameManager.Instance != null ? GameManager.Instance.playerInventory : Inventory.Instance;
+        if (!TryDismantle(inventory, inventory != null ? inventory.hotbar : null, out string reason))
         {
-            hostSocket.SetOccupied(false, null);
+            if (MainMenuController.Instance != null) MainMenuController.Instance.ShowNotification(reason);
+            return;
         }
-
-        if (scrubberItem != null)
-        {
-            var hotbar = Object.FindAnyObjectByType<Hotbar>();
-            bool added = hotbar != null && hotbar.AddItem(scrubberItem, 1);
-            if (!added && GameManager.Instance != null)
-            {
-                added = GameManager.Instance.AddPlayerItem(scrubberItem, 1);
-            }
-
-            var hotbarUI = Object.FindAnyObjectByType<HotbarUI>();
-            if (hotbarUI != null) hotbarUI.RefreshUI();
-            var invUI = Object.FindAnyObjectByType<InventoryUI>();
-            if (invUI != null) invUI.RefreshUI();
-        }
-
-        if (AudioManager.Instance != null)
-        {
-            AudioManager.Instance.PlayConstructionSound();
-        }
-
-        if (MainMenuController.Instance != null)
-        {
-            MainMenuController.Instance.ShowNotification("Scrubber démonté et récupéré dans l'inventaire.");
-        }
-
-        Destroy(gameObject);
+        var hotbarUI = Object.FindAnyObjectByType<HotbarUI>();
+        if (hotbarUI != null) hotbarUI.RefreshUI();
+        var invUI = Object.FindAnyObjectByType<InventoryUI>();
+        if (invUI != null) invUI.RefreshUI();
+        if (MainMenuController.Instance != null) MainMenuController.Instance.ShowNotification("Scrubber retiré et récupéré.");
     }
 }

@@ -56,6 +56,7 @@
     <Analyzer Include="C:\Program Files\Unity\Hub\Editor\6000.6.3f1\Editor\Data\BCLExtensions\TargetingPacks\netstandard2.1\analyzers\dotnet\roslyn4.0\cs\System.Text.Json.SourceGeneration.dll" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Scripts\Inventory\BatteryInventoryTransfer.cs" />
     <Compile Include="Assets\Scripts\Managers\AudioManager.cs" />
     <Compile Include="Assets\Scripts\Inventory\InventorySlot.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_TextEventHandler.cs" />
@@ -76,13 +77,17 @@
     <Compile Include="Assets\Scripts\resources\EnvironmentalResourceManager.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark02.cs" />
     <Compile Include="Assets\Scripts\BuildingSystem\InputSystemFixer.cs" />
+    <Compile Include="Assets\Scripts\Inventory\BatteryInstanceState.cs" />
     <Compile Include="Assets\Scripts\Managers\GameManager.cs" />
     <Compile Include="Assets\Scripts\Inventory\Player.cs" />
     <Compile Include="Assets\Scripts\BuildingSystem\Cables\ElectricConnectorSocket.cs" />
+    <Compile Include="Assets\Scripts\BuildingSystem\Electricity\BaseBatteryTerminalUI.cs" />
     <Compile Include="Assets\Scripts\SaveSystem\GameDataModels.cs" />
+    <Compile Include="Assets\Scripts\BuildingSystem\Industry\FrozenGroundProbe.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_ExampleScript_01.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMPro_InstructionOverlay.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\VertexShakeB.cs" />
+    <Compile Include="Assets\Scripts\BuildingSystem\Electricity\BasePowerReceiver.cs" />
     <Compile Include="Assets\Scripts\BuildingSystem\ModuleSocket.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\VertexJitter.cs" />
     <Compile Include="Assets\Scripts\BuildingSystem\Electricity\BaseElectricityController.cs" />
@@ -94,12 +99,14 @@
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\VertexZoom.cs" />
     <Compile Include="Assets\Scripts\Managers\SolarSystemManager.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_TextSelector_B.cs" />
+    <Compile Include="Assets\Scripts\BuildingSystem\ModuleRefundReceipt.cs" />
     <Compile Include="Assets\Scripts\Inventory\OxygenBottleItem.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\SkewTextExample.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\WarpTextExample.cs" />
     <Compile Include="Assets\Planet Earth Free\SpinFree.cs" />
     <Compile Include="Assets\Scripts\Inventory\ItemPickupHandler.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\ShaderPropAnimator.cs" />
+    <Compile Include="Assets\Scripts\BuildingSystem\Electricity\BaseSolarPowerSource.cs" />
     <Compile Include="Assets\Scripts\BuildingSystem\BuilderController.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_TextInfoDebugTool.cs" />
     <Compile Include="Assets\Scripts\Inventory\HotbarUI.cs" />
@@ -108,6 +115,7 @@
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\VertexShakeA.cs" />
     <Compile Include="Assets\Scripts\BuildingSystem\Electricity\BaseElectricityWorldScreenUI.cs" />
     <Compile Include="Assets\Scripts\SolarSystem\ui\SolarSystemUI.cs" />
+    <Compile Include="Assets\Scripts\BuildingSystem\Industry\SabatierUnit.cs" />
     <Compile Include="Assets\Scripts\Inventory\InventorySlotUI.cs" />
     <Compile Include="Assets\Scripts\Controllers\SpaceshipFlightController.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark01_UGUI.cs" />
@@ -115,7 +123,6 @@
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark04.cs" />
     <Compile Include="Assets\Scripts\SolarSystem\CelestialBody.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\ChatController.cs" />
-    <Compile Include="Assets\Scripts\BuildingSystem\BlueprintItem.cs" />
     <Compile Include="Assets\Scripts\Inventory\PickupItem.cs" />
     <Compile Include="Assets\Scripts\BuildingSystem\Cables\CableConnectorSocket.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_DigitValidator.cs" />
@@ -135,8 +142,11 @@
     <Compile Include="Assets\Scripts\BuildingSystem\BlueprintUIManager.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark03.cs" />
     <Compile Include="Assets\Scripts\Interface\IPromptInteractable.cs" />
+    <Compile Include="Assets\Scripts\Inventory\BatteryDefinition.cs" />
     <Compile Include="Assets\Scripts\SolarSystem\FaceCamera.cs" />
     <Compile Include="Assets\Scripts\BuildingSystem\EquipmentSocket.cs" />
+    <Compile Include="Assets\Scripts\BuildingSystem\ConstructedModule.cs" />
+    <Compile Include="Assets\Scripts\BuildingSystem\Electricity\BaseBatteryModule.cs" />
     <Compile Include="Assets\Scripts\Inventory\FPSController.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\VertexColorCycler.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\DropdownSample.cs" />
@@ -146,6 +156,7 @@
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_PhoneNumberValidator.cs" />
     <Compile Include="Assets\Scenes\Terrains\TerrainToObjExporter.cs" />
     <Compile Include="Assets\Scripts\BuildingSystem\EquipmentPlacementController.cs" />
+    <Compile Include="Assets\Scripts\BuildingSystem\Industry\CrusherBatterySocket.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TextConsoleSimulator.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TeleType.cs" />
     <Compile Include="Assets\Scripts\SolarSystem\SolarSystemBuilder.cs" />
@@ -155,8 +166,10 @@
     <Compile Include="Assets\Scripts\BuildingSystem\BaseModuleData.cs" />
     <Compile Include="Assets\Scripts\Debug\MovementLogger.cs" />
     <Compile Include="Assets\Scripts\Crafting\LanderCraftingStation.cs" />
+    <Compile Include="Assets\Scripts\Inventory\InventoryRefundTransaction.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TextMeshProFloatingText.cs" />
     <Compile Include="Assets\Scripts\SolarSystem\CelestialSkyFollow.cs" />
+    <Compile Include="Assets\Scripts\BuildingSystem\ModuleDeconstructionController.cs" />
     <Compile Include="Assets\Scripts\BuildingSystem\Industry\RigUnit.cs" />
     <Compile Include="Assets\Scripts\Controllers\StationRotator.cs" />
     <Compile Include="Assets\Scripts\Crafting\CraftingRecipeRowUI.cs" />
@@ -182,6 +195,7 @@
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile SSD.shader" />
     <None Include="Assets\TextMesh Pro\Resources\LineBreaking Leading Characters.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMPro_Properties.cginc" />
+    <None Include="Assets\Shaders\SpaceSkybox.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\TMPro_Surface.cginc" />
     <None Include="Assets\TextMesh Pro\Resources\LineBreaking Following Characters.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile Masking.shader" />

@@ -11,6 +11,9 @@ namespace BuildingSystem.Industry
         [Header("Production")]
         [SerializeField, Min(0.1f)] private float extractionInterval = 5f;
         [SerializeField] private int totalExtracted;
+        [SerializeField, Min(0.001f)] private float chargePerSecond = 0.1f;
+        private ElectricConnectorSocket _lastPowerPeer;
+        private CrusherUnit _powerProvider;
         private float _progress;
         private CableConnectorSocket _lastPeer;
         private CrusherUnit _destination;
@@ -30,13 +33,20 @@ namespace BuildingSystem.Industry
                 _lastPeer = peer;
                 _destination = peer != null ? peer.GetComponentInParent<CrusherUnit>() : null;
             }
-            if (!IsPowered || peer == null || _destination == null ||
-                _destination.RubbleInput != peer || !_destination.CanAcceptRubble || deltaTime <= 0f) return;
-            _progress += deltaTime;
-            float interval = Mathf.Max(0.1f, extractionInterval);
-            while (_progress >= interval && _destination.TryReceiveRubble(1))
+            var powerPeer = powerInput != null ? powerInput.ConnectedSocket : null;
+            if (powerPeer != _lastPowerPeer)
             {
-                _progress -= interval;
+                _lastPowerPeer = powerPeer;
+                _powerProvider = powerPeer != null ? powerPeer.GetComponentInParent<CrusherUnit>() : null;
+            }
+            if (!IsPowered || _powerProvider == null || _powerProvider.PowerOutput != powerPeer || peer == null || _destination == null ||
+                _destination.RubbleInput != peer || !_destination.CanAcceptRubble || deltaTime <= 0f) return;
+            float interval = Mathf.Max(0.1f, extractionInterval);
+            float usefulTime = Mathf.Max(0f, _destination.RemainingInputCapacity * interval - _progress);
+            _progress += _powerProvider.ConsumeWork(Mathf.Min(deltaTime, usefulTime), Mathf.Max(0.001f, chargePerSecond));
+            while (_progress + 0.000001f >= interval && _destination.TryReceiveRubble(1))
+            {
+                _progress = Mathf.Max(0f, _progress - interval);
                 totalExtracted++;
             }
             if (!_destination.CanAcceptRubble) _progress = 0f;

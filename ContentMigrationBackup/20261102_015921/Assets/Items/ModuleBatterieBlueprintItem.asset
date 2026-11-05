@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7ef6a9df9ad8ced49b236c658b1cdcb9, type: 3}
+  m_Name: ModuleBatterieBlueprintItem
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingSystem.BlueprintItem
+  id: 672
+  itemName: Module Batterie
+  description: Accumulateur de charge pour la base
+  icon: {fileID: 21300000, guid: fea33495d3eab1742928c5d6b2a651b3, type: 3}
+  maxStack: 1
+  model: {fileID: 4389652489375618052, guid: a89e173d45f1ff8448940e37ddfcf863, type: 3}
+  basePrice: 0
+  _batteryDefinition: {fileID: 0}
+  itemColor: {r: 1, g: 1, b: 1, a: 1}
+  moduleData: {fileID: 11400000, guid: 5ab217ba004f4304faafb68db8683367, type: 2}

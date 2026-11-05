@@ -296,6 +296,9 @@ MonoBehaviour:
   icon: {fileID: 3880050040427040273}
   rectTransform: {fileID: 5915549428124141045}
   offset: {x: 150, y: 100}
+  _informationAnchor: {fileID: 0}
+  _panelHeight: 300
+  _panelGap: 18
 --- !u!1 &702766830864486768
 GameObject:
   m_ObjectHideFlags: 0
@@ -1388,6 +1391,9 @@ MonoBehaviour:
   iceResourceItem: {fileID: 11400000, guid: 24f70559d8f007b4c964681d996ae13e, type: 2}
   oxygenBottleItem: {fileID: 11400000, guid: 147061b2f212ad44994a2b532545080b, type: 2}
   hotbar: {fileID: 0}
+  references:
+    version: 2
+    RefIds: []
 --- !u!114 &3098013362035159237
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1402,6 +1408,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::InventoryFramework.Hotbar
   size: 9
   slots: []
+  references:
+    version: 2
+    RefIds: []
 --- !u!114 &3194669385281167160
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3458,6 +3467,9 @@ MonoBehaviour:
   icon: {fileID: 990064437643434806}
   rectTransform: {fileID: 1119544906983621289}
   offset: {x: 150, y: 100}
+  _informationAnchor: {fileID: 0}
+  _panelHeight: 300
+  _panelGap: 18
 --- !u!1 &5856146830426689308
 GameObject:
   m_ObjectHideFlags: 0
@@ -4488,6 +4500,8 @@ MonoBehaviour:
   isBlueprintOpen: 0
   canMove: 1
   isFirstPerson: 1
+  _cutterItem: {fileID: 11400000, guid: ad38004217d0e484e86fd7986b02e345, type: 2}
+  _deconstructionHotbar: {fileID: 3194669385281167160}
   mainMenuUI: {fileID: 0}
 --- !u!114 &7525321430234813090
 MonoBehaviour:

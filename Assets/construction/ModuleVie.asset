@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a99fff7af65f5b4ebd7acf4b740013a, type: 3}
   m_Name: ModuleVie
   m_EditorClassIdentifier: Assembly-CSharp::BaseModuleData
-  moduleName: Module de Vie
-  description: "Quartiers d'habitation pressuris\xE9s offrant repos et stockage aux explorateurs."
-  icon: {fileID: 21300000, guid: 8f40bca7c1ab15145ac410354e0d102c, type: 3}
+  _item: {fileID: 11400000, guid: b7eb7f0389df2524cbad6bc4d62d9a80, type: 2}
   ghostPrefab: {fileID: 824532863949388548, guid: 1aad55d35765bd34baaa47c59a5db314, type: 3}
   finalPrefab: {fileID: 6558908271808370394, guid: 84e34fe7969860c438c7eaf58f036228, type: 3}
+  groundPlacementOnly: 0
+  _deconstructionRecipe: {fileID: 0}
   baseConstructionTime: 12
   resourceCosts: []

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 73db9203e5cc1a547b31f72c14a2ab2a, type: 3}
   m_Name: Recipe_Plaque
   m_EditorClassIdentifier: Assembly-CSharp::CraftingSystem.CraftingRecipe
-  recipeName: Plaque de Blindage
+  recipeName: 
   category: Composants
   description: "Feuille de blindage thermique et m\xE9canique forg\xE9e par l'imprimante 3D."
   outputItem: {fileID: 11400000, guid: b9fbebb4530e9914cb02eb8286e84100, type: 2}

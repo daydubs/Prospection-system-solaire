@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 73db9203e5cc1a547b31f72c14a2ab2a, type: 3}
   m_Name: Recipe_verre
   m_EditorClassIdentifier: Assembly-CSharp::CraftingSystem.CraftingRecipe
-  recipeName: Glass Plate
+  recipeName: 
   category: Composants
   description: Une plaque de verre
   outputItem: {fileID: 11400000, guid: 3b0b95a644b528e409e57c7dc5b52217, type: 2}

@@ -12,13 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a99fff7af65f5b4ebd7acf4b740013a, type: 3}
   m_Name: Crusher
   m_EditorClassIdentifier: Assembly-CSharp::BaseModuleData
-  moduleName: Crusher
-  description: 'Broie les gravats recolter par la foreuse industriel et les reduit en poudre utilisable dans l''imprimente 3D
-
-'
-  icon: {fileID: 21300000, guid: 1cf0b9779aa4b924388485fa2909d248, type: 3}
+  _item: {fileID: 11400000, guid: ebfe457a712bda34381671c0b5dfc39d, type: 2}
   ghostPrefab: {fileID: 7916075124192425394, guid: 955bf0385daa82049a79ac541fd1694c, type: 3}
   finalPrefab: {fileID: 1754124327537575199, guid: fc22fe3d7d9206540a098a8f646fadea, type: 3}
   groundPlacementOnly: 1
+  _deconstructionRecipe: {fileID: 11400000, guid: 4612f041abd31f2498363529edd463b2, type: 2}
   baseConstructionTime: 5
   resourceCosts: []

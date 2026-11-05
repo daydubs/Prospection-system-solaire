@@ -1,0 +1,173 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &3544534762279551132
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2968055820852366918}
+  m_Layer: 0
+  m_Name: ExtractionPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2968055820852366918
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3544534762279551132}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -0.00051879877, z: -0.0003779125}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1387675311512074467}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &1497651567950356232
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: a64d42e243f05ca42b815bd6b9225b96, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 676.53735
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: a64d42e243f05ca42b815bd6b9225b96, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 10.942462
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: a64d42e243f05ca42b815bd6b9225b96, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 348.47565
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: a64d42e243f05ca42b815bd6b9225b96, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.7071067
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: a64d42e243f05ca42b815bd6b9225b96, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: a64d42e243f05ca42b815bd6b9225b96, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: a64d42e243f05ca42b815bd6b9225b96, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: a64d42e243f05ca42b815bd6b9225b96, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: a64d42e243f05ca42b815bd6b9225b96, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: a64d42e243f05ca42b815bd6b9225b96, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: a64d42e243f05ca42b815bd6b9225b96, type: 3}
+      propertyPath: m_Name
+      value: ReacteurSabatierPrefab
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: a64d42e243f05ca42b815bd6b9225b96, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2968055820852366918}
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: a64d42e243f05ca42b815bd6b9225b96, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2552913467518092241}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: a64d42e243f05ca42b815bd6b9225b96, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5448977515894423001}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: a64d42e243f05ca42b815bd6b9225b96, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 788305367281021322}
+  m_SourcePrefab: {fileID: 100100000, guid: a64d42e243f05ca42b815bd6b9225b96, type: 3}
+--- !u!4 &1387675311512074467 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: a64d42e243f05ca42b815bd6b9225b96, type: 3}
+  m_PrefabInstance: {fileID: 1497651567950356232}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1732148608518709849 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: a64d42e243f05ca42b815bd6b9225b96, type: 3}
+  m_PrefabInstance: {fileID: 1497651567950356232}
+  m_PrefabAsset: {fileID: 0}
+--- !u!65 &2552913467518092241
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1732148608518709849}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.015434915, y: 0.012531423, z: 0.021627564}
+  m_Center: {x: 6.9849193e-10, y: -0.00051890826, z: 0.009935865}
+--- !u!114 &5448977515894423001
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1732148608518709849}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 93084c04600089a4face541af4f6e3fc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingSystem.Industry.FrozenGroundProbe
+  _iceLayer: {fileID: 8574412962073106934, guid: 2571cea1e59792543b86613792be6133, type: 2}
+  _extractionPoint: {fileID: 2968055820852366918}
+  _minimumWeight: 0.5
+  _checkInterval: 0.5
+  _rayHeight: 0.5
+  _rayDistance: 1.5
+--- !u!114 &788305367281021322
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1732148608518709849}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a9b4f0926ce51df418c9a82119599d40, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingSystem.Industry.SabatierUnit
+  _groundProbe: {fileID: 5448977515894423001}
+  _waterItem: {fileID: 11400000, guid: 93600b20fc77cc14ba75713bb41361c4, type: 2}
+  _ch4Item: {fileID: 11400000, guid: da8525a61f7487849829c21507e16bff, type: 2}
+  _productionInterval: 10
+  _waterPerCycle: 1
+  _ch4PerCycle: 1
+  _waterCapacity: 10
+  _ch4Capacity: 10
+  _waterStock: 0
+  _ch4Stock: 0

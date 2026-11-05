@@ -145,7 +145,7 @@ SphereCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 0.002
+  m_Radius: 0.0018000001
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &125395159187805887
 MonoBehaviour:
@@ -159,6 +159,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 533956b0d5a6f804bb8be13a4b20e285, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BuildingSystem.Cables.ElectricConnectorSocket
+  _baseEndpoint: 1
+  portRole: 2
+  maximumLength: 15
   socketDisplayName: Panneau Solaire
   hasStoredCable: 1
   cableRenderer: {fileID: 0}
@@ -348,6 +351,13 @@ MonoBehaviour:
   lengthSegments: 28
   radialSegments: 8
   uvTilePerMeter: 3
+  followGround: 0
+  groundMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  groundClearance: 0.025
+  groundProbeHeight: 30
+  endTransitionLength: 1
 --- !u!1 &9128547052880153616
 GameObject:
   m_ObjectHideFlags: 0
@@ -500,6 +510,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: e09f2665133465e4da70dfadf1c75d57, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2799303884545258757}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: e09f2665133465e4da70dfadf1c75d57, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7710422116460360251}
   m_SourcePrefab: {fileID: 100100000, guid: e09f2665133465e4da70dfadf1c75d57, type: 3}
 --- !u!4 &2368750447043938689 stripped
 Transform:
@@ -533,3 +546,17 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: -3215380537264159994, guid: e09f2665133465e4da70dfadf1c75d57, type: 3}
+--- !u!114 &7710422116460360251
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3140325432162407227}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3687412a4e0cdfb4e956d45d7e980996, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingSystem.Electricity.BaseSolarPowerSource
+  _outputSocket: {fileID: 125395159187805887}
+  _generating: 1

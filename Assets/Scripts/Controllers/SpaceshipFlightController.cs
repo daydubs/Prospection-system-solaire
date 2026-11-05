@@ -632,23 +632,17 @@ public class SpaceshipFlightController : MonoBehaviour
             cameraMountPoint.localRotation = Quaternion.Slerp(cameraMountPoint.localRotation, targetRot, 5f * Time.deltaTime);
         }
 
-        if (currentMode == FlightMode.OrbitInspect)
+        if (cameraMountPoint != null)
         {
-            shipCamera.transform.position = transform.position;
-            shipCamera.transform.rotation = transform.rotation;
+            shipCamera.transform.position = cameraMountPoint.position;
+            shipCamera.transform.rotation = cameraMountPoint.rotation;
         }
         else
         {
-            if (cameraMountPoint != null)
-            {
-                shipCamera.transform.position = cameraMountPoint.position;
-                shipCamera.transform.rotation = cameraMountPoint.rotation;
-            }
-            else
-            {
-                shipCamera.transform.position = transform.position;
-                shipCamera.transform.rotation = transform.rotation;
-            }
+            Vector3 offset = isFirstPersonView ? firstPersonCameraOffset : thirdPersonCameraOffset;
+            shipCamera.transform.position = transform.TransformPoint(offset);
+            shipCamera.transform.rotation = transform.rotation *
+                (isFirstPersonView ? Quaternion.identity : Quaternion.Euler(8f, 0f, 0f));
         }
     }
 }

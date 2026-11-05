@@ -1,0 +1,358 @@
+using System;
+using UnityEngine;
+
+namespace BuildingSystem.Cables
+{
+    public enum SocketConnectionState
+    {
+        Disconnected,
+        Carrying,
+        Connected
+    }
+
+    /// <summary>
+    /// Interactive electrical socket for modular base elements.
+    /// Can house a flexible power conduit/cable, allow the player to extend and plug it into another socket,
+    /// and triggers power distribution events.
+    /// </summary>
+    [RequireComponent(typeof(Collider))]
+    public class ElectricConnectorSocket : CableConnectorSocket
+    {
+        public override CableKind Kind => CableKind.Electricity;
+        public override CableConnectorSocket Peer => connectedSocket;
+        public override GameObject PlugPrefab => plugPrefab;
+        public override void ConnectTo(CableConnectorSocket target)
+        {
+            if (target is ElectricConnectorSocket electric) ConnectTo(electric, true);
+        }
+
+        [Header("Socket Identification")]
+        [Tooltip("Display name shown in the HUD prompt.")]
+        [SerializeField] private string socketDisplayName = "Prise Électrique";
+
+        [Tooltip("True if this socket contains the spool/cable by default.")]
+        [SerializeField] private bool hasStoredCable = false;
+
+        [Header("Linked Cable & Prefabs")]
+        [Tooltip("Reference to the flexible cable renderer.")]
+        [SerializeField] private FlexibleCableRenderer cableRenderer;
+
+        [Tooltip("Prefab for the visual plug inserted into the socket.")]
+        [SerializeField] private GameObject plugPrefab;
+
+        [Tooltip("Material used for the flexible cable.")]
+        [SerializeField] private Material cableMaterial;
+
+        [Header("Connected Target")]
+        [Tooltip("Socket currently connected to this one.")]
+        [SerializeField] private ElectricConnectorSocket connectedSocket;
+
+        [Header("Power State")]
+        [Tooltip("Whether electrical power is actively flowing through this socket.")]
+        [SerializeField] private bool isPowered = false;
+
+        [Tooltip("Optional light or emissive indicator to show connection status (Green = connected, Off/Red = disconnected).")]
+        [SerializeField] private Light statusLight;
+
+        [SerializeField] private Color connectedColor = Color.green;
+        [SerializeField] private Color disconnectedColor = Color.red;
+
+        [Header("State (Serialized)")]
+        [SerializeField] private SocketConnectionState state = SocketConnectionState.Disconnected;
+        [SerializeField] private GameObject plugInstance;
+
+        public event Action<bool> OnPowerStateChanged;
+
+        public override SocketConnectionState State => state;
+        public bool IsPowered => isPowered;
+        public override bool HasStoredCable => hasStoredCable;
+        public ElectricConnectorSocket ConnectedSocket => connectedSocket;
+        public override FlexibleCableRenderer CableRenderer => cableRenderer;
+        public override GameObject PlugInstance => plugInstance;
+
+        public void SetPowered(bool powered)
+        {
+            if (isPowered != powered)
+            {
+                isPowered = powered;
+                UpdateVisualFeedback();
+                OnPowerStateChanged?.Invoke(isPowered);
+            }
+            if (PortRole == CablePortRole.Output && connectedSocket != null &&
+                connectedSocket.PortRole == CablePortRole.Input)
+            {
+                connectedSocket.SetPowered(powered && state == SocketConnectionState.Connected);
+            }
+        }
+
+        private void Awake()
+        {
+            Collider col = GetComponent<Collider>();
+            if (plugInstance == null)
+            {
+                Transform existingPlug = transform.Find("ConnectorPlug");
+                if (existingPlug != null) plugInstance = existingPlug.gameObject;
+            }
+            if (col != null)
+            {
+                col.isTrigger = true;
+            }
+
+            UpdateVisualFeedback();
+        }
+
+        private void Start()
+        {
+            // If this socket was saved connected or has a target socket
+            if (state == SocketConnectionState.Connected && connectedSocket != null)
+            {
+                if (hasStoredCable)
+                {
+                    ElectricConnectorSocket target = connectedSocket;
+                    connectedSocket = null;
+                    state = SocketConnectionState.Disconnected;
+                    ConnectTo(target, false);
+                }
+                else
+                {
+                    EnsureLocalPlug();
+                }
+            }
+        }
+
+        public override string GetInteractionPrompt()
+        {
+            var manager = CableInteractionManager.Instance;
+            if (manager != null && manager.IsCarryingCable) return manager.GetPrompt(this);
+
+            switch (state)
+            {
+                case SocketConnectionState.Connected:
+                    return $"Débrancher le flexible [{socketDisplayName}]";
+
+                case SocketConnectionState.Carrying:
+                    return $"Rembobiner le flexible [{socketDisplayName}]";
+
+                case SocketConnectionState.Disconnected:
+                default:
+                    return hasStoredCable 
+                        ? $"Dérouler le flexible d'alimentation [{socketDisplayName}]" 
+                        : $"Prise disponible [{socketDisplayName}]";
+            }
+        }
+
+        public override void Interact()
+        {
+            if (CableInteractionManager.Instance == null)
+            {
+                // Fallback direct toggle if no manager in scene
+                ToggleDirectConnection();
+                return;
+            }
+
+            CableInteractionManager.Instance.HandleSocketInteraction(this);
+        }
+
+        /// <summary>
+        /// Initiates pulling the cable from this socket.
+        /// </summary>
+        public override void StartCarryingCable(Transform carryAnchor)
+        {
+            state = SocketConnectionState.Carrying;
+            EnsureCableRenderer();
+
+            if (cableRenderer != null)
+            {
+                cableRenderer.gameObject.SetActive(true);
+                cableRenderer.StartPoint = transform;
+                cableRenderer.EndPoint = carryAnchor;
+
+                EnsureLocalPlug();
+                cableRenderer.StartPlug = plugInstance != null ? plugInstance.transform : null;
+                cableRenderer.RegenerateMesh();
+            }
+
+            UpdateVisualFeedback();
+        }
+
+        /// <summary>
+        /// Connects this socket to a target socket.
+        /// </summary>
+        public void ConnectTo(ElectricConnectorSocket targetSocket, bool notifyTarget = true)
+        {
+            if (!CanConnectTo(targetSocket, out _)) return;
+
+            connectedSocket = targetSocket;
+            state = SocketConnectionState.Connected;
+            if (PortRole != CablePortRole.Output)
+                isPowered = PortRole == CablePortRole.Legacy || (PortRole == CablePortRole.Input && connectedSocket != null && connectedSocket.IsPowered);
+
+EnsureCableRenderer();
+            EnsureLocalPlug();
+            GameObject targetPlug = targetSocket.EnsureLocalPlug();
+
+            if (cableRenderer != null)
+            {
+                cableRenderer.gameObject.SetActive(true);
+                cableRenderer.StartPoint = transform;
+                cableRenderer.EndPoint = targetSocket.transform;
+
+                cableRenderer.StartPlug = plugInstance != null ? plugInstance.transform : null;
+                cableRenderer.EndPlug = targetPlug != null ? targetPlug.transform : null;
+
+                cableRenderer.RegenerateMesh();
+            }
+
+            if (notifyTarget && targetSocket.ConnectedSocket != this)
+            {
+                targetSocket.OnConnectedFrom(this);
+            }
+
+            UpdateVisualFeedback();
+            OnPowerStateChanged?.Invoke(isPowered);
+        }
+
+        public void OnConnectedFrom(ElectricConnectorSocket sourceSocket)
+        {
+            connectedSocket = sourceSocket;
+            state = SocketConnectionState.Connected;
+            if (PortRole != CablePortRole.Output)
+                isPowered = PortRole == CablePortRole.Legacy || (PortRole == CablePortRole.Input && connectedSocket != null && connectedSocket.IsPowered);
+
+EnsureLocalPlug();
+            UpdateVisualFeedback();
+            OnPowerStateChanged?.Invoke(isPowered);
+        }
+
+        /// <summary>
+        /// Disconnects and rewinds the cable back to its resting state.
+        /// </summary>
+        public override void Disconnect()
+        {
+            if (connectedSocket != null && connectedSocket.ConnectedSocket == this)
+            {
+                ElectricConnectorSocket other = connectedSocket;
+                connectedSocket = null;
+                other.Disconnect();
+            }
+
+            connectedSocket = null;
+            state = SocketConnectionState.Disconnected;
+            isPowered = false;
+
+            if (cableRenderer != null)
+            {
+                cableRenderer.EndPlug = null;
+                cableRenderer.EndPoint = null;
+                cableRenderer.gameObject.SetActive(false);
+            }
+
+            if (plugInstance != null)
+            {
+                plugInstance.SetActive(false);
+            }
+
+            UpdateVisualFeedback();
+            OnPowerStateChanged?.Invoke(isPowered);
+        }
+
+        public override GameObject EnsureLocalPlug()
+        {
+            if (plugInstance == null)
+            {
+                // Look for existing child first
+                Transform existing = transform.Find("ConnectorPlug");
+                if (existing != null)
+                {
+                    plugInstance = existing.gameObject;
+                }
+                else if (plugPrefab != null)
+                {
+                    plugInstance = Instantiate(plugPrefab, transform.position, transform.rotation, transform);
+                    plugInstance.name = "ConnectorPlug";
+                }
+                else
+                {
+                    // Create minimal visual placeholder if no prefab
+                    plugInstance = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+                    plugInstance.name = "ConnectorPlug";
+                    plugInstance.transform.SetParent(transform, false);
+                    plugInstance.transform.localRotation = Quaternion.Euler(90, 0, 0);
+                    DestroyImmediate(plugInstance.GetComponent<Collider>());
+                }
+            }
+
+            if (plugInstance != null)
+            {
+                plugInstance.SetActive(true);
+                // Ensure all child objects (e.g. PlugMesh) are also active
+                for (int i = 0; i < plugInstance.transform.childCount; i++)
+                {
+                    plugInstance.transform.GetChild(i).gameObject.SetActive(true);
+                }
+
+                plugInstance.transform.position = transform.position;
+                plugInstance.transform.rotation = transform.rotation;
+
+                // Compensate for any parent scale so world scale is always (1, 1, 1)
+                Vector3 parentLossy = transform.lossyScale;
+                plugInstance.transform.localScale = new Vector3(
+                    parentLossy.x != 0 ? 1f / parentLossy.x : 1f,
+                    parentLossy.y != 0 ? 1f / parentLossy.y : 1f,
+                    parentLossy.z != 0 ? 1f / parentLossy.z : 1f
+                );
+            }
+
+            return plugInstance;
+        }
+
+        private void EnsureCableRenderer()
+        {
+            if (cableRenderer == null)
+            {
+                // Look for existing child or create one
+                cableRenderer = GetComponentInChildren<FlexibleCableRenderer>(true);
+                if (cableRenderer == null)
+                {
+                    GameObject cableObj = new GameObject("FlexibleCable");
+                    cableObj.transform.SetParent(transform, false);
+                    cableRenderer = cableObj.AddComponent<FlexibleCableRenderer>();
+
+                    if (cableMaterial != null)
+                    {
+                        var mr = cableObj.GetComponent<MeshRenderer>();
+                        if (mr != null) mr.sharedMaterial = cableMaterial;
+                    }
+                }
+            }
+        }
+
+        private void ToggleDirectConnection()
+        {
+            if (state == SocketConnectionState.Connected)
+            {
+                Disconnect();
+            }
+            else if (connectedSocket != null)
+            {
+                ConnectTo(connectedSocket);
+            }
+        }
+
+        private void UpdateVisualFeedback()
+        {
+            if (statusLight != null)
+            {
+                statusLight.color = isPowered ? connectedColor : disconnectedColor;
+                statusLight.intensity = isPowered ? 1.5f : 0.4f;
+            }
+        }
+
+        private void OnDrawGizmos()
+        {
+            Gizmos.color = isPowered ? Color.green : (hasStoredCable ? Color.cyan : Color.yellow);
+            Gizmos.DrawWireSphere(transform.position, 0.15f);
+            Gizmos.DrawRay(transform.position, transform.forward * 0.4f);
+        }
+    }
+}

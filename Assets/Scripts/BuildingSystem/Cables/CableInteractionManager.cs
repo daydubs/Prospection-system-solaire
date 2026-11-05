@@ -16,8 +16,11 @@ namespace BuildingSystem.Cables
         private GameObject _carryPlugInstance;
         private UnityEngine.InputSystem.InputAction _cancel;
         public CableConnectorSocket CarryingSourceSocket => _carryingSource;
+        public PlayerBaseController PlayerController => playerController;
         public bool IsCarryingCable => _carryingSource != null;
-        public bool InteractionsBlocked => (playerController != null && (playerController.isInventoryOpen || playerController.isBlueprintOpen)) ||
+        public bool InteractionsBlocked => BuildingSystem.Electricity.BaseBatteryTerminalUI.AnyOpen ||
+            (BuildingSystem.Electricity.BaseElectricityTerminalUI.Instance != null && BuildingSystem.Electricity.BaseElectricityTerminalUI.Instance.IsOpen) ||
+            (playerController != null && (!playerController.canMove || playerController.isInventoryOpen || playerController.isBlueprintOpen)) ||
             (builderController != null && builderController.isBuildModeActive) ||
             (MainMenuController.Instance != null && MainMenuController.Instance.isMenuOpen) ||
             (CraftingSystem.CraftingUIManager.Instance != null && CraftingSystem.CraftingUIManager.Instance.IsOpen);

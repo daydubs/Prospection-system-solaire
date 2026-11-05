@@ -127,5 +127,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 43e55008ceb771b48b9b9451f9dcbb70, type: 2}
   - {fileID: 11400000, guid: 749d663a8caff2d479498e44d9b00d35, type: 2}
   - {fileID: 11400000, guid: 4612f041abd31f2498363529edd463b2, type: 2}
+  - {fileID: 11400000, guid: f97a1151f7453ae4aa3415000e44495c, type: 2}
   audioSource: {fileID: 0}
   craftSound: {fileID: 0}

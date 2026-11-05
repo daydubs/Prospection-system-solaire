@@ -57,7 +57,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\TutorialInfo\Scripts\Editor\ReadmeEditor.cs" />
+    <Compile Include="Assets\Scripts\Inventory\Editor\ItemEditor.cs" />
     <Compile Include="Assets\Scripts\resources\Editor\EnvironmentalResourceManagerEditor.cs" />
+    <Compile Include="Assets\Scripts\Inventory\Editor\ContentValidationUtility.cs" />
+    <Compile Include="Assets\Scripts\Inventory\Editor\ContentAuthoringWindow.cs" />
+    <Compile Include="Assets\Tests\Editor\SabatierChecks.cs" />
+    <Compile Include="Assets\Scripts\Inventory\Editor\ContentAuthoringService.cs" />
+    <Compile Include="Assets\Scripts\Inventory\Editor\ContentAuthoringChecks.cs" />
+    <Compile Include="Assets\Scripts\Inventory\Editor\BaseModuleDataEditor.cs" />
+    <Compile Include="Assets\Tests\Editor\DeconstructionChecks.cs" />
+    <Compile Include="Assets\Scripts\Inventory\Editor\GhostPrefabFactory.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">

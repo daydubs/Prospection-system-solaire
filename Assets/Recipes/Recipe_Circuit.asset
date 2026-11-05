@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 73db9203e5cc1a547b31f72c14a2ab2a, type: 3}
   m_Name: Recipe_Circuit
   m_EditorClassIdentifier: Assembly-CSharp::CraftingSystem.CraftingRecipe
-  recipeName: "Composant \xC9lectronique"
+  recipeName: 
   category: "\xC9lectronique"
   description: "Gravure nanom\xE9trique de semi-conducteurs sur matrice d'aluminium."
   outputItem: {fileID: 11400000, guid: 6a014030dd0ff3b4da63667f5189b964, type: 2}

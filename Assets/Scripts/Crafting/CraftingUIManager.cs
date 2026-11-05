@@ -448,6 +448,8 @@ namespace CraftingSystem
         public bool CanCraftRecipe(CraftingRecipe recipe, int quantity)
         {
             if (recipe == null || recipe.ingredients == null) return false;
+            if (recipe.outputItem != null && recipe.outputItem.IsBattery)
+                return BatteryInventoryTransfer.TryCraft(recipe, quantity, Inventory.Instance, false);
 
             foreach (var ing in recipe.ingredients)
             {
@@ -471,17 +473,30 @@ namespace CraftingSystem
                 return;
             }
 
-            // Consume ingredients
-            foreach (var ing in selectedRecipe.ingredients)
-            {
-                if (ing == null || ing.item == null) continue;
-                int needed = ing.amount * currentCraftQuantity;
-                ConsumePlayerItem(ing.item, needed);
-            }
-
-            // Produce output item
+            // Batteries are stateful: validate all materials/space and commit exactly once.
             int totalProduced = selectedRecipe.outputAmount * currentCraftQuantity;
-            bool added = AddPlayerItem(selectedRecipe.outputItem, totalProduced);
+            bool added;
+            if (selectedRecipe.outputItem != null && selectedRecipe.outputItem.IsBattery)
+            {
+                added = BatteryInventoryTransfer.TryCraft(selectedRecipe, currentCraftQuantity, Inventory.Instance, true);
+                if (added)
+                {
+                    var invUI = Object.FindAnyObjectByType<InventoryUI>();
+                    if (invUI != null) invUI.RefreshUI();
+                    var hbUI = Object.FindAnyObjectByType<HotbarUI>();
+                    if (hbUI != null) hbUI.RefreshUI();
+                }
+            }
+            else
+            {
+                foreach (var ing in selectedRecipe.ingredients)
+                {
+                    if (ing == null || ing.item == null) continue;
+                    int needed = ing.amount * currentCraftQuantity;
+                    ConsumePlayerItem(ing.item, needed);
+                }
+                added = AddPlayerItem(selectedRecipe.outputItem, totalProduced);
+            }
 
             if (!added)
             {

@@ -12,11 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a99fff7af65f5b4ebd7acf4b740013a, type: 3}
   m_Name: SolarPanel
   m_EditorClassIdentifier: Assembly-CSharp::BaseModuleData
-  moduleName: Solar panel
-  description: panneau solaire qui produisent de l'energie pour la base
-  icon: {fileID: 21300000, guid: 0bb39cbaa7e8939499aab9104b48d3d8, type: 3}
+  _item: {fileID: 11400000, guid: b211dd97e0e31564c86ebfcd23553e7b, type: 2}
   ghostPrefab: {fileID: 6884058470426728148, guid: 226661e3eb074be488446f4d90929cd8, type: 3}
   finalPrefab: {fileID: 3140325432162407227, guid: ea157fcce2532f842bc30c66c967c906, type: 3}
+  groundPlacementOnly: 1
+  _deconstructionRecipe: {fileID: 11400000, guid: 43e55008ceb771b48b9b9451f9dcbb70, type: 2}
   baseConstructionTime: 5
   resourceCosts: []
-  groundPlacementOnly: 1

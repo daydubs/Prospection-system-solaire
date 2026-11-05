@@ -523,6 +523,18 @@ public class GameManager : MonoBehaviour
 
         EnsurePlayerInventory();
         bool added = false;
+        if (item.IsBattery)
+        {
+            TryCacheUI();
+            var batteryHotbar = playerInventory != null && playerInventory.hotbar != null ? playerInventory.hotbar : (cachedHotbarUI != null ? cachedHotbarUI.hotbar : null);
+            added = BatteryInventoryTransfer.TryCreate(item, amount, playerInventory != null ? playerInventory.slots : null, batteryHotbar != null ? batteryHotbar.slots : null);
+            if (added)
+            {
+                if (cachedInventoryUI != null) cachedInventoryUI.RefreshUI();
+                if (cachedHotbarUI != null) cachedHotbarUI.RefreshUI();
+            }
+            return added;
+        }
 
         if (playerInventory != null)
         {

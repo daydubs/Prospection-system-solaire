@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a99fff7af65f5b4ebd7acf4b740013a, type: 3}
+  m_Name: Reacteur sabatier
+  m_EditorClassIdentifier: Assembly-CSharp::BaseModuleData
+  _item: {fileID: 11400000, guid: 6f82fb1ca32153a4f80a96d1985235ad, type: 2}
+  ghostPrefab: {fileID: 7944018088764847354, guid: 18e3517df821567499c371b0245f3921, type: 3}
+  finalPrefab: {fileID: 1732148608518709849, guid: b9525eb9e8bd5e241ac89b7f17d2de80, type: 3}
+  groundPlacementOnly: 1
+  _deconstructionRecipe: {fileID: 11400000, guid: dd054fc8009bc4a4eb4252b0ba289d1e, type: 2}
+  baseConstructionTime: 5
+  resourceCosts: []

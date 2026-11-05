@@ -1,0 +1,31 @@
+CONVERT Assets/construction/Scrubber.asset GUID=a7a9779a4647404469a1ca42ea931c4c fileID=11400000
+CONVERT Assets/Items/CouloirBlueprint Item.asset GUID=dc930d4534574b04d894e4522b930c4a fileID=11400000
+CONVERT Assets/Items/CouloirCourberBlueprint Item.asset GUID=cea71793503504c44898d0526efe79db fileID=11400000
+CONVERT Assets/Items/CrusherBlueprintItem.asset GUID=ebfe457a712bda34381671c0b5dfc39d fileID=11400000
+CONVERT Assets/Items/ModuleBatterieBlueprintItem.asset GUID=7fb1351a009ac2c4887c99f0e4078c8f fileID=11400000
+CONVERT Assets/Items/ModuleSerreBlueprint Item.asset GUID=798e3b474db62464b9bd696a461ed21a fileID=11400000
+CONVERT Assets/Items/ModuleVieBlueprint Item.asset GUID=b7eb7f0389df2524cbad6bc4d62d9a80 fileID=11400000
+CONVERT Assets/Items/PlateformeBlueprint Item.asset GUID=6793f6d7d95d16843824263154d2a98f fileID=11400000
+CONVERT Assets/Items/PrincipalBaseBlueprint Item.asset GUID=5bd78f82b2f84204e8ce1204559c487e fileID=11400000
+CONVERT Assets/Items/RigBlueprintItem.asset GUID=e2d14d8f1035d494fa1e60492294a344 fileID=11400000
+CONVERT Assets/Items/SasBlueprint Item.asset GUID=c9d1681165f135a4cb79fe05dd3ece51 fileID=11400000
+CONVERT Assets/Items/SolarPanelBlueprintItem.asset GUID=b211dd97e0e31564c86ebfcd23553e7b fileID=11400000
+ID Assets/Items/CouloirBlueprint Item.asset 1 -> 5425
+ID Assets/Items/CouloirCourberBlueprint Item.asset 0 -> 5426
+ID Assets/Items/FoodPill.asset 0 -> 5427
+ID Assets/Items/ModuleSerreBlueprint Item.asset 0 -> 5428
+ID Assets/Items/ModuleVieBlueprint Item.asset 0 -> 5429
+ID Assets/Items/PlateformeBlueprint Item.asset 0 -> 5430
+ID Assets/Items/PrincipalBaseBlueprint Item.asset 0 -> 5431
+ID Assets/Items/SasBlueprint Item.asset 0 -> 5432
+CREATE incomplete owner Assets/Items/MosuleBaterieItem.asset
+
+CLEAR DUPLICATE RECIPE NAME Assets/Recipes/Recipe_BatterieExterne.asset
+CLEAR DUPLICATE RECIPE NAME Assets/Recipes/Recipe_Circuit.asset
+CLEAR DUPLICATE RECIPE NAME Assets/Recipes/Recipe_Crusher.asset
+CLEAR DUPLICATE RECIPE NAME Assets/Recipes/Recipe_ModuleBatterie.asset
+CLEAR DUPLICATE RECIPE NAME Assets/Recipes/Recipe_OxygenBottle.asset
+CLEAR DUPLICATE RECIPE NAME Assets/Recipes/Recipe_Plaque.asset
+CLEAR DUPLICATE RECIPE NAME Assets/Recipes/Recipe_verre.asset
+CLEAR DUPLICATE RECIPE NAME Assets/Recipes/Recipe_Vis.asset
+CLEAR DUPLICATE RECIPE NAME Assets/Recipes/SolarPanel.asset

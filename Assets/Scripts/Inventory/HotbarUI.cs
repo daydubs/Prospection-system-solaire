@@ -131,9 +131,9 @@ namespace InventoryFramework
 
             if (slot == null || slot.IsEmpty) return;
 
-            if (slot.item is BuildingSystem.BlueprintItem)
+            if (slot.item.IsConstructible)
             {
-                // If a blueprint is selected, visually show the equipped Welder model in hand so the player holds their welding tool
+                // A constructible item uses the equipped Welder model.
                 Item welder = GetEquippedWelder();
                 if (welder != null && welder.model != null && toolsParent != null)
                 {

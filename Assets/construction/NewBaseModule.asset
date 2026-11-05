@@ -12,11 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a99fff7af65f5b4ebd7acf4b740013a, type: 3}
   m_Name: NewBaseModule
   m_EditorClassIdentifier: Assembly-CSharp::BaseModuleData
-  moduleName: Rig
-  description: Foreuse industriel
-  icon: {fileID: 21300000, guid: a5f0830d9c815b14a831c82a5190ed04, type: 3}
+  _item: {fileID: 11400000, guid: e2d14d8f1035d494fa1e60492294a344, type: 2}
   ghostPrefab: {fileID: 1341675510901957528, guid: a290f0ad71f754840a4eca9a57fb14c0, type: 3}
   finalPrefab: {fileID: 7755158487491155790, guid: cf0a524d99e45b64eaf0c0781e70300a, type: 3}
   groundPlacementOnly: 1
+  _deconstructionRecipe: {fileID: 11400000, guid: 749d663a8caff2d479498e44d9b00d35, type: 2}
   baseConstructionTime: 5
   resourceCosts: []

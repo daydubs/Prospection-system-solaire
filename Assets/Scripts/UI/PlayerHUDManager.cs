@@ -171,9 +171,9 @@ public class PlayerHUDManager : MonoBehaviour
             Item item = hotbarUI.GetSelectedItem();
             if (item != null)
             {
-                if (item is BuildingSystem.BlueprintItem bp && bp.moduleData != null)
+                if (item.IsConstructible)
                 {
-                    equippedItemText.text = $"Plan : <color=#79ffe1>{bp.moduleData.moduleName}</color>";
+                    equippedItemText.text = $"<color=#79ffe1>{item.itemName}</color>";
                 }
                 else
                 {

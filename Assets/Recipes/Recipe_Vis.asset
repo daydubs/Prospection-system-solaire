@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 73db9203e5cc1a547b31f72c14a2ab2a, type: 3}
   m_Name: Recipe_Vis
   m_EditorClassIdentifier: Assembly-CSharp::CraftingSystem.CraftingRecipe
-  recipeName: Vis en Titane
+  recipeName: 
   category: Composants
   description: "Alliage de fer et de titane usin\xE9 sous vide pour cr\xE9er des vis d'assemblage haute pression."
   outputItem: {fileID: 11400000, guid: 3f1aeb66f4c2a094cbc75075c8567250, type: 2}

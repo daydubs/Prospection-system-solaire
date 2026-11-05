@@ -492,7 +492,7 @@ public class BuilderController : MonoBehaviour
         }
     }
 
-    public void FinalizeConstruction(GameObject finalPrefab, Vector3 pos, Quaternion rot, BaseModuleData moduleData = null)
+    public void FinalizeConstruction(GameObject finalPrefab, Vector3 pos, Quaternion rot, BaseModuleData moduleData = null, ModuleRefundReceipt paidCosts = null)
     {
         BaseModuleData moduleJustBuilt = moduleData != null ? moduleData : currentModuleToBuild;
 
@@ -530,7 +530,7 @@ public class BuilderController : MonoBehaviour
             }
             if (bestMatchSocket != null && bestDist < 1.5f)
             {
-                bestMatchSocket.SetConnected(true);
+                bestMatchSocket.ConnectWith(snappedSocket);
             }
         }
 
@@ -550,8 +550,7 @@ public class BuilderController : MonoBehaviour
                     float alignmentDot = Vector3.Dot(newSocket.OutwardDirection, otherSocket.OutwardDirection);
                     if (alignmentDot < -0.5f) // Must be pointing towards each other
                     {
-                        newSocket.SetConnected(true);
-                        otherSocket.SetConnected(true);
+                        newSocket.ConnectWith(otherSocket);
                     }
                 }
             }
@@ -563,7 +562,13 @@ public class BuilderController : MonoBehaviour
         // Remove the module from the belt (hotbar) or inventory once placed to prevent inventory clogging
         if (moduleJustBuilt != null)
         {
-            RemovePlacedModuleItem(moduleJustBuilt);
+            bool itemConsumed = RemovePlacedModuleItem(moduleJustBuilt);
+            if (paidCosts != null)
+            {
+                var constructed = finalModule.GetComponent<ConstructedModule>();
+                if (constructed == null) constructed = finalModule.AddComponent<ConstructedModule>();
+                constructed.Initialize(moduleJustBuilt, paidCosts.Snapshot(moduleJustBuilt, itemConsumed));
+            }
         }
 
         if (AudioManager.Instance != null)
@@ -668,18 +673,6 @@ public class BuilderController : MonoBehaviour
     {
         if (item == null || module == null) return false;
 
-        if (item is BuildingSystem.BlueprintItem bp)
-        {
-            if (bp.moduleData == module) return true;
-            if (bp.moduleData != null && !string.IsNullOrEmpty(bp.moduleData.moduleName) && bp.moduleData.moduleName == module.moduleName) return true;
-        }
-
-        if (!string.IsNullOrEmpty(item.itemName) && !string.IsNullOrEmpty(module.moduleName))
-        {
-            if (item.itemName.IndexOf(module.moduleName, System.StringComparison.OrdinalIgnoreCase) >= 0)
-                return true;
-        }
-
-        return false;
+        return item.IsConstructible && item.moduleData == module;
     }
 }

@@ -8,8 +8,8 @@ namespace BuildingSystem
     public class BlueprintUIManager : MonoBehaviour
     {
         [Header("Data")]
-        [Tooltip("List of BlueprintItems to display. The UI will extract the module info from these.")]
-        public List<BlueprintItem> availableBlueprints = new List<BlueprintItem>();
+        [Tooltip("Constructible Items available in this menu.")]
+        public List<Item> availableBlueprints = new List<Item>();
 
         [Header("UI References")]
         public Transform contentPanel; // The layout group where buttons will be spawned
@@ -42,7 +42,7 @@ namespace BuildingSystem
 
             foreach (var blueprintItem in availableBlueprints)
             {
-                if (blueprintItem == null || blueprintItem.moduleData == null) continue;
+                if (blueprintItem == null || !blueprintItem.IsConstructible) continue;
 
                 BaseModuleData module = blueprintItem.moduleData;
 
@@ -101,9 +101,9 @@ namespace BuildingSystem
             }
         }
 
-        private void OnBlueprintClicked(BlueprintItem item)
+        private void OnBlueprintClicked(Item item)
         {
-            if (item == null) return;
+            if (item == null || !item.IsConstructible) return;
 
             HotbarUI hotbarUI = FindAnyObjectByType<HotbarUI>();
             Hotbar hotbar = hotbarUI != null ? hotbarUI.hotbar : FindAnyObjectByType<Hotbar>();
@@ -114,7 +114,7 @@ namespace BuildingSystem
             {
                 foreach (var s in hotbar.slots)
                 {
-                    if (s != null && !s.IsEmpty && (s.item == item || (s.item is BlueprintItem bp && bp.moduleData == item.moduleData)))
+                    if (s != null && !s.IsEmpty && (s.item == item || (s.item.IsConstructible && s.item.moduleData == item.moduleData)))
                     {
                         alreadyHasItem = true;
                         break;
@@ -159,7 +159,7 @@ namespace BuildingSystem
                 for (int i = 0; i < hotbar.slots.Count; i++)
                 {
                     var s = hotbar.slots[i];
-                    if (s != null && !s.IsEmpty && (s.item == item || (s.item is BlueprintItem bp && bp.moduleData == item.moduleData)))
+                    if (s != null && !s.IsEmpty && (s.item == item || (s.item.IsConstructible && s.item.moduleData == item.moduleData)))
                     {
                         hotbarUI.SelectSlot(i);
                         break;

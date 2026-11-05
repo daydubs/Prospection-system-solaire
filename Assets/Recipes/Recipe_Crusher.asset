@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 73db9203e5cc1a547b31f72c14a2ab2a, type: 3}
   m_Name: Recipe_Crusher
   m_EditorClassIdentifier: Assembly-CSharp::CraftingSystem.CraftingRecipe
-  recipeName: Crusher
+  recipeName: 
   category: Industriel
   description: Broie les gravat recolter par la foreuse industriel pou alimenter les imprimente 3D
   outputItem: {fileID: 11400000, guid: ebfe457a712bda34381671c0b5dfc39d, type: 2}

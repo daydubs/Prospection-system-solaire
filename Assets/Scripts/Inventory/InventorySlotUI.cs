@@ -49,6 +49,14 @@ namespace InventoryFramework
 
         private void OnDisable()
         {
+            if (dragIcon != null && DragContext.draggedBattery != null)
+            {
+                ReturnToOriginalSlot();
+                DragContext.draggedItem = null;
+                DragContext.draggedCount = 0;
+                DragContext.draggedBattery = null;
+                Destroy(dragIcon);
+            }
             inputActions.Player.Disable();
             inputActions.UI.Disable();
         }
@@ -151,7 +159,13 @@ namespace InventoryFramework
 
                 if (countText != null)
                 {
-                    if (inventory != null && inventory.IsOxygenBottle(slot.item))
+                    if (slot.item.IsBattery)
+                    {
+                        int percent = slot.battery != null ? slot.battery.Percent : 0;
+                        countText.text = $"{percent}%";
+                        countText.color = percent > 50 ? Color.cyan : (percent > 20 ? Color.yellow : Color.red);
+                    }
+                    else if (inventory != null && inventory.IsOxygenBottle(slot.item))
                     {
                         int percent = Mathf.RoundToInt(slot.currentOxygen);
                         countText.text = $"{percent}%";
@@ -191,14 +205,14 @@ namespace InventoryFramework
             DragContext.draggedItem = s.item;
             DragContext.draggedCount = amount;
             DragContext.draggedOxygen = s.currentOxygen;
+            DragContext.draggedBattery = s.battery;
             DragContext.fromSlotIndex = index;
             DragContext.fromOwner = owner;
 
             s.count -= amount;
             if (s.count <= 0)
             {
-                s.item = null;
-                s.count = 0;
+                s.Clear();
             }
 
             Transform parentLayer = (owner == SlotOwner.Hotbar && hotbarUI != null) ? hotbarUI.dragLayer : (inventoryUI != null ? inventoryUI.dragLayer : null);
@@ -268,6 +282,7 @@ namespace InventoryFramework
                         originalSlot.item = DragContext.draggedItem;
                         originalSlot.count = DragContext.draggedCount;
                         originalSlot.currentOxygen = DragContext.draggedOxygen;
+                        originalSlot.battery = DragContext.draggedBattery;
                     }
                     else if (originalSlot.item == DragContext.draggedItem)
                     {
@@ -278,6 +293,7 @@ namespace InventoryFramework
                 DragContext.draggedItem = null;
                 DragContext.draggedCount = 0;
             }
+            DragContext.draggedBattery = null;
 
             RefreshAllUIs();
         }
@@ -313,6 +329,32 @@ namespace InventoryFramework
                     RefreshAllUIs();
                     return;
                 }
+            }
+
+            // Stateful batteries must move or swap as complete instances, even for the same Item.
+            if (DragContext.draggedItem.IsBattery || (targetSlot.item != null && targetSlot.item.IsBattery))
+            {
+                var original = GetOriginalSlot();
+                if (original == null || (!targetSlot.IsEmpty && !original.IsEmpty))
+                {
+                    ReturnToOriginalSlot();
+                }
+                else
+                {
+                    var temporary = new InventorySlot();
+                    temporary.CopyFrom(targetSlot);
+                    targetSlot.Clear();
+                    targetSlot.item = DragContext.draggedItem;
+                    targetSlot.count = DragContext.draggedCount;
+                    targetSlot.currentOxygen = DragContext.draggedOxygen;
+                    targetSlot.battery = DragContext.draggedBattery;
+                    if (original != targetSlot) original.CopyFrom(temporary);
+                }
+                DragContext.draggedItem = null;
+                DragContext.draggedCount = 0;
+                DragContext.draggedBattery = null;
+                RefreshAllUIs();
+                return;
             }
 
             // Empty Slot -> Move
@@ -394,6 +436,7 @@ namespace InventoryFramework
                 originalSlot.item = DragContext.draggedItem;
                 originalSlot.count = DragContext.draggedCount;
                 originalSlot.currentOxygen = DragContext.draggedOxygen;
+                originalSlot.battery = DragContext.draggedBattery;
             }
             else if (originalSlot.item == DragContext.draggedItem)
             {

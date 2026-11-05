@@ -110,7 +110,9 @@ public class EquipmentPlacementController : MonoBehaviour
         }
 
         PlayerBaseController pbc = GetComponent<PlayerBaseController>();
-        if (pbc != null && (pbc.isInventoryOpen || pbc.isBlueprintOpen))
+        if (BuildingSystem.Electricity.BaseBatteryTerminalUI.AnyOpen ||
+            (BuildingSystem.Electricity.BaseElectricityTerminalUI.Instance != null && BuildingSystem.Electricity.BaseElectricityTerminalUI.Instance.IsOpen) ||
+            (pbc != null && (pbc.isInventoryOpen || pbc.isBlueprintOpen)))
         {
             ClearTargetSocket();
             HideAllNearbyPreviews();

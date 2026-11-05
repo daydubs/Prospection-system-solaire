@@ -64,14 +64,13 @@ namespace InventoryFramework
                     if (slot.count >= remainingToConsume)
                     {
                         slot.count -= remainingToConsume;
-                        if (slot.count == 0) slot.item = null;
+                        if (slot.count == 0) slot.Clear();
                         return true;
                     }
                     else
                     {
                         remainingToConsume -= slot.count;
-                        slot.count = 0;
-                        slot.item = null;
+                        slot.Clear();
                     }
                 }
             }
@@ -82,6 +81,7 @@ namespace InventoryFramework
         {
             if (newItem == null || amount <= 0) return false;
             if (slots == null) return false;
+            if (newItem.IsBattery) return BatteryInventoryTransfer.TryCreate(newItem, amount, slots);
 
             int maxStack = newItem.maxStack > 0 ? newItem.maxStack : 1;
 

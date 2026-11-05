@@ -11,6 +11,7 @@ public class ConstructibleGhost : MonoBehaviour
     private BuilderController builder;
 
     private float currentConstructionTime = 0f;
+    private bool blockedByBuilder;
     public bool CanBePlaced { get; private set; } = false;
     public bool IsConstructing { get; private set; } = false;
 
@@ -20,10 +21,27 @@ public class ConstructibleGhost : MonoBehaviour
     private Color invalidColor = new Color(1f, 0f, 0f, 0.4f);
     private Color constructingColor = new Color(0f, 0.5f, 1f, 0.6f);
 
+    private bool ContainsBuilder()
+    {
+        if (builder == null || renderers == null) return false;
+
+        foreach (var r in renderers)
+        {
+            if (r == null || !r.enabled || !r.gameObject.activeInHierarchy) continue;
+            // Use local bounds so rotating a module does not enlarge its exclusion volume.
+            Bounds bounds = r.localBounds;
+            if (bounds.Contains(r.transform.InverseTransformPoint(builder.transform.position))) return true;
+            if (builder.playerCamera != null &&
+                bounds.Contains(r.transform.InverseTransformPoint(builder.playerCamera.transform.position))) return true;
+        }
+        return false;
+    }
+
     public void SetPlacementValidity(bool isValid)
     {
         if (IsConstructing) return; // Don't change visuals if we are actively building
 
+        isValid = isValid && !ContainsBuilder();
         CanBePlaced = isValid;
         Color targetColor = isValid ? validColor : invalidColor;
 
@@ -53,6 +71,8 @@ public class ConstructibleGhost : MonoBehaviour
     // Store remaining integer resource costs needed to finish this building
     private Dictionary<InventoryFramework.Item, int> remainingCosts = new Dictionary<InventoryFramework.Item, int>();
     private float progressThreshold = 0f;
+    private readonly List<ResourceCost> normalizedCosts = new List<ResourceCost>();
+    private readonly ModuleRefundReceipt paidCosts = new ModuleRefundReceipt();
 
     public void Initialize(BaseModuleData data, BuilderController controller)
     {
@@ -65,17 +85,40 @@ public class ConstructibleGhost : MonoBehaviour
         {
             foreach (var cost in moduleData.resourceCosts)
             {
-                if (cost.item != null)
+                if (cost == null || cost.item == null || cost.amount <= 0)
                 {
-                    remainingCosts[cost.item] = cost.amount;
-                    exactDrainAccumulator[cost.item] = 0f;
+                    Debug.LogError("[Building] Coût de construction invalide.");
+                    enabled = false;
+                    return;
                 }
+                int previous = remainingCosts.TryGetValue(cost.item, out int amount) ? amount : 0;
+                if (previous > int.MaxValue - cost.amount) { enabled = false; return; }
+                remainingCosts[cost.item] = previous + cost.amount;
+                exactDrainAccumulator[cost.item] = 0f;
             }
+            foreach (var pair in remainingCosts)
+                normalizedCosts.Add(new ResourceCost { item = pair.Key, amount = pair.Value });
         }
     }
 
     public void ConstructProgress(float deltaTime)
     {
+        if (!enabled || deltaTime <= 0f || float.IsNaN(deltaTime) || float.IsInfinity(deltaTime) || moduleData == null || moduleData.baseConstructionTime <= 0f) return;
+
+        if (ContainsBuilder())
+        {
+            blockedByBuilder = true;
+            IsConstructing = false;
+            SetPlacementValidity(false);
+            return;
+        }
+        // Only restore validity after the specific player-overlap interruption.
+        if (blockedByBuilder)
+        {
+            blockedByBuilder = false;
+            if (builder != null && builder.isGhostPlaced)
+                SetPlacementValidity(builder.HasEquippedWelder());
+        }
         if (!CanBePlaced) return;
 
         if (builder != null && !builder.HasEquippedWelder())
@@ -114,7 +157,7 @@ public class ConstructibleGhost : MonoBehaviour
         {
             bool hasAllResourcesForTick = true;
 
-            foreach (var cost in moduleData.resourceCosts)
+            foreach (var cost in normalizedCosts)
             {
                 if (cost.item == null || remainingCosts[cost.item] <= 0) continue;
 
@@ -134,7 +177,8 @@ public class ConstructibleGhost : MonoBehaviour
                     {
                         if (GameManager.Instance.HasPlayerItem(cost.item, unitsToConsume))
                         {
-                            GameManager.Instance.ConsumePlayerItem(cost.item, unitsToConsume);
+                            if (!GameManager.Instance.ConsumePlayerItem(cost.item, unitsToConsume)) return;
+                            paidCosts.Record(cost.item, unitsToConsume);
                             remainingCosts[cost.item] -= unitsToConsume;
                             exactDrainAccumulator[cost.item] -= unitsToConsume;
                         }
@@ -156,7 +200,8 @@ public class ConstructibleGhost : MonoBehaviour
                     int finalUnits = remainingCosts[cost.item];
                     if (GameManager.Instance.HasPlayerItem(cost.item, finalUnits))
                     {
-                        GameManager.Instance.ConsumePlayerItem(cost.item, finalUnits);
+                        if (!GameManager.Instance.ConsumePlayerItem(cost.item, finalUnits)) return;
+                        paidCosts.Record(cost.item, finalUnits);
                         remainingCosts[cost.item] -= finalUnits;
                     }
                     else
@@ -205,6 +250,6 @@ public class ConstructibleGhost : MonoBehaviour
     private void FinishConstruction()
     {
         // 2. Tell the builder to spawn the real object and remove module from belt
-        builder.FinalizeConstruction(moduleData.finalPrefab, transform.position, transform.rotation, moduleData);
+        builder.FinalizeConstruction(moduleData.finalPrefab, transform.position, transform.rotation, moduleData, paidCosts);
     }
 }

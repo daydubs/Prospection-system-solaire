@@ -199,7 +199,7 @@ Transform:
   m_GameObject: {fileID: 2645550921421668885}
   serializedVersion: 2
   m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: -0.03}
   m_LocalScale: {x: 0.22, y: 0.025, z: 0.22}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -262,6 +262,206 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &6946044674360452738
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6448376352364907729}
+  m_Layer: 0
+  m_Name: BatteryMount
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6448376352364907729
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6946044674360452738}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 657431309674068210}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &7990693592776770964
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4818758993407818888}
+  - component: {fileID: 5138104939305489888}
+  - component: {fileID: 1352709376442534446}
+  m_Layer: 0
+  m_Name: BatteryMountPlate
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4818758993407818888
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7990693592776770964}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.27, y: 0.15, z: 0}
+  m_LocalScale: {x: 0.04, y: 0.36, z: 0.3}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 657431309674068210}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!33 &5138104939305489888
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7990693592776770964}
+  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!23 &1352709376442534446
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7990693592776770964}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: e30974d2420f9fa479671d2134e2c68e, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 1
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_MaskInteraction: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &8155894302630419280
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 657431309674068210}
+  - component: {fileID: 8106535671283619813}
+  - component: {fileID: 5898911670357300744}
+  m_Layer: 0
+  m_Name: BatterySocket
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &657431309674068210
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8155894302630419280}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.7071068, y: -0, z: 0, w: 0.7071067}
+  m_LocalPosition: {x: -0.013200001, y: -5.00679e-10, z: 0.0041999994}
+  m_LocalScale: {x: 0.01, y: 0.01, z: 0.01}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 6448376352364907729}
+  - {fileID: 4818758993407818888}
+  m_Father: {fileID: 1377035391878553509}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &8106535671283619813
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8155894302630419280}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.56, y: 0.36, z: 0.3}
+  m_Center: {x: 0, y: 0.15, z: 0}
+--- !u!114 &5898911670357300744
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8155894302630419280}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c6e211fe989d8c841af762de0af3dc9e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingSystem.Industry.CrusherBatterySocket
+  _crusher: {fileID: 5466193347209771151}
+  _batteryItem: {fileID: 11400000, guid: f4854ed0a1975d24abe193b25f2deda5, type: 2}
+  _mount: {fileID: 6448376352364907729}
+  _installedItem: {fileID: 0}
+  _installedBattery:
+    rid: -2
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
 --- !u!1 &9061443946215872476
 GameObject:
   m_ObjectHideFlags: 0
@@ -352,6 +552,30 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3692668648013923388, guid: b00856a8afa033243a46b8dab27705af, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 130
+      objectReference: {fileID: 0}
+    - target: {fileID: 3692668648013923388, guid: b00856a8afa033243a46b8dab27705af, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 130
+      objectReference: {fileID: 0}
+    - target: {fileID: 3692668648013923388, guid: b00856a8afa033243a46b8dab27705af, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3692668648013923388, guid: b00856a8afa033243a46b8dab27705af, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3692668648013923388, guid: b00856a8afa033243a46b8dab27705af, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3692668648013923388, guid: b00856a8afa033243a46b8dab27705af, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 180
+      objectReference: {fileID: 0}
     - target: {fileID: 7339903286395026259, guid: b00856a8afa033243a46b8dab27705af, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.12
@@ -434,6 +658,30 @@ PrefabInstance:
     - target: {fileID: 2097233580828921868, guid: 8d61d6f8f70b576499cdc3cf14cf2fce, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3996113273169602542, guid: 8d61d6f8f70b576499cdc3cf14cf2fce, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 115
+      objectReference: {fileID: 0}
+    - target: {fileID: 3996113273169602542, guid: 8d61d6f8f70b576499cdc3cf14cf2fce, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 115
+      objectReference: {fileID: 0}
+    - target: {fileID: 3996113273169602542, guid: 8d61d6f8f70b576499cdc3cf14cf2fce, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.168
+      objectReference: {fileID: 0}
+    - target: {fileID: 3996113273169602542, guid: 8d61d6f8f70b576499cdc3cf14cf2fce, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3996113273169602542, guid: 8d61d6f8f70b576499cdc3cf14cf2fce, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3996113273169602542, guid: 8d61d6f8f70b576499cdc3cf14cf2fce, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 180
       objectReference: {fileID: 0}
     - target: {fileID: 7076691314213575405, guid: 8d61d6f8f70b576499cdc3cf14cf2fce, type: 3}
       propertyPath: m_LocalPosition.x
@@ -555,6 +803,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 8663973d49559b54abafde9f55fde412, type: 3}
       insertIndex: -1
       addedObject: {fileID: 8418779586272967732}
+    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 8663973d49559b54abafde9f55fde412, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 657431309674068210}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 8663973d49559b54abafde9f55fde412, type: 3}
       insertIndex: -1
@@ -609,9 +860,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BuildingSystem.Industry.CrusherUnit
   powerOutput: {fileID: 4417084248283407398}
   rubbleInput: {fileID: 7524208636519589702}
-  ironItem: {fileID: 11400000, guid: a5f3afd55dedc6e44ad496b745c67e16, type: 2}
-  powderItem: {fileID: 11400000, guid: a5f3afd55dedc6e44ad496b745c67e16, type: 2}
-  testPowerEnabled: 1
+  powderItem:
+  - {fileID: 11400000, guid: 6cd653e60f5e944479473194ad0b2134, type: 2}
+  - {fileID: 11400000, guid: 406b7a4f9b5022f4aaa29334690b2348, type: 2}
+  - {fileID: 11400000, guid: a5f3afd55dedc6e44ad496b745c67e16, type: 2}
+  - {fileID: 11400000, guid: f1fbe52adbf331e4490d82054c2113e0, type: 2}
+  - {fileID: 11400000, guid: 735caacdd35c483458b5bd34e02d51cb, type: 2}
+  - {fileID: 11400000, guid: b4695458070458f4d851ca9e14cfd39c, type: 2}
+  batterySocket: {fileID: 5898911670357300744}
+  chargePerSecond: 0.1
   crushingInterval: 5
   inputCapacity: 100
   outputCapacity: 100

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 73db9203e5cc1a547b31f72c14a2ab2a, type: 3}
   m_Name: Recipe_OxygenBottle
   m_EditorClassIdentifier: Assembly-CSharp::CraftingSystem.CraftingRecipe
-  recipeName: "Bouteille d'Oxyg\xE8ne"
+  recipeName: 
   category: Survie
   description: "R\xE9servoir d'oxyg\xE8ne portatif haute r\xE9sistance avec r\xE9gulateur."
   outputItem: {fileID: 11400000, guid: 147061b2f212ad44994a2b532545080b, type: 2}

@@ -12,10 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a99fff7af65f5b4ebd7acf4b740013a, type: 3}
   m_Name: Plateforme
   m_EditorClassIdentifier: Assembly-CSharp::BaseModuleData
-  moduleName: Plateforme de soutien
-  description: "Plateforme structurelle avec pilotis t\xE9lescopiques pour ancrer la base et rattraper les d\xE9nivellations du terrain."
-  icon: {fileID: 21300000, guid: a39362fc2fa2db147bd6fe0207c97d52, type: 3}
+  _item: {fileID: 11400000, guid: 6793f6d7d95d16843824263154d2a98f, type: 2}
   ghostPrefab: {fileID: 8125112573418670439, guid: eba53c4a953018948bc58d05ac5db86f, type: 3}
   finalPrefab: {fileID: 5118392863085615635, guid: bda76847a3e696848aff4cbfe99c561b, type: 3}
+  groundPlacementOnly: 0
   baseConstructionTime: 5
   resourceCosts: []

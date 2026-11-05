@@ -321,3 +321,139 @@ L'analyse des dépendances via AssetDatabase a identifié MoonScene, les bluepri
 - **Régression** : ModuleVie–Controller et SolarPanel, prefab Player et test.unity ; champs existants conservés, mode suspendu inchangé, pas de modification involontaire des matériaux partagés.
 - **Performance et build** : pas de reconstruction/raycast continu sur liens statiques ; ressources mesh et actions libérées. Compilation sans nouvelle erreur et build StandaloneWindows64 lorsque disponible.
 - **Hors périmètre** : batterie-item réelle, équilibrage définitif, gisements, animation de gravats, fabrication/imprimante 3D, routage autour des obstacles, multijoueur et sauvegarde persistante de nouveaux stocks/liens. Le test historique de persistance n'autorise pas à créer un nouveau système de sauvegarde dans cette révision.
+
+---
+
+# Révision — Module batterie de base raccordé manuellement
+
+Cette extension concerne le module stationnaire, pas la batterie externe du Crusher. Les sections historiques restent le contexte ; cette révision remplace uniquement le stockage virtuel du réseau de base et son raccordement. Aucun asset de gameplay n'a été modifié pendant la préparation.
+
+# Project Overview
+- **Game Title** : Solar Prospector: Corporation (titre historique ; productName actuel : Prospection system solaire).
+- **High-Level Concept** : Le joueur construit un accumulateur physique entre le contrôleur électrique et la base. Il stocke l'énergie produite en excès et fournit le complément nécessaire lorsque la production baisse ; le joueur surveille et pilote son utilisation depuis un terminal.
+- **Players** : Solo.
+- **Inspiration / Reference Games** : Satisfactory, Stationeers, Astroneer, conformément au contexte existant.
+- **Tone / Art Direction** : Industriel spatial ; conserver le modèle batterie, ses matériaux et le style sombre/cyan/vert/ambre du contrôleur.
+- **Target Platform** : StandaloneWindows64.
+- **Screen Orientation / Resolution** : Paysage, UI adaptable ; référence de conception 1920×1080, vérifier aussi 1024×768 (valeurs actuelles PlayerSettings), sans changer la configuration d'affichage.
+- **Render Pipeline** : URP 17.6.0, PC_RPAsset ; Unity 6000.6.3f1.
+
+# Game Mechanics
+## Core Gameplay Loop
+1. Construire le ModuleBatterie via le blueprint et la recette existants, sans modifier leurs coûts.
+2. Raccorder manuellement : panneaux → entrées contrôleur ; sortie contrôleur → entrée batterie ; sortie batterie → prise base (ModuleVie). Aucun branchement automatique après placement.
+3. Le module construit commence à **0/120 kWh**. Les 88,5 kWh virtuels du contrôleur ne sont pas copiés ni ajoutés.
+4. Production utilisée d'abord pour la demande réellement desservie ; seul le surplus recharge la batterie. Si la production est insuffisante, la batterie couvre automatiquement le déficit jusqu'à épuisement.
+5. La batterie laisse passer la production disponible lorsqu'elle est vide ou lorsque sa charge/décharge est interdite. Ces autorisations concernent le stockage, pas le disjoncteur général.
+6. Débrancher la liaison vers la base supprime la consommation desservie ; la batterie peut continuer à charger si l'amont reste raccordé. Débrancher l'amont conserve son stock mais isole ce premier montage : pas de fonctionnement autonome sans contrôleur raccordé. Les données de circuits et leurs commandes restent sur ce dernier.
+7. Batterie pleine : stock borné à 120 kWh, surplus non stocké explicitement identifié. Batterie vide : aucune puissance gratuite ; si la production ne suffit pas, délestage cohérent des circuits et indication de la demande non desservie.
+8. Une seule batterie directement entre un contrôleur et une base dans cette version ; plusieurs installations indépendantes possibles, mais pas de chaînage de batteries, réseau maillé ou agrégation globale.
+9. Stock conservé pendant déconnexion/reconnexion de la même instance. Pas de nouveau système de sauvegarde entre sessions ni de récupération du stock au démontage dans cette étape.
+
+**Choix confirmés par l'utilisateur** : Contrôleur → batterie → base ; automatique avec secours ; capacité 120 kWh, initialement vide.
+
+**Approches examinées** : accumulateur autonome avec solveur de réseau général (extensible, mais refonte disproportionnée) ; stockage local physique et bilan calculé par le contrôleur explicitement raccordé (retenu : réutilise circuits et télémétrie, pas de double simulation). En termes MDA/SDT, le raccordement et les commandes donnent de l'autonomie au joueur ; un retour clair sur surplus, déficit et stock renforce la maîtrise sans gestion manuelle permanente.
+
+## Controls and Input Methods
+- Backend vérifié : activeInputHandler=1 ; Input System 1.20.0, EventSystem avec InputSystemUIInputModule dans MoonScene.
+- Réutiliser PlayerBaseController / IPromptInteractable et CableInteractionManager : E pour dérouler/raccorder/débrancher ; clic droit pour annuler.
+- E sur le corps du module : ouvrir le terminal de gestion ; les prises ont leurs propres colliders et restent accessibles au raycast.
+- Nouveau terminal : boutons souris, fermeture par E/Échap via InputAction événementielle avec délai empêchant la fermeture par la même pression que l'ouverture.
+- Bloquer déplacement, regard, inventaire, construction et câbles durant le terminal ; restauration de l'état précédent seulement après fermeture effective. Ne pas reprendre aveuglément le CloseTerminal actuel qui réactive le joueur même à l'initialisation.
+
+# UI
+Créer un terminal uGUI/TMP dédié, inspiré de ElectricityTerminalCanvas sans recopier les commandes de générateur/circuits sur la batterie. Réutiliser police et palette existantes ; pas de nouvelle police ni texture générée.
+
+```text
+┌ MODULE BATTERIE — Accumulateur de base ───────── [×] ┐
+│ État : En charge / Décharge / Pleine / Vide / Isolée │
+│                                                    │
+│  STOCK                      FLUX                   │
+│  [████████░░░░░░]  60 %     Production : … kW       │
+│  72,0 / 120,0 kWh           Demande base : … kW     │
+│  Pleine dans : …            Charge : … kW          │
+│  Autonomie : …              Décharge : … kW        │
+│                             Non desservi : … kW    │
+│                                                    │
+│  ENTRÉE : contrôleur — raccordée / hors tension    │
+│  SORTIE : base — raccordée / alimentée             │
+│                                                    │
+│ [Charge autorisée : ON] [Décharge autorisée : ON]   │
+│                    [Fermer — E / Échap]            │
+└────────────────────────────────────────────────────┘
+```
+- États distinguant branchement physique et courant effectif ; textes et voyants, pas de couleur seule.
+- Autonomie calculée sur le déficit effectivement couvert ; temps de charge sur le flux réellement stocké. Afficher « — » quand non applicable, éviter division par zéro et faux « en charge » à pleine capacité.
+- Télémétrie actualisée à cadence limitée (par exemple 5 Hz) uniquement si le terminal est ouvert ; boutons appliqués immédiatement.
+- UI contrôleur et écran 3D affichent le stock du module raccordé, ou « Aucun module batterie raccordé ». Séparer bilan disponible, énergie stockée/déstockée et alimentation aval ; ne pas conserver une batterie fictive de secours.
+- Aucun écran 3D ajouté arbitrairement au modèle batterie ; interface de management accessible par interaction comme le contrôleur.
+
+# Key Asset & Context
+## État vérifié
+- Chemin exact : `Assets/Prefabs/Base/SousSystem/ModuleBatteriePrefab.prefab` (et non Assets/Prefabs/Base/ModuleBatteriePrefab).
+- Prefab : MeshCollider et deux ElectricConnectorSocket Input/Output, aucun script de batterie ; les deux ports sont Legacy et sans câble stocké. Un FlexibleCable existe ; ne pas partager le même renderer entre deux liaisons.
+- ModuleBatterie et Controller ont une échelle d'import 100 : conserver géométrie, taille physique et matériaux ; placer les éléments logiques en tenant compte des transforms.
+- `BaseElectricityController.cs` simule actuellement 120 kWh avec 88,5 kWh initiaux ; compte 4,5 kW par entrée IsPowered et active les scrubbers par recherche globale. Le prefab a déjà baseline solaire=0 (le défaut du script est 4).
+- `CableConnectorSocket.CanConnectTo` refuse Legacy↔Input/Output. Une migration cohérente des ports concernés est donc indispensable, sans affaiblir cette protection.
+- ModuleVie est actuellement connecté à une entrée contrôleur dans MoonScene : ce branchement historique doit être retiré et son rôle corrigé pour empêcher de le compter comme production solaire.
+- Ghost batterie contient des sockets actives : les rendre inertes sans changer sa géométrie.
+- Console initiale : aucune erreur. Test Framework 1.8.0 présent.
+- Dépendances/dépendants analysés via AssetDatabase : batterie utilisée par MoonScene, blueprint, données de construction et recette ; contrôleur et terminal utilisés par MoonScene et copies _Recovery. Les scripts de câble touchent aussi panneaux, ModuleVie, Player, industrie et test.unity. Ne pas modifier _Recovery, packages, FBX ni matériaux partagés.
+
+## Fichiers prévus
+- Créer `Assets/Scripts/BuildingSystem/Electricity/BaseBatteryModule.cs` : charge bornée, capacité, autorisations, références explicites entrée/sortie, télémétrie et IPromptInteractable. API indicative : `ApplyEnergyBalance(productionKW, servedLoadKW, dt)`, `SetChargingAllowed(bool)`, `SetDischargingAllowed(bool)` ; retourne flux réellement appliqués, ne simule pas une seconde fois dans Update.
+- Créer `Assets/Scripts/BuildingSystem/Electricity/BaseBatteryTerminalUI.cs` et `Assets/Prefabs/ui/BatteryTerminalCanvas.prefab` : interface liée à l'instance visée, pas au premier module trouvé globalement.
+- Modifier BaseElectricityController.cs : stockage physique, bilan unique, états aval et scope local des consommateurs. Préserver GUID/champs historiques pour migration contrôlée, mais aucune utilisation énergétique des anciens champs virtuels.
+- Modifier BaseElectricityTerminalUI.cs et BaseElectricityWorldScreenUI.cs pour télémétrie physique et absence de batterie.
+- Modifier ElectricConnectorSocket.cs seulement si nécessaire pour notifier explicitement les changements de liaison même sans changement de IsPowered ; conserver comportement Legacy sur assets hors périmètre. Aucune extension arbitraire de CanConnectTo permettant Legacy↔typed.
+- Modifier ModuleBatteriePrefab, ControllerPrefab, SolarPanelPrefab, ModuleViePrefab, ModuleGhostBatteriePrefab et MoonScene uniquement pour références, rôles, interaction et branchement historique. Ghost solaire/test.unity : vérifier et adapter leurs ports seulement si nécessaire à la cohérence des références existantes.
+- Modifier PlayerBaseController.cs et CableInteractionManager.cs pour verrouillage terminal et conflits ; BaseElectricityTerminalUI si nécessaire pour exclusion mutuelle.
+- Tests sous Assets/Tests selon infrastructure/asmdefs existants à inspecter avant création ; pas de package additionnel.
+
+# Implementation Steps
+1. **Sécuriser la migration**
+   - Refaire l'analyse de dépendances de chaque fichier supplémentaire avant édition ; inspecter références de prises dans MoonScene/test.unity, ghosts, construction et consommateurs ModuleVie/Scrubber.
+   - Identifier les consommateurs de la base réellement raccordée, sans singleton global pour le routage ; vérifier infrastructures de tests et verrouillage UI existants.
+   - **Dependencies** : aucune.
+2. **Implémenter le stockage local**
+   - BaseBatteryModule : 120 kWh, initial=0, charge/décharge autorisées par défaut, énergie ΔkWh=kW×dt/3600 ; clamps et validation de dt/capacité, conservation du stock à la coupure.
+   - Interdire double application du même pas de simulation et connexions à contrôleur/base non compatibles avec ce montage ; pas de stock partagé entre instances.
+   - Pas de pertes, autodécharge ou limite de puissance nouvelle pour ce premier équilibrage ; exposer clairement ces simplifications.
+   - **Dependencies** : étape 1.
+3. **Intégrer le bilan réseau unique**
+   - Contrôleur résout sa batterie par sa sortie et la base par la sortie de cette batterie. Conserver aussi le raccord direct contrôleur→base sans stockage, alimenté seulement par la production disponible.
+   - Calculer séparément production réelle des entrées source, demande des circuits actifs, puissance disponible batterie comprise et consommation desservie. Éliminer baseline gratuite et stockage virtuel dans la configuration opérationnelle.
+   - Allouer la puissance aux circuits essentiels en priorité puis non essentiels dans un ordre stable ; circuit insuffisamment alimentable = hors service, demande non desservie visible. Éviter oscillations de seuil et rattrapage hors connexion.
+   - Déduire surplus/déficit après allocation et appliquer une seule fois au module. Ne pas compter sa décharge comme nouvelle production solaire ; couvrir précisément un pas atteignant vide/plein.
+   - Propager alimentation aux ports et consommateurs de la base raccordée uniquement ; enlever l'activation globale des scrubbers dans ce parcours.
+   - Garder décisions disjoncteur/modes/circuits sur le contrôleur ; disjoncteur OFF coupe charge/décharge et alimentation de son installation.
+   - **Dependencies** : étape 2.
+4. **Configurer les connexions joueur**
+   - Sources solaires=Output ; contrôleur entrées=Input, sortie=Output ; batterie entrée=Input, sortie=Output ; base=Input. Vérifier branchement dans les deux sens de transport.
+   - Batterie entrée et sortie : un flexible disponible par port avec renderer indépendant et plug/matériau existants. Les liaisons sont libres après placement, aucune référence fixe à une instance de scène dans le prefab.
+   - Nettoyer symétriquement les déconnexions et rafraîchir le contrôleur même si les ports étaient hors tension ; protéger des boucles/self-links et propriétaires incompatibles.
+   - MoonScene : retirer les liens historiques base→entrée contrôleur ; laisser le module batterie et ses deux nouveaux liens débranchés pour le raccordement joueur.
+   - Ghost batterie : aucun terminal, aucune simulation ni socket interactive ; ne pas toucher aux coûts/recettes.
+   - **Dependencies** : étapes 2–3.
+5. **Créer le terminal et adapter les affichages**
+   - Construire BatteryTerminalCanvas avec CanvasScaler, layout adaptable, références sérialisées complètes et boutons réellement câblés ; binder au module visé.
+   - Adapter les affichages contrôleur au stock physique et à la liaison aval ; supprimer textes trompeurs sur charge/prises raccordées mais hors tension.
+   - InputAction fermeture, délai d'ouverture, abonnements propres ; ouvrir un seul terminal à la fois. Bloquer inventaire/construction/câbles ; restaurer l'état précédent sur fermeture, disparition du module ou changement de scène sans débloquer un autre menu.
+   - **Dependencies** : étapes 3–4.
+6. **Tester et valider visuellement**
+   - Exécuter tests de bilan et raccordement ; essayer la construction réelle dans MoonScene puis les deux flexibles manuels et le terminal. Tester deux installations pour indépendance.
+   - Contrôler rendu, lisibilité, compilation/console et build Windows si configuration disponible.
+   - **Dependencies** : étapes 4–5.
+
+# Verification & Testing
+- **Énergie** : 1 kW de surplus pendant 3600 s simulées ajoute exactement 1 kWh ; déficit équivalent retire 1 kWh. Tester dt=0, valeurs invalides, capacité nulle, vide/plein atteints pendant un pas ; jamais stock négatif ni >120.
+- **Conservation** : production = énergie consommée + variation du stock + surplus perdu (conversion unités cohérente). Aucun 88,5 kWh caché, aucun stockage quand module absent, aucune décharge comptée une seconde fois comme solaire.
+- **Raccordement** : construire un module vide ; brancher les deux liaisons dans les deux ordres, refuser ports incompatibles/occupés, limites de portée et self-link. Aucun câble automatique ; débrancher depuis chaque extrémité supprime la liaison entière sans perte du stock.
+- **Surplus/secours** : production suffisante→base alimentée et surplus stocké ; production moindre→décharge ; pleine→surplus perdu ; vide→délestage et demande non servie. Tester absence panneaux, générateur OFF/ON et tous modes.
+- **Commandes** : charge interdite conserve le surplus non stocké ; décharge interdite interdit le secours ; production directe continue de passer ; disjoncteur OFF stoppe les flux de l'installation.
+- **Coupures** : sortie base débranchée→demande desservie=0, charge amont possible ; amont débranché→stock conservé et montage isolé. Reconnexion reprend sans rattrapage du temps débranché.
+- **UI** : ouvrir sur chaque module distinct, état temps réel, valeurs identiques au contrôleur, « Aucun module » si absent, pas de division par zéro. Tester E/Échap/bouton/overlay, pas de fermeture immédiate à l'ouverture ni d'ouverture simultanée avec inventaire/câble/construction.
+- **Cycle de vie** : disparition d'un module ouvert/connecté, désactivation/rechargement scène, plusieurs modules : pas de listener/plug/UI orphelin, contrôles restaurés correctement, aucun état global partagé.
+- **Non-régression** : panneaux et ModuleVie migrés, connexion directe sans batterie, industrie Crusher–Rig et batteries externes inchangées, Ghosts inertes, test.unity contrôlée, meshes/échelles/matériaux/blueprints conservés.
+- **Visuel** : 1920×1080 et 1024×768, textes français lisibles, aucun chevauchement, prises accessibles malgré MeshCollider, câbles indépendants correctement orientés.
+- **Hors périmètre** : remplacement/recharge d'items batterie externes, sauvegarde durable du stock et des liens, réseau maillé ou batteries en série, génération de modèle/texture, refonte atmosphère complète, équilibrage solaire jour/nuit, nouveaux packages.
